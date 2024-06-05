@@ -1,5 +1,5 @@
 import React from "react";
-import MainView from "../components/menus/MainView";
+import MainView from "./mainCom/MainView";
 import CategoryMenu from "../components/menus/CategoryMenu";
 import Trendbooth from "../components/menus/Trendbooth";
 import Deadlinebooth from "../components/menus/Deadlinebooth";

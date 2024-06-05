@@ -3,11 +3,18 @@
 @tailwind utilities;
 
 
-body {
+@font-face {
+  font-family: 'Regular';
+  src: url('./fonts/YUniverse-L.woff') format('woff')
+}
+@font-face {
+  font-family: 'Bold';
+  src: url('./fonts/YUniverse-B.woff') format('woff')
+}
+
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Bold', 'Roboto', sans-serif !important; 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }

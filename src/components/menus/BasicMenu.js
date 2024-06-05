@@ -49,7 +49,7 @@ function BasicMenu() {
         <nav className="flex w-full items-center mb-10">
             <div className="mt-6 ms-12">
                 <Link to={"/"}>
-                    <img className="w-1/4" src="/images/slisli_blue_logo.png" alt="실리실리 로고 이미지"/>
+                    <img className="w-1/6" src="/images/slisli_blue_logo.png" alt="실리실리 로고 이미지"/>
                 </Link>
             </div>
 
