@@ -3,6 +3,7 @@ import Loading from "../components/common/Loading";
 const { createBrowserRouter } = require("react-router-dom");
 
 const Home = lazy(() => import("../pages/IndexPage"));
+const DetailForum = lazy(() => import("../pages/DetailForum"));
 // const FindId = lazy(() => import("../pages/find/FindIdPage"));
 // const FindPwd = lazy(() => import("../pages/find/FindPwdPage"));
 const Signup = lazy(() => import("../pages/SignupPage"));
@@ -35,14 +36,14 @@ const root = createBrowserRouter([
             </Suspense>
         ),
     },
-//   {
-//     path: "/find/id",
-//     element: (
-//       <Suspense fallback={<Loading />}>
-//         <FindId />
-//       </Suspense>
-//     ),
-//   },
+    {
+      path: "/DetailForum",
+      element: (
+        <Suspense fallback={<Loading />}>
+          <DetailForum />
+        </Suspense>
+      ),
+    },
 //   {
 //     path: "/find/pwd",
 //     element: (
