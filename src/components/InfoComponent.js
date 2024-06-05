@@ -17,7 +17,7 @@ function InfoComponent(){
                  <div className="text-5xl text-center mb-15 ">이벤트 제목</div>
                  <div className="grid grid-cols-2 text-3xl border-2 rounded-md space-y-6 p-5 m-50 ">
                    <div className="grid grid-rows-2 text-3xl border-2 rounded-md space-y-3 p-5 w-100 ">  
-                     <p className="text-xl ">예약시간 : 2024년 6월 10일 11:00 </p>
+                     <p className="text-xl ">예약 시간 : 2024년 6월 10일 11:00 </p>
                      <p className="text-xl ">예약 가능 인원 수 : 10 / 30 </p>
                    </div> 
     
