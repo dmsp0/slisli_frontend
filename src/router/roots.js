@@ -7,6 +7,7 @@ const Home = lazy(() => import("../pages/IndexPage"));
 // const FindPwd = lazy(() => import("../pages/find/FindPwdPage"));
 const Signup = lazy(() => import("../pages/SignupPage"));
 const Login = lazy(() => import("../pages/Login"));
+const DetailForum = lazy(() => import("../pages/DetailForum"));
 // const MyPage = lazy(() => import("../pages/MyPage"));
 // const List = lazy(() => import("../pages/CampingListPage.js"));
 // const ListByWeather = lazy(() => import("../pages/CampingListByWeatherPage"));
@@ -35,14 +36,14 @@ const root = createBrowserRouter([
             </Suspense>
         ),
     },
-//   {
-//     path: "/find/id",
-//     element: (
-//       <Suspense fallback={<Loading />}>
-//         <FindId />
-//       </Suspense>
-//     ),
-//   },
+  {
+    path: "/DetailForum",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <DetailForum />
+      </Suspense>
+    ),
+  },
 //   {
 //     path: "/find/pwd",
 //     element: (
