@@ -1,6 +1,6 @@
 import React from "react";
 
-function CategoryMenu(){
+function MainView(){
     return(
         <div>
            
@@ -10,4 +10,4 @@ function CategoryMenu(){
     )
 }
 
-export default CategoryMenu;
+export default MainView;

@@ -1,13 +1,13 @@
 import React from "react";
 
-function CategoryMenu(){
+function Deadlinebooth(){
     return(
         <div>
-           
+          
         </div>
         // <>
         // </>
     )
 }
 
-export default CategoryMenu;
+export default Deadlinebooth;
