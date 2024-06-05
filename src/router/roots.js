@@ -5,8 +5,8 @@ const { createBrowserRouter } = require("react-router-dom");
 const Home = lazy(() => import("../pages/IndexPage"));
 // const FindId = lazy(() => import("../pages/find/FindIdPage"));
 // const FindPwd = lazy(() => import("../pages/find/FindPwdPage"));
-// const SignUp = lazy(() => import("../pages/Authentication/SignUp/index.tsx"));
-// const Login = lazy(() => import("../pages/Login"));
+const Signup = lazy(() => import("../pages/SignupPage"));
+const Login = lazy(() => import("../pages/Login"));
 // const MyPage = lazy(() => import("../pages/MyPage"));
 // const List = lazy(() => import("../pages/CampingListPage.js"));
 // const ListByWeather = lazy(() => import("../pages/CampingListByWeatherPage"));
@@ -51,22 +51,22 @@ const root = createBrowserRouter([
 //       </Suspense>
 //     ),
 //   },
-//   {
-//     path: "/login",
-//     element: (
-//       <Suspense fallback={<Loading />}>
-//         <Login />
-//       </Suspense>
-//     ),
-//   },
-//   {
-//     path: "/join",
-//     element: (
-//       <Suspense fallback={<Loading />}>
-//         <SignUp />
-//       </Suspense>
-//     ),
-//   },
+   {
+    path: "/login",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Login />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/signup",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <Signup />
+      </Suspense>
+    ),
+  },
 //   {
 //     path: "/mypage",
 //     element: (
