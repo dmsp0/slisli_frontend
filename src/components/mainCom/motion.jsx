@@ -1,4 +1,4 @@
-import "./style.css";
+import "./motionStyle.css";
 import React ,{ useState } from "react";
 import { initialTabs as tabs } from "./ingredients.ts";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,15 +8,15 @@ const MotionTest=()=> {
 
   return (
     <div className="window">
-      <nav>
-        <ul>
+      <nav className="tab-nav">
+        <ul className="tab-list">
           {tabs.map((item) => (
             <li
               key={item.label}
               className={item === selectedTab ? "selected" : ""}
               onClick={() => setSelectedTab(item)}
             >
-              {`${item.icon} ${item.label}`}
+              {`${item.label}`}
               {item === selectedTab ? (
                 <motion.div className="underline" layoutId="underline" />
               ) : null}
@@ -24,7 +24,8 @@ const MotionTest=()=> {
           ))}
         </ul>
       </nav>
-      <main>
+
+      <main className="tab-content">
         <AnimatePresence mode="wait">
           <motion.div
             key={selectedTab ? selectedTab.label : "empty"}
@@ -39,6 +40,6 @@ const MotionTest=()=> {
       </main>
     </div>
   );
-}
+};
 
 export default MotionTest;

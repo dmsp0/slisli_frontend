@@ -1,14 +1,12 @@
 import BasicLayout from "../layouts/BasicLayout";
-import MainComponent from "../components/MainComponent";
+import MainComponent from "../components/mainCom/MainComponent";
 
 
 function IndexPage() {
   return (
-    <>
-      <BasicLayout>
-        <MainComponent />
-      </BasicLayout>
-    </>
+    <BasicLayout>
+        <MainComponent/>
+        </BasicLayout>
   );
 }
 

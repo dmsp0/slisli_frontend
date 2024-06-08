@@ -1,13 +1,11 @@
 import BasicLayout from "../layouts/BasicLayout";
-import LoginComponent from "../components/LoginComponent";
-function Login() {
+import SignInUp from "../components/mypageCom/SignInUp";
+function LoginPage() {
   return (
-    <>
-      <BasicLayout>
-        <LoginComponent />
-      </BasicLayout>
-    </>
+    <BasicLayout>
+        <SignInUp />
+        </BasicLayout>
   );
 }
 
-export default Login;
+export default LoginPage;

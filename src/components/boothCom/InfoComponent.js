@@ -1,5 +1,4 @@
 import React from "react";
-import Poster from "../img/poster.png";
 
 function InfoComponent(){
     return (
@@ -7,7 +6,7 @@ function InfoComponent(){
     
           {/* <!-- 1. 왼 - 포스터 이미지 --> */}
              <div className="border-2 rounded-md flex w-full h-full object-contain" >
-                <img src={Poster} className="fill items-center p-5" alt="포스터 이미지" />
+                <img src="./images/poster.png" className="fill items-center p-5" alt="포스터 이미지" />
              </div>
     
     {/* 2. 우 - 제목 | 예약시간, 참가예약 */}
