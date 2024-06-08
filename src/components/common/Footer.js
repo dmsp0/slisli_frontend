@@ -14,7 +14,7 @@ function Footer(){
                 <li className="px-4">개인정보처리방침</li>
             </ul>
             <div className="w-4/5 mx-auto text-gray-800 flex flex-wrap flex-col py-2">
-                    <span className="text-xs  text-gray-400 font-medium my-1">사이트명 : SliSli (실리실리) | 주소 : 서울 강남구 테헤란로 7길 7(역삼동 에스코빌딩 6층) | 조 이름 : 장작 </span>
+                    <span className="text-xs  text-gray-400 font-medium my-1">사이트명 : SliSli (실리실리) | 주소 : 서울 강남구 테헤란로 7길 7(역삼동 에스코빌딩 6층) | 조 이름 : 슬리슬리 </span>
                     <span className="text-xs text-gray-400 font-medium my-1">조원 : 박민경 박지혜 백은혜 서유진 이인왕 조현진 홍승연</span> 
                     <span className="text-xs text-gray-400 font-medium my-1">github : <Link target='_blank' to="https://github.com/dmsp0/slisli_frontend">https://github.com/dmsp0/slisli_frontend (frontend)</Link></span> 
                     <span className="text-xs text-gray-400 font-medium my-1">github : <Link target='_blank' to="https://github.com/dmsp0/slisli_backend">https://github.com/dmsp0/slisli_backend (backend)</Link></span> 
