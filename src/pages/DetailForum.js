@@ -1,12 +1,10 @@
 import BasicLayout from "../layouts/BasicLayout";
-import InfoComponent from "../components/InfoComponent";
+import InfoComponent from "../components/boothCom/InfoComponent";
 function DetailForum() {
   return (
-    <>
       <BasicLayout>
         <InfoComponent />
       </BasicLayout>
-    </>
   );
 }
 

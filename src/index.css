@@ -3,16 +3,49 @@
 @tailwind utilities;
 
 
-body {
+@font-face {
+  font-family: 'Godo';
+  font-style: normal;
+  font-weight: 700;
+  src: url('//fastly.jsdelivr.net/korean-webfonts/1/corps/godo/Godo/GodoB.woff2') format('woff2'), url('//fastly.jsdelivr.net/korean-webfonts/1/corps/godo/Godo/GodoB.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'LOTTERIACHAB';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2302@1.0/LOTTERIACHAB.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'TTHakgyoansimMulgyeolB';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2402_keris@1.0/TTHakgyoansimMulgyeolB.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+}
+
+* {
   margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
+  font-family: 'Godo', sans-serif !important; 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+}
+.lotteria-font {
+  font-family: 'LOTTERIACHAB', sans-serif !important;
+}
+.Mulgyeol{
+  font-family:'TTHakgyoansimMulgyeolB' !important;
 }
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+
+.monitor {
+  background-image: url('../public/images/monitor.svg');
+}
+
+.mainImg{
+  background-image: url('../public/images/2.svg');
 }

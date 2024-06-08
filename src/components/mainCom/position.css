@@ -1,0 +1,86 @@
+ 
+  .motion, .motion2 {
+    position: absolute;
+    width: 25%;
+    height: calc(30% - 30px);
+    pointer-events: auto; /* Allow interaction */
+  }
+  
+  .motion {
+    left: calc(50% - 32%);
+    top: calc(50% - 17%);
+  }
+  
+  .motion2 {
+    left: calc(50% - 5%);
+    top: calc(50% - 17%);
+  }
+  
+  .titleText {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 3.5vw;
+    color: white;
+    text-align: center;
+    pointer-events: none; /* Prevent interaction */
+    left: 44%;
+    margin: 1% 0;
+    top: 20%
+  }
+  
+/* 미디어 쿼리 정리 */
+@media (max-width: 1200px) {
+  .motion, .motion2 {
+      top: calc(50% - 15%);
+  }
+  .titleText {
+      top: calc(50% - 25%);
+  }
+}
+
+@media (max-width: 850px) {
+  .motion, .motion2 {
+      top: calc(50% - 10%);
+  }
+  .titleText {
+      top: calc(50% - 22%);
+  }
+}
+
+@media (max-width: 750px) {
+  .motion, .motion2 {
+      top: calc(50% - 17%);
+  }
+  .titleText {
+      top: calc(50% - 23%);
+  }
+}
+
+@media (max-width: 650px) {
+  .motion, .motion2 {
+      height: calc(30% - 50px);
+      top: calc(50% - 15%);
+  }
+  .titleText {
+      top: calc(50% - 23%);
+  }
+}
+
+@media (max-width: 550px) {
+  .motion, .motion2 {
+      height: calc(30% - 10px);
+      top: calc(50% - 20%);
+  }
+  .titleText {
+      top: calc(50% - 25%);
+  }
+}
+
+@media (max-width: 500px) {
+  .motion, .motion2 {
+      top: calc(50% - 23%);
+  }
+  .titleText {
+      top: calc(50% - 28%);
+  }
+}

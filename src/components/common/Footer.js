@@ -6,7 +6,7 @@ import { FaGoogleDrive } from "react-icons/fa";
 
 function Footer(){
     return(
-        <footer className="w-full bg-slate-100">
+        <footer className="w-full bg-slate-100 pt-5">
             <ul className="w-4/5 flex flex-row text-sm mx-auto py-3 font-semibold border-b border-gray-300">
                 <li className="pe-4">회사 소개</li>
                 <li className="px-4">업체 등록</li>

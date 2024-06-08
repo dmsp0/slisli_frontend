@@ -1,0 +1,71 @@
+
+.parent {
+    background: white;
+    width: 12vw;
+    height: 12vw;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: width 0.3s, height 0.3s; /* 너비와 높이 변경에 애니메이션 적용 */
+  }
+  
+  .parent[data-isOpen="true"] {
+    width: 22vw; /* 열렸을 때의 너비 */
+    height: 45vh; /* 열렸을 때의 높이 */
+    background-size: contain; /* 비율을 유지하면서 요소에 맞게 조정 */
+    background-repeat: no-repeat; /* 반복되지 않도록 설정 */
+    background-position: center; /* 이미지를 중앙에 배치 */
+    padding-left: 10px; /* 좌측 패딩 */
+    padding-right: 10px; /* 우측 패딩 */
+    box-sizing: border-box; /* 패딩을 포함하도록 설정 */
+    position: relative;
+  }
+  .open1 {
+    background-image: url(../../../public/images/booth1.jpg);
+}
+
+.open2 {
+    background-image: url(../../../public/images/booth2.jpg);
+}
+
+.open3 {
+    background-image: url(../../../public/images/booth3.jpg);
+}
+
+.open4 {
+    background-image: url(../../../public/images/booth4.jpg);
+}
+  .open5 {
+    background-image: url(../../../public/images/booth5.png);
+}
+  
+  .child {
+    visibility: visible;
+    display: inline-block;
+  }
+
+  .parent.open1 .child,
+  .parent.open2 .child,
+  .parent.open3 .child,
+  .parent.open4 .child,
+  .parent.open5 .child {
+      visibility: hidden;
+  }
+
+  .parent .btn {
+    display: none; /* 버튼 숨기기 */
+}
+
+.parent.open1 .btn,
+.parent.open2 .btn,
+.parent.open3 .btn,
+.parent.open4 .btn,
+.parent.open5 .btn {
+    display: block; /* open1일 때 버튼 보이기 */
+    position: absolute;
+    bottom: -55px;
+    padding: 10px 15px;
+    border-radius: 10px;
+    color: white;
+    z-index: 10;
+}
