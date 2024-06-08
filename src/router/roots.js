@@ -7,8 +7,8 @@ const DetailForum = lazy(() => import("../pages/DetailForum"));
 // const FindId = lazy(() => import("../pages/find/FindIdPage"));
 // const FindPwd = lazy(() => import("../pages/find/FindPwdPage"));
 const Login = lazy(() => import("../pages/Login"));
-// const MyPage = lazy(() => import("../pages/MyPage"));
-// const List = lazy(() => import("../pages/CampingListPage.js"));
+const BoothListPage = lazy(() => import("../pages/BoothListPage"));
+const BoothDetailPage = lazy(() => import("../pages/BoothDetailPage"));
 // const ListByWeather = lazy(() => import("../pages/CampingListByWeatherPage"));
 // const Detail = lazy(() => import("../pages/CampingDetailPage.js"));
 // const CampReview = lazy(() => import("../pages/CampReview"));
@@ -59,22 +59,22 @@ const root = createBrowserRouter([
       </Suspense>
     ),
   },
-  // {
-  //   path: "/signup",
-  //   element: (
-  //     <Suspense fallback={<Loading />}>
-  //       <Signup />
-  //     </Suspense>
-  //   ),
-  // },
-//   {
-//     path: "/mypage",
-//     element: (
-//       <Suspense fallback={<Loading />}>
-//         <MyPage />
-//       </Suspense>
-//     ),
-//   },
+  {
+    path: "/booth/list",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <BoothListPage />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/booth/:id",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <BoothDetailPage />
+      </Suspense>
+    ),
+  },
 //   {
 //     path: "/camp/list",
 //     element: (

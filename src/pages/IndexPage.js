@@ -6,7 +6,7 @@ function IndexPage() {
   return (
     <BasicLayout>
         <MainComponent/>
-        </BasicLayout>
+    </BasicLayout>
   );
 }
 

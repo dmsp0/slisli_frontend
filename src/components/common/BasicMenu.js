@@ -49,6 +49,7 @@ function BasicMenu() {
     <div className="flex justify-between w-1/3">
         <Link to="#">기업부스</Link>
         <Link to="#">개인부스</Link>
+        <Link to="/booth/list">부스리스트</Link>
         <Link to="/booth/registration">부스 등록</Link>
     </div>
     <div className="w-1/3 text-center">

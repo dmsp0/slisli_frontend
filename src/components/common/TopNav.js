@@ -4,7 +4,8 @@ import { BsJustify, BsX } from "react-icons/bs";
 const navigation = [
     { name: '기업부스', href: '#' },
     { name: '개인부스', href: '#' },
-    { name: '부스등록', href: '#' },
+    { name: '부스리스트', href: '/booth/list'},
+    { name: '부스등록', href: '/booth/registration' },
     { name: '커뮤니티', href: '#' },
 ];
 
