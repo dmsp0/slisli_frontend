@@ -60,7 +60,7 @@ const LoginComponent = () => {
             let formData= new FormData();
             formData.append('username', id);
             formData.append('password',password);
-            const response = await axios.post('http://localhost:4040/login', formData,{
+            const response = await axios.post('http://localhost:8080/api/member/login', formData,{
                 withCredentials: true // 자격 증명을 포함하여 요청
               });
             // 로그인 성공 처리
@@ -172,7 +172,7 @@ const LoginComponent = () => {
 
                         <p className="mt-4 text-center text-sm text-gray-500">
                           아직 실리실리의 회원이 아니신가요? <br/>
-                            <a href="/join" className="font-semibold leading-6 text-blue-300 hover:text-blue-600">
+                            <a href="/signup" className="font-semibold leading-6 text-blue-300 hover:text-blue-600">
                                 회원가입하러 가기
                             </a>
                         </p>
