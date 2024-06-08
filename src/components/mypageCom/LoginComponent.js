@@ -59,7 +59,7 @@ const LoginComponent = () => {
             let formData= new FormData();
             formData.append('email', email);
             formData.append('password',password);
-            const response = await axios.post('http://localhost:8080/member/login', formData,{
+            const response = await axios.post('/login', formData,{
                 withCredentials: true // 자격 증명을 포함하여 요청
               });
             // 로그인 성공 처리
@@ -161,9 +161,9 @@ const LoginComponent = () => {
     </p>
     <div className="flex justify-center items-center mt-3">
     <div className='sign-up-content-sign-in-button-box'>
-        <a href='http://localhost:8080/oauth2/authorization/kakao'> <img className="w-12" src='/images/kakao-icon.png'/> </a>
-        <a href='http://localhost:8080/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png'/> </a>
-        <a href='http://localhost:8080/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png'/> </a>
+        <a href='/oauth2/authorization/kakao'> <img className="w-12" src='/images/kakao-icon.png'/> </a>
+        <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png'/> </a>
+        <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png'/> </a>
     </div>
     </div>
     </>

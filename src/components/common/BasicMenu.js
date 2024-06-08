@@ -18,7 +18,7 @@ function BasicMenu() {
     const logoutFunction = async () => {
         try {
             // 서버에 로그아웃 요청을 보냅니다.
-            const response = await axios.post('http://localhost:7777/logout', {}, {
+            const response = await axios.post('/logout', {}, {
                 withCredentials: true // 쿠키를 포함하여 요청
             });
 
