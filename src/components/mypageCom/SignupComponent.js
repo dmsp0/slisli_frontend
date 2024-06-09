@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Modal from '../common/Modal';
 import { useNavigate } from 'react-router-dom';
 import './signStyle.css';
 
@@ -18,17 +17,7 @@ const SignupComponent = () => {
     const [emailChecked, setEmailChecked] = useState(false);
     const [codeValid, setCodeValid] = useState(false);
 
-    const [isOpen, setIsOpen] = useState(false);
-    const [message, setMessage] = useState("");
     const navigate = useNavigate();
-
-    const customCallback = () => {
-        if (message === '회원가입 성공!') {
-            navigate("/")
-        } else {
-            setIsOpen(false)
-        }
-    }
 
     const handleEmail = (e) => {
         setEmail(e.target.value);
@@ -71,49 +60,17 @@ const SignupComponent = () => {
         setName(e.target.value);
     };
 
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!emailValid || !passwordValid || !confirmPasswordValid || !emailChecked || !codeValid) {
-            alert("유효한 이메일, 비밀번호, 비밀번호 확인을 입력하고, 이메일 인증을 완료해주세요.");
-            return;
-        }
-
-        try {
-            let formData = new FormData();
-            formData.append('email', email);
-            formData.append('password', password);
-            formData.append('name', name);
-            const response = await axios.post('/signup', formData, {
-                withCredentials: true
-            });
-
-            setMessage("회원가입 성공!");
-            setIsOpen(true);
-            localStorage.setItem('access', response.headers.get('access'));
-        } catch (error) {
-            if (error.response && error.response.status === 401) {
-                setMessage('아이디 혹은 비밀번호가 틀렸습니다.');
-            } else {
-                setMessage('서버 오류');
-            }
-            setIsOpen(true);
-            console.error('회원가입 오류:', error);
-        }
-    };
-
     const handleEmailVerification = async () => {
         if (!emailValid) {
             alert("유효한 이메일을 입력해주세요.");
             return;
         }
-
+    
         try {
-            const response = await axios.get('/checkEmail', { params: { email } });
+            const response = await axios.post('/auth/send-code', { email });
             if (response.status === 200) {
-                alert("이메일 사용 가능합니다.");
+                alert("이메일을 전송했습니다.");
                 setEmailChecked(true);
-                // 이메일 인증번호 전송
-                await axios.post('/sendVerificationCode', null, { params: { email } });
             }
         } catch (error) {
             if (error.response && error.response.status === 409) {
@@ -124,15 +81,15 @@ const SignupComponent = () => {
             console.error('이메일 확인 오류:', error);
         }
     };
-
+    
     const handleCodeVerification = async () => {
         if (!emailChecked || !inputCode) {
             alert("이메일 인증번호를 입력해주세요.");
             return;
         }
-
+    
         try {
-            const response = await axios.post('/verifyCode', null, { params: { email, code: inputCode } });
+            const response = await axios.post('/auth/verify-code', { email, code: inputCode });
             if (response.status === 200) {
                 alert("인증번호가 확인되었습니다.");
                 setCodeValid(true);
@@ -140,6 +97,34 @@ const SignupComponent = () => {
         } catch (error) {
             alert("인증번호가 유효하지 않습니다.");
             console.error('인증번호 확인 오류:', error);
+        }
+    };
+    
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (!emailValid || !passwordValid || !confirmPasswordValid || !emailChecked || !codeValid) {
+            alert("유효한 이메일, 비밀번호, 비밀번호 확인을 입력하고, 이메일 인증을 완료해주세요.");
+            return;
+        }
+    
+        try {
+            const response = await axios.post('/signup', {
+                email,
+                password,
+                passwordCheck: confirmPassword,
+                name,
+                verificationCode: inputCode
+            });
+    
+            alert("회원가입 성공!");
+            navigate("/");
+        } catch (error) {
+            if (error.response && error.response.status === 401) {
+                alert('아이디 혹은 비밀번호가 틀렸습니다.');
+            } else {
+                alert('서버 오류');
+            }
+            console.error('회원가입 오류:', error);
         }
     };
 
