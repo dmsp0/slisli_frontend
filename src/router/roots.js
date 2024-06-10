@@ -4,7 +4,11 @@ const { createBrowserRouter } = require("react-router-dom");
 
 const Home = lazy(() => import("../pages/IndexPage"));
 const DetailForum = lazy(() => import("../pages/DetailForum"));
-// const FindId = lazy(() => import("../pages/find/FindIdPage"));
+const MyPage = lazy(() => import("../pages/MyPage"));
+const MyFavorite = lazy(() => import("../pages/MyFavorite"));
+const ViewHistory = lazy(() => import("../pages/ViewHistory"));
+const BoothHeld = lazy(() => import("../pages/BoothHeld"));
+const ChattingRoom = lazy(() => import("../pages/ChattingRoom"));
 // const FindPwd = lazy(() => import("../pages/find/FindPwdPage"));
 const Login = lazy(() => import("../pages/Login"));
 const BoothListPage = lazy(() => import("../pages/BoothListPage"));
@@ -36,21 +40,53 @@ const root = createBrowserRouter([
         ),
     },
     {
-      path: "/DetailForum",
+      path: "/detailForum",
       element: (
         <Suspense fallback={<Loading />}>
           <DetailForum />
         </Suspense>
       ),
     },
-//   {
-//     path: "/find/pwd",
-//     element: (
-//       <Suspense fallback={<Loading />}>
-//         <FindPwd />
-//       </Suspense>
-//     ),
-//   },
+    {
+      path: "/myPage",
+      element: (
+        <Suspense fallback={<Loading />}>
+          <MyPage />
+        </Suspense>
+      ),
+    },
+  {
+    path: "/favoritelist",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <MyFavorite />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/historylist",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <ViewHistory />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/boothheld",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <BoothHeld />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/chat",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <ChattingRoom />
+      </Suspense>
+    ),
+  },
   {
     path: "/login",
     element: (
