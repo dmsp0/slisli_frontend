@@ -33,7 +33,7 @@ function TopNav() {
     return (
         <>
             {/* PC 화면 Nav */}
-            <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-in-out ${scrollY > 50 ? 'bg-slate-50 drop-shadow-md shadow-inner' : 'bg-inherit'} ${mobileMenuOpen ? 'hidden' : 'block'}`}>
+            <header className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ease-in-out ${scrollY > 50 ? 'bg-slate-50 drop-shadow-md shadow-inner' : 'bg-blue-900'} ${mobileMenuOpen ? 'hidden' : 'block'}`}>
                 <nav className="flex items-center justify-between py-3 px-10 lg:px-8" aria-label="Global">
                     <div className="flex lg:flex-1">
                         <a href="/" className="-m-1.5 p-1.5">

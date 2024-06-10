@@ -62,6 +62,7 @@ const LoginComponent = () => {
             alert("로그인 성공!")
             setIsOpen(true)
             localStorage.setItem('access', response.data.token);
+            window.location.href = "/";
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 setMessage('이메일 혹은 비밀번호가 틀렸습니다.');
