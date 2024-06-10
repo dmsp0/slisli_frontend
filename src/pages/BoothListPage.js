@@ -4,7 +4,6 @@ function BoothListPage() {
   return (
     <>
       <BasicLayout>
-        <div className="h-14 bg-blue-400"/>
         <BoothList />
       </BasicLayout>
     </>

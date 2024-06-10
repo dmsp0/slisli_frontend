@@ -5,7 +5,7 @@ function BasicLayout({children}){
     return(
         <div>
             <TopNav/>
-                <div className="w-full mx-auto ">
+                <div className="w-full mx-auto mt-16">
                     {children}
                 </div>
             <Footer/>

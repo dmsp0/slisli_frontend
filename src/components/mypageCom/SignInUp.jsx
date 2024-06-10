@@ -46,7 +46,7 @@ const SignInUp = () => {
     }
 
     return (
-        <div className='bg-gradient-to-br from-blue-900 to-blue-200 py-20 h-auto'>
+        <div className='bg-gradient-to-br from-blue-900 to-blue-200 h-auto'>
             <div className="monitor flex justify-center items-center" style={{ backgroundImage: `url('/images/monitor.svg')` }} >
                 <div className='w-full sm:max-w-sm md:max-w-md -mt-48'>
                     

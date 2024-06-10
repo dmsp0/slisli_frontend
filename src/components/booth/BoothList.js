@@ -53,7 +53,7 @@ function BoothList() {
         {booths.map((booth) => (
           <div key={booth.id} className="border p-4 rounded-lg shadow">
             <img
-              src={`http://localhost:8080${booth.imgPath}`}
+              src={`${booth.imgPath}`}
               alt={booth.title}
               className="w-full h-48 object-cover mb-4"
             />
