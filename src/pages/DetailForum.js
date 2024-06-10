@@ -1,10 +1,14 @@
+import React from "react";
 import BasicLayout from "../layouts/BasicLayout";
-import InfoComponent from "../components/boothCom/InfoComponent";
+import EventDetailComponent from "../components/EventDetailComponent";
+
 function DetailForum() {
   return (
+    <>
       <BasicLayout>
-        <InfoComponent />
+        <EventDetailComponent />
       </BasicLayout>
+    </>
   );
 }
 

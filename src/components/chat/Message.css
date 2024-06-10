@@ -1,0 +1,28 @@
+.message {
+    display: flex;
+    align-items: center;
+  }
+  
+  .message.sent {
+    justify-content: flex-end;
+  }
+  
+  .message.received {
+    justify-content: flex-start;
+  }
+  
+  .profile {
+    margin-right: 10px;
+  }
+  
+  .message-text {
+    background-color: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
+  }
+  
+  .time {
+    font-size: 0.8rem;
+    color: gray;
+  }
+  
