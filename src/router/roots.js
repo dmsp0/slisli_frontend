@@ -111,6 +111,22 @@ const root = createBrowserRouter([
       </Suspense>
     ),
   },
+  {
+    path: "/booths/company",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <BoothListPage type="COMPANY" />
+      </Suspense>
+    ),
+  },
+  {
+    path: "/booths/individual",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <BoothListPage type="INDIVIDUAL" />
+      </Suspense>
+    ),
+  },
 //   {
 //     path: "/camp/list",
 //     element: (

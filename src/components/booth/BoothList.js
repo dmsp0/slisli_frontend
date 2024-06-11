@@ -12,12 +12,16 @@ function BoothList() {
   useEffect(() => {
     async function fetchBooths() {
       try {
+        const token = localStorage.getItem('token'); // 로컬 스토리지에서 JWT 토큰을 가져옴
         const response = await axios.get(API_URLS.BOOTH_GET_ALL, {
           params: {
             page,
             size,
             category,
           },
+          headers: {
+            'Authorization': `Bearer ${token}` // 요청 헤더에 JWT 토큰을 추가
+          }
         });
         setBooths(response.data.content); // 페이지네이션 데이터 구조에 맞게 수정
       } catch (error) {
@@ -53,7 +57,7 @@ function BoothList() {
         {booths.map((booth) => (
           <div key={booth.id} className="border p-4 rounded-lg shadow">
             <img
-              src={`${booth.imgPath}`}
+              src={`http://localhost:8080/static${booth.imgPath}`} // 이미지 경로에 /static 추가
               alt={booth.title}
               className="w-full h-48 object-cover mb-4"
             />

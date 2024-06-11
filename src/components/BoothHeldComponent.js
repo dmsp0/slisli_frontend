@@ -1,7 +1,7 @@
 import React from 'react';
 import MyPageSide from "../components/card/MyPageSide";
 import MyPageButton from "../components/card/MyPageButton";
-import BoothHeldList from "../components/card/BoothHeldList";
+import BoothHeldForm from "../components/card/BoothHeldForm";
 
 function BoothHeldComponent({ userProfile }) {
   
@@ -25,7 +25,7 @@ function BoothHeldComponent({ userProfile }) {
           <div className="col-start-6 col-span-7 flex flex-col items-center">
     
             {/* BoothHeldList 컴포넌트 렌더링 () */}
-            <BoothHeldList />
+            <BoothHeldForm />
             
           </div>
     
