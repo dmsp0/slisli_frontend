@@ -261,6 +261,17 @@ const SignupComponent = () => {
                         회원가입하기
                     </button>
                 </div>
+                <hr className="my-8" />
+            <p className="mt-4 text-center text-sm text-gray-500">
+                SNS 계정으로 회원가입하기
+            </p>
+            <div className="flex justify-center items-center mt-3">
+                <div className='sign-up-content-sign-in-button-box'>
+                    <a href='/oauth2/authorization/kakao'> <img className="w-12" src='/images/kakao-icon.png' /> </a>
+                    <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png' /> </a>
+                    <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png' /> </a>
+                </div>
+            </div>
             </form>
         </>
     );
