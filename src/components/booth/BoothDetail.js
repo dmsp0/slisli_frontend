@@ -26,7 +26,7 @@ function BoothDetail({ id }) {
     return (
         <div className="container mx-auto p-4">
             <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                <img src={`${booth.imgPath}`} alt={booth.title} className="w-full h-128 object-cover" />
+                <img src={`http://localhost:8080/static${booth.imgPath}`} alt={booth.title} className="w-full h-128 object-cover" />
                 <div className="p-6">
                     <h1 className="text-3xl font-bold mb-4">{booth.title}</h1>
                     <p className="text-gray-700 mb-4">{booth.info}</p>
