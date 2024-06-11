@@ -48,7 +48,7 @@ const LoginComponent = () => {
             alert("유효한 아이디와 비밀번호를 입력해주세요.");
             return;
         }
-
+    
         try {
             const response = await axios.post('/login', {
                 email: email,
@@ -59,9 +59,20 @@ const LoginComponent = () => {
                 },
                 withCredentials: true
             });
-            alert("로그인 성공!")
-            setIsOpen(true)
-            localStorage.setItem('access', response.data.token);
+    
+            // Extract data from response
+            const { token: accessToken, refreshToken, email: userEmail, name: userName } = response.data;
+    
+            alert(`로그인 성공! ${userName}님 환영합니다!`);
+            
+            setIsOpen(true);
+    
+            // Store tokens and user details in local storage
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('email', userEmail);
+            localStorage.setItem('name', userName);
+            
             window.location.href = "/";
         } catch (error) {
             if (error.response && error.response.status === 401) {
@@ -73,7 +84,7 @@ const LoginComponent = () => {
             console.error('로그인 오류:', error);
         }
     };
-
+    
     return (
         <>
             <form onSubmit={handleSubmit} className="space-y-5">
