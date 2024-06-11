@@ -153,7 +153,7 @@ const LoginComponent = () => {
 
             <hr className="my-8" />
             <p className="mt-4 text-center text-sm text-gray-500">
-                SNS 계정으로 회원가입하기
+                SNS 계정으로 로그인하기
             </p>
             <div className="flex justify-center items-center mt-3">
                 <div className='sign-up-content-sign-in-button-box'>
