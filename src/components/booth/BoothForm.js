@@ -2,67 +2,78 @@ import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { API_URLS } from "../../api/apiConfig";
-import Modal from "../booth/Modal";
+import Modal from "./Modal";
 
-function BoothHeldForm() {
-  const navigate = useNavigate();
-  const [boothData, setBoothData] = useState({
-    title: "",
-    info: "",
-    category: "CATEGORY_ONE",
-    type: "COMPANY",
-    date: "",
-    startTime: "",
-    endTime: "",
-    imgPath: "",
-    maxPeople: "",
-    openerName: "",
-    member_id: localStorage.getItem('member_id') // member_id 추가
+function BoothForm() {
+  const navigate = useNavigate(); // 라우터에서 사용하는 네비게이션 함수
+  const [boothData, setBoothData] = useState({ // 부스 데이터 상태 및 설정 함수
+    title: "", // 부스 제목
+    info: "", // 부스 정보
+    category: "CATEGORY_ONE", // 부스 카테고리 (기본값: CATEGORY_ONE)
+    date: "", // 부스 날짜
+    startTime: "", // 시작 시간
+    endTime: "", // 종료 시간
+    imgPath: "", // 이미지 파일 경로
+    maxPeople: "", // 최대 참여 인원
+    openerName: "", // 부스 개설자 이름
   });
 
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(false); // 모달 표시 상태 및 설정 함수
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setBoothData({ ...boothData, [name]: value });
+  const handleChange = (e) => { // 입력 값 변경 시 호출되는 함수
+    const { name, value } = e.target; // 이벤트에서 이름과 값 추출
+    setBoothData({ ...boothData, [name]: value }); // 해당 이름의 값을 변경하고 상태 업데이트
   };
 
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    setBoothData({ ...boothData, imgPath: file });
+  const handleFileChange = (e) => { // 파일 입력 변경 시 호출되는 함수
+    const file = e.target.files[0]; // 파일 가져오기
+    setBoothData({ ...boothData, imgPath: file }); // 이미지 파일 경로 업데이트
   };
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
+  const handleSubmit = async (e) => { // 폼 제출 시 호출되는 함수
+    e.preventDefault(); // 기본 제출 행동 방지
 
-    const token = localStorage.getItem('jwtToken');
-    if (!token) {
-      console.error("Token not found");
-      navigate('/login');
-      return;
-    }
+    // 로컬스토리지에서 member_id 가져오기
+    const memberId = localStorage.getItem('member_id');
 
-    const formData = new FormData();
-    formData.append("booth", new Blob([JSON.stringify(boothData)], { type: "application/json" }));
-    formData.append("file", boothData.imgPath);
+    const formData = new FormData(); // 새 FormData 생성
+    formData.append( // 부스 데이터 및 이미지 파일을 FormData에 추가
+      "booth",
+      new Blob(
+        [
+          JSON.stringify({ // 부스 데이터를 JSON 형식으로 문자열화하여 Blob으로 변환 후 추가
+            title: boothData.title,
+            info: boothData.info,
+            category: boothData.category,
+            date: boothData.date,
+            startTime: boothData.startTime,
+            endTime: boothData.endTime,
+            maxPeople: boothData.maxPeople,
+            openerName: boothData.openerName,
+            member_id: memberId // member_id 추가
+          }),
+        ],
+        { type: "application/json" }
+      )
+    );
+    formData.append("file", boothData.imgPath); // 이미지 파일 추가
 
-    try {
-      const response = await axios.post(API_URLS.BOOTH_INSERT, formData, {
+    try { // 요청 보내기
+      const response = await axios.post(API_URLS.BOOTH_INSERT, formData, { // Axios를 사용하여 POST 요청
         headers: {
-          "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${token}` // JWT 토큰 추가
+          "Content-Type": "multipart/form-data", // 헤더 설정
         },
       });
-      console.log(response.data);
-      setShowModal(true);
-    } catch (error) {
-      console.error("There was an error!", error);
+      console.log(response.data); // 응답 데이터 로깅
+      setShowModal(true); // 모달 표시
+    } catch (error) { // 에러 처리
+      console.error("There was an error!", error); // 에러 로깅
     }
   };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
-    navigate("/");
+  const handleCloseModal = () => { // 모달 닫기 함수
+    setShowModal(false); // 모달 숨기기
+    navigate("/"); // 메인 페이지로 이동
   };
 
   return (
@@ -140,19 +151,6 @@ function BoothHeldForm() {
           </select>
         </div>
         <div className="mb-4">
-          <label className="block text-gray-700 font-bold mb-2">부스타입</label>
-          <select
-            name="type"
-            value={boothData.type}
-            onChange={handleChange}
-            className="w-full px-3 py-2 border rounded-lg"
-            required
-          >
-            <option value="COMPANY">기업</option>
-            <option value="INDIVIDUAL">개인</option>
-          </select>
-        </div>
-        <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2">
             부스 이미지
           </label>
@@ -207,4 +205,4 @@ function BoothHeldForm() {
   );
 }
 
-export default BoothHeldForm;
+export default BoothForm;

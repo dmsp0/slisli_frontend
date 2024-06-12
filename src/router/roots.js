@@ -1,5 +1,6 @@
 import { Suspense, lazy } from "react";
 import Loading from "../components/common/Loading";
+import BoothInsertPage from "../pages/BoothInsertPage";
 const { createBrowserRouter } = require("react-router-dom");
 
 const Home = lazy(() => import("../pages/IndexPage"));
@@ -9,6 +10,7 @@ const MyFavorite = lazy(() => import("../pages/MyFavorite"));
 const ViewHistory = lazy(() => import("../pages/ViewHistory"));
 const BoothHeld = lazy(() => import("../pages/BoothHeld"));
 const ChattingRoom = lazy(() => import("../pages/ChattingRoom"));
+const VideoRoom = lazy(() => import("../components/booth/VideoRoom"))
 // const FindPwd = lazy(() => import("../pages/find/FindPwdPage"));
 const Login = lazy(() => import("../pages/Login"));
 const BoothListPage = lazy(() => import("../pages/BoothListPage"));
@@ -127,6 +129,23 @@ const root = createBrowserRouter([
       </Suspense>
     ),
   },
+  {
+    path: "/booth/VideoRoom/:videoRoomId",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <VideoRoom/>
+      </Suspense>
+    ),
+  },
+  {
+    path: "/booth/registration",
+    element: (
+      <Suspense fallback={<Loading />}>
+        <BoothInsertPage />
+      </Suspense>
+    ),
+  },
+  
 //   {
 //     path: "/camp/list",
 //     element: (

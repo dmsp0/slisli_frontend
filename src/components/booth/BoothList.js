@@ -27,6 +27,7 @@ function BoothList() {
       } catch (error) {
         console.error("Error fetching booths", error);
       }
+      
     }
     fetchBooths();
   }, [page, category]);
