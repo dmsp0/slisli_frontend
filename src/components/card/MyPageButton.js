@@ -22,7 +22,7 @@ function MyPageButton() {
 
     // [ 부스 개최 ] 버튼 클릭 시 /boothheld 페이지로 이동
     const handleBoothHeldClick = () => {
-      navigate('/boothheld');
+      navigate('/booth/registration');
     };
 
   return (
