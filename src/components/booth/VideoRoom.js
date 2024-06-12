@@ -132,7 +132,7 @@ const VideoRoom = () => {
                 Janus.debug("Handling SDP as well...", jsep);
                 remoteFeed.createAnswer({
                     jsep: jsep,
-                    media: { audioSend: false, videoSend: false },   // We want recvonly audio/video
+                    media: { audioSend: false, videoSend: false },	// We want recvonly audio/video
                     success: function(jsep) {
                         Janus.debug("Got SDP!", jsep);
                         let body = { request: "start", room: myroom };
