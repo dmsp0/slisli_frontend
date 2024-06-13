@@ -1,78 +1,69 @@
-// Chat.js
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import Message from './Message';
 import './Chat.css';
 
-const socket = io('http://localhost:5000', {
-  path: '/socket',
-});
-
-const Chat = () => {
+const Chat = ({ boothId }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [roomId, setRoomId] = useState('');
+  const [nickname] = useState(localStorage.getItem('name') || ''); // username -> name으로 변경
+  const [accessToken] = useState(localStorage.getItem('accessToken') || ''); 
+  const [isConnected, setIsConnected] = useState(false);  
+
+  const socketRef = useRef(null);
 
   useEffect(() => {
-    const fetchRoomId = async () => {
-      try {
-        const response = await fetch('http://localhost:8080/api/getRoomId');
-        const data = await response.json();
-        setRoomId(data.roomId);
-        joinRoom(data.roomId);
-      } catch (error) {
-        console.error('Error fetching roomId:', error);
-      }
-    };
+    if (!accessToken || !boothId) return;
 
-    fetchRoomId();
+    const socket = io('http://localhost:5000', {
+      path: '/socket',
+      auth: { token: accessToken } // 토큰을 함께 전달
+    });
 
-    socket.on('chatting', (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      socket.emit('joinRoom', boothId); // boothId로 조인
+      setIsConnected(true);  
+    });
+
+    socket.on('chat message', (data) => {
+      setMessages(prevMessages => [...prevMessages, data]);
+    });
+
+    socket.on('disconnect', () => {
+      console.log('Disconnected from server');
+      setIsConnected(false);  
+    });
+
+    socket.on('error', (error) => {
+      console.error('WebSocket error:', error);
     });
 
     return () => {
       socket.disconnect();
+      socketRef.current = null;
     };
-  }, []);
-
-  const joinRoom = (room) => {
-    socket.emit('joinRoom', room);
-  };
+  }, [accessToken, boothId]);
 
   const sendMessage = () => {
-    if (input.trim() && nickname.trim()) {
-      const param = {
-        name: nickname,
-        msg: input,
-        time: new Date().toLocaleTimeString(),
-        isSent: true, // 보낸 메시지 여부 추가
-      };
-      socket.emit('chatting', param);
+    if (!isConnected) {
+      console.error('Socket is not connected');
+      return;
+    }
+
+    if (input.trim()) {
+      socketRef.current.emit('chat message', { message: input, name: nickname, time: new Date().toLocaleTimeString() });
       setInput('');
-      setMessages((prevMessages) => [...prevMessages, param]);
     }
   };
 
   return (
     <div className="chat-container">
-      <input
-        type="text"
-        placeholder="Enter your nickname"
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-      />
       <div className="chat-list">
         {messages.map((msg, index) => (
-          <Message
-            key={index}
-            name={msg.name}
-            msg={msg.msg}
-            time={msg.time}
-            isSent={msg.isSent} // 메시지 송신 여부 전달
-          />
+          <Message key={index} name={msg.name} msg={msg.message} time={msg.time} />
         ))}
       </div>
       <input

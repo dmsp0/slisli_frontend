@@ -1,12 +1,14 @@
 /* global mystream, publishOwnFeed, myid, mypvtid, Janus, sfutest, bootbox, feeds, newRemoteFeed, notifyParticipantsOfRoomClosure */
 import React, { useEffect, useState } from "react";
+import io from 'socket.io-client';
 import { useNavigate, useParams, useLocation } from "react-router-dom";
 import $ from "jquery"; // jQuery import
 import '../../style/Videopage.css';
 import Slider from "react-slick";
-import VideoChat from "./VideoChat";
+import Chat from "../chat/Chat";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
+
 import { NextArrow, PrevArrow } from "./CustomArrows";
 
 
@@ -14,6 +16,8 @@ const opaqueId = "videoroomtest-" + Janus.randomString(12);
 const myroom = null; // 방 번호를 실제로 사용할 번호로 변경해야 합니다.
 let bitrateTimer = [];
 let janus;
+
+
 
 const addSimulcastButtons = (index, isPublisher) => {
     // Simulcast 버튼 추가 로직
@@ -34,6 +38,33 @@ const VideoRoom = () => {
     const storedRoomNumber = sessionStorage.getItem('roomNumber');
     const roomNumber = storedRoomNumber ? parseInt(storedRoomNumber, 10) : null;
     const location = useLocation();
+    
+    const [boothId, setBoothId] = useState('');
+useEffect(() => {
+    // sessionStorage에서 boothId 가져오기
+    const boothIdFromStorage = sessionStorage.getItem('boothId');
+    setBoothId(boothIdFromStorage);
+  }, []);
+
+  useEffect(() => {
+    if (!boothId) return;
+
+    // 소켓 연결
+    const socket = io('http://localhost:5000', {
+      path: '/socket',
+      auth: { token: localStorage.getItem('accessToken') }, // 토큰 전달
+    });
+
+    socket.on('connect', () => {
+      console.log('Connected to server');
+      socket.emit('joinRoom', boothId); // 방 번호 전달
+    });
+
+    return () => {
+      // 컴포넌트 언마운트 시 소켓 연결 해제
+      socket.disconnect();
+    };
+  }, [boothId]);
 
 
     window.onlocalstream = function(stream) {
@@ -547,7 +578,7 @@ const VideoRoom = () => {
                 </div>
             </div>
             <div className="col-span-1">
-                <VideoChat />
+                <Chat boothId={boothId} />
             </div>
         </div>
     );

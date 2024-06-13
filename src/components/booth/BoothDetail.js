@@ -10,6 +10,7 @@ function BoothDetail() {
     const { id } = useParams();
     const [booth, setBooth] = useState(null);
     const [username, setUsername] = useState("");
+    const [userBoothId, setUserBoothId] = useState("");
     const [numParticipants, setNumParticipants] = useState(0);
     const [roomNumber, setRoomNumber] = useState("");
     const [janusInitialized, setJanusInitialized] = useState(false);
@@ -28,6 +29,7 @@ function BoothDetail() {
                     memberId: boothData.member_id
                 };
 
+                setUserBoothId(boothData.id);
                 setBooth(boothData);
                 setNumParticipants(boothData.maxPeople);
                 setRoomNumber(boothData.videoRoomId);
@@ -68,6 +70,10 @@ function BoothDetail() {
         sessionStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
         console.log("SessionStorage loggedInUser:", JSON.parse(sessionStorage.getItem('loggedInUser')));
 
+
+        const boothId = { boothId: id };
+        sessionStorage.setItem('boothId', JSON.stringify(boothId));
+        console.log("SessionStorage boothId:", JSON.parse(sessionStorage.getItem('boothId')));
         if (window.initjanus) {
             window.initjanus(() => {
                 setJanusInitialized(true);
