@@ -31,7 +31,8 @@ const VideoRoom = () => {
     const [isHost, setIsHost] = useState(false);
     const [hostUsername, setHostUsername] = useState("");
     const navigate = useNavigate();
-    const { roomNumber } = useParams();
+    const storedRoomNumber = sessionStorage.getItem('roomNumber');
+    const roomNumber = storedRoomNumber ? parseInt(storedRoomNumber, 10) : null;
     const location = useLocation();
 
 
@@ -254,6 +255,7 @@ const VideoRoom = () => {
             setIsHost(isHostFlag);
 
             if (roomNumber || storedRoomNumber) {
+                console.log("Room number found:", roomNumber || storedRoomNumber);
                 window.initjanus(() => {
                     window.sfutest.send({
                         message: {
