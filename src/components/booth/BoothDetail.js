@@ -38,6 +38,16 @@ function BoothDetail() {
                 console.log("Local member_id:", localMemberId);
                 setIsCreator(parseInt(boothData.memberId, 10) === localMemberId);
                 console.log("isCreator set to:", parseInt(boothData.memberId, 10) === localMemberId);
+
+                // 세션 스토리지에 roomNumber 저장
+                if (boothData.videoRoomId) {
+                    sessionStorage.setItem('roomNumber', boothData.videoRoomId);
+                } else {
+                    const storedRoomNumber = sessionStorage.getItem('roomNumber');
+                    if (storedRoomNumber) {
+                        setRoomNumber(storedRoomNumber);
+                    }
+                }
             } catch (error) {
                 console.error('Error fetching booth', error);
             }
@@ -58,17 +68,6 @@ function BoothDetail() {
         sessionStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
         console.log("SessionStorage loggedInUser:", JSON.parse(sessionStorage.getItem('loggedInUser')));
 
-        // 방 번호를 세션 스토리지에 저장
-        if (videoRoomId) {
-            setRoomNumber(videoRoomId);
-            sessionStorage.setItem('roomNumber', videoRoomId);
-        } else {
-            const storedRoomNumber = sessionStorage.getItem('roomNumber');
-            if (storedRoomNumber) {
-                setRoomNumber(storedRoomNumber);
-            }
-        }
-
         if (window.initjanus) {
             window.initjanus(() => {
                 setJanusInitialized(true);
@@ -76,7 +75,7 @@ function BoothDetail() {
         } else {
             console.error("Janus initialization function not found.");
         }
-    }, [id, navigate, videoRoomId]);
+    }, [id, navigate]);
 
     const checkRoomExists = (roomNumber, callback) => {
         window.sfutest.send({
