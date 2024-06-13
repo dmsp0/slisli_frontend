@@ -1,0 +1,127 @@
+*{
+    margin: 0;
+    padding: 0;
+}
+
+html, body {
+    height: 100%;
+}
+
+.wrapper{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.user-container{
+    background: #a9bdce;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.user-container label{
+    font-size: 14px;
+    margin-right: 1rem;
+}
+
+.user-container input {
+    border-radius: 3px;
+    border: none;
+    height: 100%;
+}
+
+.display-container{
+    flex: 12;
+    background: #b2c7d9;
+    overflow-y: scroll ;
+}
+
+.input-container {
+    flex: 1;
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+.input-container span{
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.3rem;
+    width: 100%;
+}
+
+.chatting-input{
+    font-size: 12px;
+    height: 100%;
+    flex: 8;
+    border: none;
+}
+
+.send-button{
+    flex: 1;
+    background: #ffeb33;
+    border: none;
+    height: 100%;
+    border-radius: 3px;
+}
+
+.chatting-list li {
+    width: 90%;
+    padding: 0.3rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    margin-top: 0.5rem;
+}
+
+.profile{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.profile .user {
+    font-size: 10px;
+    margin-bottom: 0.3rem;
+}
+
+.profile .img{
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.message {
+    border-radius: 5px;
+    padding: 0.5rem;
+    font-size: 12px;
+    margin: 0 5px;
+    flex: 7;
+}
+
+.time {
+    font-size: 10px;
+    margin: 0 5px;
+}
+
+.sent {
+    flex-direction: row-reverse;
+    float: right;
+}
+
+.sent .message {
+    background: #ffeb33;
+}
+
+.received .message {
+    background: #fff;
+}

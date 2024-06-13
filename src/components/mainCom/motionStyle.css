@@ -1,0 +1,113 @@
+  
+.window {
+    border-radius: 10px;
+    background: white;
+    overflow: hidden;
+    box-shadow: 0 1px 1px hsl(0deg 0% 0% / 0.075),
+      0 2px 2px hsl(0deg 0% 0% / 0.075), 0 4px 4px hsl(0deg 0% 0% / 0.075),
+      0 8px 8px hsl(0deg 0% 0% / 0.075), 0 16px 16px hsl(0deg 0% 0% / 0.075);
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    height: 100%;
+  }
+  
+  .tab-nav {
+    background: #fdfdfd;
+    padding: 5px 5px 0;
+    border-radius: 10px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    border-bottom: 1px solid #eeeeee;
+    height: calc(5vh+10px); /* 화면 높이의 10% + 추가 여백 */
+  }
+  
+  .tabs {
+    flex-grow: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    flex-wrap: nowrap;
+    width: 100%;
+  }
+  
+  .tab-content {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 6vh;
+    flex-grow: 1;
+    user-select: none;
+  }
+  
+  .tab-list, .tab-list li {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    font-size: 1.5vh;
+    
+  }
+  
+  .tab-list {
+    display: flex;
+    width: 100%;
+    height: 100%; /* 화면 높이의 10% + 추가 여백 */
+  }
+  
+  .tab-list li {
+    border-radius: 5px;
+    border-bottom-left-radius: 0;
+    border-bottom-right-radius: 0;
+    width: 100%;
+    position: relative;
+    background: white;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex: 1;
+    min-width: 0;
+    position: relative;
+    user-select: none;
+    height: 30px;
+    justify-content: center;
+  }
+  
+  .underline {
+    position: absolute;
+    bottom: -1px;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--accent);
+  }
+  
+  .tab-list li.selected {
+    background: #eee;
+  }
+  
+  .tab-list li button {
+    width: 20px;
+    height: 20px;
+    border: 0;
+    background: #fff;
+    border-radius: 3px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    stroke: #000;
+    margin-left: 10px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+  
+  
+@media (max-width: 600px) {
+  .window {
+    height: 70%;
+  }
+}
+
+
+
+
