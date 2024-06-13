@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect,useCallback } from 'react';
-import {jwtDecode} from 'jwt-decode';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
+import {jwtDecode} from 'jwt-decode'; // Ensure correct import
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -49,18 +49,18 @@ const AuthProvider = ({ children }) => {
       name,
     }));
   }, [setAuthState]);
-  
+
   const refreshToken = useCallback(async () => {
     try {
       const response = await axios.post('/auth/refresh', { refreshToken: authState.refreshToken });
+      console.log('Refresh token response:', response.data); // Log the response for debugging
       const { token: accessToken, refreshToken: newRefreshToken, email, name } = response.data;
       setTokens(accessToken, newRefreshToken, email, name);
     } catch (error) {
-      console.error('Failed to refresh token', error);
+      console.error('Failed to refresh token', error.response || error.message || error); // Improved error logging
       logout();
     }
   }, [authState.refreshToken, setTokens, logout]);
-  
 
   useEffect(() => {
     const checkTokenExpiration = () => {
@@ -78,7 +78,6 @@ const AuthProvider = ({ children }) => {
     };
     checkTokenExpiration();
   }, [authState.accessToken, refreshToken]);
-  
 
   return (
     <AuthContext.Provider value={{ authState, setTokens, logout }}>

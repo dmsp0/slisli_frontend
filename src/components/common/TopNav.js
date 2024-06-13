@@ -1,6 +1,7 @@
 import { useState, useEffect, useContext } from "react";
 import { BsJustify, BsX } from "react-icons/bs";
 import { AuthContext } from "../../context/AuthContext";
+import Mypagebutton from "./MypageButton";
 
 const navigation = [
     { name: '기업부스', href: '/booths/company' },
@@ -61,9 +62,7 @@ function TopNav() {
                     </div>
                     <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-5">
                         {authState.accessToken ? (
-                            <a href="/myPage" className={`text-sm font-semibold leading-6 ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
-                                {authState.name}님의 마이페이지
-                            </a>
+                            <Mypagebutton />
                         ) : (
                             <a href="/login" className={`text-sm font-semibold leading-6 ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
                             로그인 <span aria-hidden="true">&rarr;</span>

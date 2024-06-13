@@ -117,7 +117,7 @@ const SignupComponent = () => {
             });
     
             alert("회원가입 성공!");
-            navigate("/");
+            navigate("/login");
         } catch (error) {
             if (error.response && error.response.status === 401) {
                 alert('아이디 혹은 비밀번호가 틀렸습니다.');
