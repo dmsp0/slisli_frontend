@@ -10,6 +10,7 @@
     "axios": "^1.7.2",
     "framer-motion": "^11.2.10",
     "http-proxy-middleware": "^2.0.0",
+    "janus-gateway": "^1.1.4",
     "jwt-decode": "^4.0.0",
     "postcss-cli": "^11.0.0",
     "react": "^18.3.1",
@@ -21,14 +22,17 @@
     "slick-carousel": "^1.8.1",
     "socket.io-client": "^4.7.5",
     "tailwindcss": "^3.4.3",
-    "web-vitals": "^2.1.4"
+    "web-vitals": "^2.1.4",
+    "webpack": "^5.88.0",
+    "webrtc-adapter": "^9.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "start": "react-app-rewired start",
+    "build": "react-app-rewired build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "server": "node backend/server.js"
+    "server": "node backend/server.js",
+    "start:prod": "env NODE_ENV=production react-scripts start"
   },
   "eslintConfig": {
     "extends": [
@@ -47,6 +51,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "exports-loader": "^4.0.0",
+    "react-app-rewired": "^2.2.1",
+    "tailwindcss": "^3.4.2"
   },
   "proxy": "http://localhost:8080"
 }

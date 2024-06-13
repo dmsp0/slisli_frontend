@@ -2,6 +2,7 @@ import { Suspense, lazy } from "react";
 import Loading from "../components/common/Loading";
 import BoothInsertPage from "../pages/BoothInsertPage";
 import AuthKakao from "../components/mypageCom/AuthKakao";
+import Video from "../pages/Video";
 const { createBrowserRouter } = require("react-router-dom");
 
 const Home = lazy(() => import("../pages/IndexPage"));
@@ -141,7 +142,14 @@ const root = createBrowserRouter([
       </Suspense>
     ),
   },
-
+    {
+        path: "/video/video",
+        element: (
+            <Suspense fallback={<Loading />}>
+            <Video />
+            </Suspense>
+        ),
+    },
 
 ]);
 

@@ -3,13 +3,14 @@ import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import profileImg from '../img/profile.png'; // Ensure the correct path to the profile image
+import { API_URLS } from "../api/apiConfig";
 
 function MyProfileComponent({ userProfile }) {
   const [data, setData] = useState({
     email:localStorage.getItem('email'),
     password: "",
     passwordCheck: "",
-    name: ""
+    name: "",
   });
   const [showModal, setShowModal] = useState(false);
   const {logout}=useContext(AuthContext);
@@ -28,22 +29,43 @@ function MyProfileComponent({ userProfile }) {
     setData({...data,[name]:value});
   };
 
+  const handleFileChange = (e) => {
+    const file = e.target.files[0];
+    setData({ ...data, profileImgPath: file });
+  };
+
+
+  const formData = new FormData();
+formData.append(
+  "member_profile",
+  new Blob(
+    [
+      JSON.stringify({
+        email: data.email,
+        password: data.password,
+        passwordCheck: data.passwordCheck,
+        name: data.name
+      }),
+    ],
+    { type: "application/json" }
+  )
+);
+formData.append("file", data.profileImgPath);
+
+
   const navigate = useNavigate();
 
   const handleModified = async (e) => {
     e.preventDefault();
 
     try {
-      const response = await axios.post('/update', {
-          email:data.email,
-          password: data.password,
-          passwordCheck: data.passwordCheck,
-          name: data.name
-      }, {
+      const response = await axios.post(API_URLS.MEMBER_UPDATE, formData, {
           headers: {
-              'Content-Type': 'application/json',
-              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`
+              "Content-Type": "multipart/form-data",
+              'Authorization': `Bearer ${localStorage.getItem('accessToken')}`,
+              'Accept': 'application/json'
           },
+          withCredentials: true
       });
 
       console.log('응답:', response.data);
@@ -92,7 +114,10 @@ const handleDelete = async (e) => {
 
   return (
     <div className="flex flex-col items-center text-center p-20 space-y-10">
-
+<form
+        onSubmit={handleModified}
+        className="max-w-xl mx-auto p-6 bg-white border border-gray-300 rounded-lg shadow-md"
+      >
         {/* 닉네임 수정 */}
       <div className="flex items-center">
         <p className="text-lg text-left mr-4">닉네임 : </p>
@@ -105,7 +130,7 @@ const handleDelete = async (e) => {
       <div className="flex items-center">
         <p className="text-lg text-left mr-4">새 비밀번호 : </p>
         <div className="ml-10"> {/* 왼쪽 마진을 파일 추가 박스와 동일하게 설정 */}
-          <input type="password" name="password" value={data.password} onChange={handleInputChange} className="border rounded-md px-2 py-1" />
+          <input type="password" name="password" value={data.password} onChange={handleInputChange} className="border rounded-md px-2 py-1" required />
         </div>
       </div>
 
@@ -113,9 +138,23 @@ const handleDelete = async (e) => {
       <div className="flex items-center">
         <p className="text-lg text-left mr-4">새 비밀번호 확인 : </p>
         <div className="ml-10"> {/* 왼쪽 마진을 파일 추가 박스와 동일하게 설정 */}
-          <input type="password" name="passwordCheck" value={data.passwordCheck} onChange={handleInputChange} className="border rounded-md px-2 py-1" />
+          <input type="password" name="passwordCheck" value={data.passwordCheck} onChange={handleInputChange} className="border rounded-md px-2 py-1" required />
         </div>
       </div>
+      <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2">
+            부스 이미지
+          </label>
+          <input
+            type="file"
+            name="imgPath"
+            onChange={handleFileChange}
+            className="w-full px-3 py-2 border rounded-lg"
+          />
+          <span className="text-red-500 text-sm mt-1 block">
+            * 프로필 이미지
+          </span>
+        </div>
 
         {/* 버튼 2개 - 정보수정, 탈퇴버튼 */}
         <div className="flex justify-center space-x-10 mt-20">
@@ -144,6 +183,7 @@ const handleDelete = async (e) => {
             </div>
           )}
         </div>
+        </form>
       </div>
   );
 }

@@ -5,19 +5,19 @@ import { API_URLS } from "../../api/apiConfig";
 import Modal from "../booth/Modal";
 
 function BoothHeldForm() {
+
   const navigate = useNavigate();
   const [boothData, setBoothData] = useState({
     title: "",
     info: "",
     category: "CATEGORY_ONE",
-    type: "COMPANY",
+    type: "COMPANY", // 기본 부스타입 설정
     date: "",
     startTime: "",
     endTime: "",
     imgPath: "",
     maxPeople: "",
     openerName: "",
-    member_id: localStorage.getItem('member_id') // member_id 추가
   });
 
   const [showModal, setShowModal] = useState(false);
@@ -35,23 +35,39 @@ function BoothHeldForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    // 로컬 스토리지에서 JWT 토큰 가져오기
     const token = localStorage.getItem('jwtToken');
-    if (!token) {
-      console.error("Token not found");
-      navigate('/login');
-      return;
-    }
 
     const formData = new FormData();
-    formData.append("booth", new Blob([JSON.stringify(boothData)], { type: "application/json" }));
+    formData.append(
+      "booth",
+      new Blob(
+        [
+          JSON.stringify({
+            title: boothData.title,
+            info: boothData.info,
+            category: boothData.category,
+            type: boothData.type, // 부스타입 추가
+            date: boothData.date,
+            startTime: boothData.startTime,
+            endTime: boothData.endTime,
+            maxPeople: boothData.maxPeople,
+            openerName: boothData.openerName,
+          }),
+        ],
+        { type: "application/json" }
+      )
+    );
     formData.append("file", boothData.imgPath);
 
     try {
       const response = await axios.post(API_URLS.BOOTH_INSERT, formData, {
         headers: {
           "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${token}` // JWT 토큰 추가
+          "Authorization": `Bearer ${token}`, // JWT 토큰 추가
+          'Accept': 'application/json'
         },
+        withCredentials: true
       });
       console.log(response.data);
       setShowModal(true);

@@ -38,16 +38,6 @@ function BoothDetail() {
                 console.log("Local member_id:", localMemberId);
                 setIsCreator(parseInt(boothData.memberId, 10) === localMemberId);
                 console.log("isCreator set to:", parseInt(boothData.memberId, 10) === localMemberId);
-
-                // 세션 스토리지에 roomNumber 저장
-                if (boothData.videoRoomId) {
-                    sessionStorage.setItem('roomNumber', boothData.videoRoomId);
-                } else {
-                    const storedRoomNumber = sessionStorage.getItem('roomNumber');
-                    if (storedRoomNumber) {
-                        setRoomNumber(storedRoomNumber);
-                    }
-                }
             } catch (error) {
                 console.error('Error fetching booth', error);
             }
@@ -68,6 +58,17 @@ function BoothDetail() {
         sessionStorage.setItem('loggedInUser', JSON.stringify(loggedInUser));
         console.log("SessionStorage loggedInUser:", JSON.parse(sessionStorage.getItem('loggedInUser')));
 
+        // 방 번호를 세션 스토리지에 저장
+        if (videoRoomId) {
+            setRoomNumber(videoRoomId);
+            sessionStorage.setItem('roomNumber', videoRoomId);
+        } else {
+            const storedRoomNumber = sessionStorage.getItem('roomNumber');
+            if (storedRoomNumber) {
+                setRoomNumber(storedRoomNumber);
+            }
+        }
+
         if (window.initjanus) {
             window.initjanus(() => {
                 setJanusInitialized(true);
@@ -75,7 +76,7 @@ function BoothDetail() {
         } else {
             console.error("Janus initialization function not found.");
         }
-    }, [id, navigate]);
+    }, [id, navigate, videoRoomId]);
 
     const checkRoomExists = (roomNumber, callback) => {
         window.sfutest.send({
@@ -175,7 +176,7 @@ function BoothDetail() {
         <BasicLayout>
             <div className="container mx-auto p-4">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <img src={`http://localhost:8080/static${booth.imgPath}`} alt={booth.title} className="w-full h-128 object-cover" />
+                <img src={booth.imgPath} alt={booth.title} className="w-full h-128 object-cover" />
                     <div className="p-6">
                         <h1 className="text-3xl font-bold mb-4">{booth.title}</h1>
                         <p className="text-gray-700 mb-4">{booth.info}</p>

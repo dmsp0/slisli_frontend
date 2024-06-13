@@ -12,6 +12,7 @@ function MyPage() {
     const [token, setToken] = useState(null);
     const [email, setEmail] = useState(null);
     const [name, setName] = useState(null);
+
     const [activeTab, setActiveTab] = useState('boothheld');
 
 
@@ -69,6 +70,14 @@ function MyPage() {
         <BasicLayout>
             <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '100%', height: '100vh' }}>
                 <img src={profileImg} alt="프로필 이미지" className="w-32 h-32 rounded-md items-center" />
+                
+                
+                {/* 테스트 */}
+                <img src='https://silsil-bucket.s3.ap-northeast-2.amazonaws.com/member_profile_img/dcabf259-4cca-42aa-b999-d7784dadba33_dasdasdasdasd.jpg' alt="프로필 이미지" className="w-32 h-32 rounded-md items-center" />
+                {/* <img src={userProfile.imgPath} alt={userProfile.name} className="w-full h-128 object-cover" /> */}
+                {/* //이런식으로 해주셈 쓰면될거임 */}
+
+                
                 <p className="text-lg">{userProfile.nickname}</p>
                 <p className="text-lg">{userProfile.email}</p>
                 <p>Logged in with token: {token}</p>

@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_URLS } from "../../api/apiConfig";
 
-function BoothList() {
+function BoothList({ type }) {
   const [booths, setBooths] = useState([]);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(0);
@@ -13,11 +13,12 @@ function BoothList() {
     async function fetchBooths() {
       try {
         const token = localStorage.getItem('token'); // 로컬 스토리지에서 JWT 토큰을 가져옴
-        const response = await axios.get(API_URLS.BOOTH_GET_ALL, {
+        const response = await axios.get(API_URLS.BOOTH_GET_LIST, {
           params: {
             page,
             size,
             category,
+            type, // 여기에 type 추가
           },
           headers: {
             'Authorization': `Bearer ${token}` // 요청 헤더에 JWT 토큰을 추가
@@ -27,18 +28,27 @@ function BoothList() {
       } catch (error) {
         console.error("Error fetching booths", error);
       }
-      
     }
     fetchBooths();
-  }, [page, category]);
+  }, [page, size, category, type]);
 
   const handleCategoryChange = (e) => {
     setCategory(e.target.value);
     setPage(0); // 새로운 카테고리를 선택하면 첫 페이지로 이동
   };
 
+  const renderTitle = () => {
+    if (type === "COMPANY") {
+      return <h1 className="text-2xl font-bold mb-4">기업부스 리스트</h1>;
+    } else if (type === "INDIVIDUAL") {
+      return <h1 className="text-2xl font-bold mb-4">개인부스 리스트</h1>;
+    }
+    return null;
+  };
+
   return (
     <div className="container mx-auto p-4">
+            {renderTitle()}
       <div className="mb-4">
         <label className="block text-gray-700 font-bold mb-2">
           카테고리 필터
@@ -56,9 +66,8 @@ function BoothList() {
       </div>
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {booths.map((booth) => (
-          <div key={booth.id} className="border p-4 rounded-lg shadow">
-            <img
-              src={`http://localhost:8080/static${booth.imgPath}`} // 이미지 경로에 /static 추가
+          <div key={booth.boothId} className="border p-4 rounded-lg shadow">
+           <img src={booth.imgPath} 
               alt={booth.title}
               className="w-full h-48 object-cover mb-4"
             />

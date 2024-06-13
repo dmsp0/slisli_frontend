@@ -8,6 +8,7 @@ const navigation = [
     { name: '개인부스', href: '/booths/individual' },
     { name: '부스리스트', href: '/booth/list'},
     { name: '부스등록', href: '/booth/registration' },
+    { name: '비디오', href: '/video/video' },
 ];
 
 function TopNav() {
