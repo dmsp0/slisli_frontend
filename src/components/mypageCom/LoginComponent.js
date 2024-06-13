@@ -25,7 +25,7 @@ const LoginComponent = () => {
 
     const handleEmail = (e) => {
         setEmail(e.target.value);
-        const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (emailRegex.test(e.target.value)) {
             setEmailValid(true);
         } else {
@@ -158,7 +158,7 @@ const LoginComponent = () => {
             </p>
             <div className="flex justify-center items-center mt-3">
                 <div className='sign-up-content-sign-in-button-box'>
-                    <a href='/oauth2/authorization/kakao'> <img className="w-12" src='/images/kakao-icon.png' /> </a>
+                    <a href='/auth/kakao'> <img className="w-12" src='/images/kakao-icon.png' /> </a>
                     <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png' /> </a>
                     <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png' /> </a>
                 </div>

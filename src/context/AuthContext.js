@@ -1,5 +1,5 @@
-import React, { createContext, useState, useEffect,useCallback } from 'react';
-import {jwtDecode} from 'jwt-decode';
+import React, { createContext, useState, useEffect, useCallback } from 'react';
+import {jwtDecode} from 'jwt-decode'; // Ensure correct import
 import axios from 'axios';
 
 const AuthContext = createContext();
@@ -36,7 +36,6 @@ const AuthProvider = ({ children }) => {
   }, [authState.accessToken]);
 
   const setTokens = useCallback((accessToken, refreshToken, email, name) => {
-    const decodedToken = jwtDecode(accessToken);
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('email', email);
@@ -49,7 +48,7 @@ const AuthProvider = ({ children }) => {
       name,
     }));
   }, [setAuthState]);
-  
+
   const refreshToken = useCallback(async () => {
     try {
       const response = await axios.post('/auth/refresh', { refreshToken: authState.refreshToken });
@@ -60,7 +59,6 @@ const AuthProvider = ({ children }) => {
       logout();
     }
   }, [authState.refreshToken, setTokens, logout]);
-  
 
   useEffect(() => {
     const checkTokenExpiration = () => {
@@ -79,6 +77,18 @@ const AuthProvider = ({ children }) => {
     checkTokenExpiration();
   }, [authState.accessToken, refreshToken]);
   
+  useEffect(() => {
+    const params = new URLSearchParams(window.location.search);
+    const accessToken = params.get('token');
+    const refreshToken = params.get('refreshToken');
+    const email = params.get('email');
+    const name = params.get('name');
+
+    if (accessToken && refreshToken) {
+      setTokens(accessToken, refreshToken, email, name);
+      window.history.replaceState({}, document.title, "/"); // Remove tokens from URL
+    }
+  }, [setTokens]);
 
   return (
     <AuthContext.Provider value={{ authState, setTokens, logout }}>
