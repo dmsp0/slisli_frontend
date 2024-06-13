@@ -1,9 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MyPageSide from "./card/MyPageSide";
-import MyPageButton from "../components/card/MyPageButton";
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
+import profileImg from '../img/profile.png'; // Ensure the correct path to the profile image
 
 function MyProfileComponent({ userProfile }) {
   const [data, setData] = useState({
@@ -92,18 +91,7 @@ const handleDelete = async (e) => {
 };
 
   return (
-    <div className="grid grid-cols-12 justify-center p-20">
-      {/* 왼쪽 영역 */}
-      <div className="col-span-3 p-2 space-y-4">
-        <MyPageSide profileImage={userProfile.profileImage} nickname={userProfile.nickname} email={userProfile.email} />
-        <MyPageButton />
-      </div>
-
-      {/* 세로선 */}
-      <div className="col-span-1 justify-center border-l border-blue-400"></div>
-
-      {/* 오른쪽 영역 */}
-      <div className="col-start-6 col-span-7 flex flex-col items-center">
+    <div className="flex flex-col items-center text-center p-20 space-y-10">
 
         {/* 닉네임 수정 */}
       <div className="flex items-center">
@@ -157,7 +145,6 @@ const handleDelete = async (e) => {
           )}
         </div>
       </div>
-    </div>
   );
 }
 

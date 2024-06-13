@@ -50,27 +50,29 @@ const Mypagebutton = () =>{
                             <motion.button
                               whileTap={{ scale: 0.97 }}
                               onClick={() => setIsOpen(!isOpen)}
-                              className="flex"
+                              className="flex text-white gap-2"
                             >
                                 {localStorage.name}님의 마이페이지
                               <div className="arrow" style={{ transformOrigin: "50% 55%" }}>
-                                <svg width="15" height="15" viewBox="0 0 20 20">
-                                  <path d="M0 7 L 20 7 L 10 16" />
+                                <svg width="15" height="15" viewBox="0 0 20 20" >
+                                  <path d="M0 7 L 20 7 L 10 16" fill="white"/>
                                 </svg>
                               </div>
                             </motion.button>
                             <ul
+                            className="bg-blue-900 text-white hover:cursor-pointer"
                               style={{
                                 pointerEvents: isOpen ? "auto" : "none",
                                 clipPath: "inset(10% 50% 90% 50% round 10px)",
                                 display: "flex",
                                 flexDirection: "column",
                                 gap: "10px",
-                                background: "white",
                                 position: "absolute",
-          top: "100%",
-          left: "0",
-          visibility: isOpen ? "visible" : "hidden"
+                                top: "100%",
+                                left: "0",
+                                visibility: isOpen ? "visible" : "hidden",
+                                width: "10rem",
+                                padding:"10px 10px"
                               }}
                             >
                               <li>정보 수정 </li>
