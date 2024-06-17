@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { API_URLS } from '../../api/apiConfig';
 import BasicLayout from '../../layouts/BasicLayout';
 import '../../style/Videopage.css';
+import BoothLikeButton from './BoothLikeButton';
 
 function BoothDetail() {
     const { videoRoomId } = useParams();
