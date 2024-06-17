@@ -1,5 +1,5 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
-import {jwtDecode} from 'jwt-decode'; // Ensure correct import
+import { jwtDecode } from 'jwt-decode'; // Ensure correct import
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -20,14 +20,16 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('email');
     localStorage.removeItem('name');
+    localStorage.removeItem('member_id');
     setAuthState({
       accessToken: null,
       refreshToken: null,
       email: null,
-      name: null
+      name: null,
+      member_id: null
     });
     navigate('/');
-  }, [setAuthState]);
+  }, [setAuthState, navigate]);
 
   useEffect(() => {
     if (authState.accessToken) {

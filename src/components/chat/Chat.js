@@ -6,8 +6,8 @@ import './Chat.css';
 const Chat = ({ boothId }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [nickname] = useState(localStorage.getItem('name') || ''); // username -> name으로 변경
-  const [accessToken] = useState(localStorage.getItem('accessToken') || ''); 
+  const [nickname] = useState(localStorage.getItem('name') || '');
+  const [accessToken] = useState(localStorage.getItem('accessToken') || '');
   const [isConnected, setIsConnected] = useState(false);  
 
   const socketRef = useRef(null);
@@ -17,14 +17,14 @@ const Chat = ({ boothId }) => {
 
     const socket = io('http://localhost:5000', {
       path: '/socket',
-      auth: { token: accessToken } // 토큰을 함께 전달
+      auth: { token: accessToken }
     });
 
     socketRef.current = socket;
 
     socket.on('connect', () => {
       console.log('Connected to server');
-      socket.emit('joinRoom', boothId); // boothId로 조인
+      socket.emit('joinRoom', boothId);
       setIsConnected(true);  
     });
 
@@ -63,21 +63,23 @@ const Chat = ({ boothId }) => {
     <div className="chat-container">
       <div className="chat-list">
         {messages.map((msg, index) => (
-          <Message key={index} name={msg.name} msg={msg.message} time={msg.time} />
+          <Message key={index} name={msg.name} msg={msg.message} time={msg.time} nickname={nickname} />
         ))}
       </div>
-      <input
-        type="text"
-        placeholder="Enter your message"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') {
-            sendMessage();
-          }
-        }}
-      />
-      <button onClick={sendMessage}>Send</button>
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="메시지를 입력하세요."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              sendMessage();
+            }
+          }}
+        />
+        <button onClick={sendMessage}>전송</button>
+      </div>
     </div>
   );
 };

@@ -26,7 +26,7 @@ const LoginComponent = () => {
 
     const handleEmail = (e) => {
         setEmail(e.target.value);
-        const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
+        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
         if (emailRegex.test(e.target.value)) {
             setEmailValid(true);
         } else {
@@ -62,18 +62,19 @@ const LoginComponent = () => {
             });
     
             // Extract data from response
-            const { token: accessToken, refreshToken, email: userEmail, name: userName } = response.data;
-    
+            const { token: accessToken, refreshToken, member_id, email: userEmail, name: userName } = response.data;
+                
             alert(`로그인 성공! ${userName}님 환영합니다!`);
-            
+
             setIsOpen(true);
-    
+
             // Store tokens and user details in local storage
             localStorage.setItem('accessToken', accessToken);
             localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('email', userEmail);
             localStorage.setItem('name', userName);
-            
+            localStorage.setItem('member_id',member_id);
+                        
             window.location.href = "/";
         } catch (error) {
             if (error.response && error.response.status === 401) {
@@ -152,9 +153,8 @@ const LoginComponent = () => {
                 </div>
             </form>
 
-            <hr className="my-8" />
             <p className="mt-4 text-center text-sm text-gray-500">
-                SNS 계정으로 회원가입하기
+                SNS 계정으로 로그인하기
             </p>
             <div className="flex justify-center items-center mt-3">
                 <div className='sign-up-content-sign-in-button-box'>
