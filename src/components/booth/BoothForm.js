@@ -10,6 +10,7 @@ function BoothForm() {
     title: "", // 부스 제목
     info: "", // 부스 정보
     category: "CATEGORY_ONE", // 부스 카테고리 (기본값: CATEGORY_ONE)
+    type: "COMPANY", // 기본 부스타입 설정
     date: "", // 부스 날짜
     startTime: "", // 시작 시간
     endTime: "", // 종료 시간
@@ -45,6 +46,7 @@ function BoothForm() {
             title: boothData.title,
             info: boothData.info,
             category: boothData.category,
+            type: boothData.type, // 부스타입 추가
             date: boothData.date,
             startTime: boothData.startTime,
             endTime: boothData.endTime,
@@ -148,6 +150,19 @@ function BoothForm() {
             <option value="CATEGORY_ONE">CATEGORY_ONE</option>
             <option value="CATEGORY_TWO">CATEGORY_TWO</option>
             <option value="CATEGORY_THREE">CATEGORY_THREE</option>
+          </select>
+        </div>
+        <div className="mb-4">
+          <label className="block text-gray-700 font-bold mb-2">부스타입</label>
+          <select
+            name="type"
+            value={boothData.type}
+            onChange={handleChange}
+            className="w-full px-3 py-2 border rounded-lg"
+            required
+          >
+            <option value="COMPANY">기업</option>
+            <option value="INDIVIDUAL">개인</option>
           </select>
         </div>
         <div className="mb-4">

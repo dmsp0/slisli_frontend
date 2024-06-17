@@ -181,9 +181,13 @@ function BoothDetail() {
         <BasicLayout>
             <div className="container mx-auto p-4">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <img src={`http://localhost:8080/static${booth.imgPath}`} alt={booth.title} className="w-full h-128 object-cover" />
-                    <div className="p-6">
-                        <h1 className="text-3xl font-bold mb-4">{booth.title}</h1>
+                    <img src={booth.imgPath} alt={booth.title} className="w-1/2 h-auto object-cover" />
+                        <div className="p-6">
+                            <div className='flex gap-5 mb-4'>
+                                <h1 className="text-3xl font-bold">{booth.title}</h1>
+                                <br/>
+                                <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
+                            </div>
                         <p className="text-gray-700 mb-4">{booth.info}</p>
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
                             <div>

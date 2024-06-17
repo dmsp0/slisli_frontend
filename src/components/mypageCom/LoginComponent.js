@@ -3,6 +3,7 @@ import axios from 'axios';
 import Modal from '../common/Modal';
 import { useNavigate } from 'react-router-dom';
 import './signStyle.css';
+import { API_URLS } from '../../api/apiConfig'
 
 const LoginComponent = () => {
     const [email, setEmail] = useState('');
@@ -25,7 +26,7 @@ const LoginComponent = () => {
 
     const handleEmail = (e) => {
         setEmail(e.target.value);
-        const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+        const emailRegex = /^[a-zA-Z0-9]+@[a-zA-Z0-9]+\.[a-zA-Z]{2,}$/;
         if (emailRegex.test(e.target.value)) {
             setEmailValid(true);
         } else {
@@ -50,7 +51,7 @@ const LoginComponent = () => {
         }
     
         try {
-            const response = await axios.post('/login', {
+            const response = await axios.post(API_URLS.LOG_IN, {
                 email: email,
                 password: password
             }, {
@@ -61,7 +62,7 @@ const LoginComponent = () => {
             });
     
             // Extract data from response
-            const { token: accessToken, refreshToken, email: userEmail, name: userName, member_id} = response.data;
+            const { token: accessToken, refreshToken, email: userEmail, name: userName } = response.data;
     
             alert(`로그인 성공! ${userName}님 환영합니다!`);
             
@@ -72,7 +73,6 @@ const LoginComponent = () => {
             localStorage.setItem('refreshToken', refreshToken);
             localStorage.setItem('email', userEmail);
             localStorage.setItem('name', userName);
-            localStorage.setItem('member_id', member_id); // member_id 저장
             
             window.location.href = "/";
         } catch (error) {
@@ -158,7 +158,7 @@ const LoginComponent = () => {
             </p>
             <div className="flex justify-center items-center mt-3">
                 <div className='sign-up-content-sign-in-button-box'>
-                    <a href='/auth/kakao'> <img className="w-12" src='/images/kakao-icon.png' /> </a>
+                    <a href='/api/auth/kakao'> <img className="w-12" src='/images/kakao-icon.png' /> </a>
                     <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png' /> </a>
                     <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png' /> </a>
                 </div>

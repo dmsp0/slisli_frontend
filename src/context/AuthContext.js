@@ -1,10 +1,13 @@
 import React, { createContext, useState, useEffect, useCallback } from 'react';
 import {jwtDecode} from 'jwt-decode'; // Ensure correct import
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 const AuthContext = createContext();
 
 const AuthProvider = ({ children }) => {
+  const navigate = useNavigate();
+
   const [authState, setAuthState] = useState({
     accessToken: localStorage.getItem('accessToken'),
     refreshToken: localStorage.getItem('refreshToken'),
@@ -23,6 +26,7 @@ const AuthProvider = ({ children }) => {
       email: null,
       name: null
     });
+    navigate('/');
   }, [setAuthState]);
 
   useEffect(() => {

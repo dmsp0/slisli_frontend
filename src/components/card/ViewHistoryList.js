@@ -1,5 +1,6 @@
 import React from "react";
 
+//내가 연 부스로 수정
 function ViewHistoryList({ historyEvents }) {
 
   return (
@@ -8,7 +9,6 @@ function ViewHistoryList({ historyEvents }) {
       <div className="col-span-10">
         <h2 className="text-2xl text-center" style={{ marginBottom: "50px" }}>시청 목록</h2> 
         
-        {/* 시청목록 리스트 (이미지, 이벤트제목, 주최, 일시) */}
         <div className="viewhistory-events-container p-30" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "30px"}}>
           {historyEvents.map((historyEvent, index) => (
             <div key={index} className="viewhistory-event border-2" style={{ padding: "10px", marginBottom: "10px", display: "flex", alignItems: "center", borderWidth: "3px", gap: "30px"}}>
