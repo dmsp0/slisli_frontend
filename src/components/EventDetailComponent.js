@@ -1,5 +1,4 @@
 import React from 'react';
-import EventDetailPage from "../components/card/EventDetailPage";
 
 function EventDetailComponent() {
 

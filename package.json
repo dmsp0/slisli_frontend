@@ -8,6 +8,7 @@
     "@testing-library/user-event": "^13.5.0",
     "autoprefixer": "^10.4.19",
     "axios": "^1.7.2",
+    "event-source-polyfill": "^1.0.31",
     "framer-motion": "^11.2.10",
     "http-proxy-middleware": "^2.0.0",
     "jwt-decode": "^4.0.0",

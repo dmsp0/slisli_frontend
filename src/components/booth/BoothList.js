@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import axios from "axios";
 import { API_URLS } from "../../api/apiConfig";
-import BoothLikeButton from "../boothCom/BoothLikeButton";
+import BoothLikeButton from "../booth/BoothLikeButton";
 
 function BoothList({ type }) {
   const [booths, setBooths] = useState([]);
