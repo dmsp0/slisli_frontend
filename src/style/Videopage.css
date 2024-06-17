@@ -1,13 +1,303 @@
-/* 비디오 요소의 테두리 및 여백 제거 */
-video {
-    border: none;
+/* 공통 초기화 */
+* {
     margin: 0;
     padding: 0;
-    background-color: transparent; /* 비디오 요소의 배경색을 투명하게 설정 */
 }
 
-/* 컨테이너 요소의 배경색을 설정 */
-.videoremote {
-    background-color: #f0f8ff; /* 필요에 따라 배경색을 설정 */
-    border: none; /* 테두리 제거 */
+html, body {
+    height: 100%;
 }
+
+.wrapper {
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+/* 비디오 채팅 컨테이너 */
+.video-chat-container {
+    display: flex;
+    height: 100vh;
+    background-color: #2C2F33;
+    color: white;
+}
+
+/* 비디오 컨테이너 */
+.video-container {
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start; /* 위쪽에 정렬 */
+    align-items: center;
+    flex: 3;
+    padding: 10px;
+    height: 100%;
+    width: 70%; /* 비디오 컨테이너 너비 조정 */
+    margin: 0 auto; /* 중앙 정렬 */
+}
+
+/* 호스트 비디오 컨테이너 */
+.host-video-container {
+    width: 60%; /* 호스트 비디오 너비 조정 */
+    background-color: black;
+    margin-bottom: 20px;
+    position: relative; /* 컨트롤 버튼을 위치시키기 위해 relative로 변경 */
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* 수평 중앙 정렬 */
+}
+
+
+/* 참가자 비디오 패널 */
+.participant-video {
+    margin: 5px;
+    background-color: black;
+    width: 100%; /* 부모 컨테이너에 맞게 자동으로 조정 */
+    height: 150px; /* 참가자 비디오 높이 조정 */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: 1px solid #fff; /* 확인을 위한 테두리 추가 */
+    color: white; /* 텍스트 색상 */
+}
+
+/* 비디오 요소 */
+.videoremote {
+    width: 100%;
+    height: 100%;
+    object-fit: cover; /* 비디오가 요소 크기에 맞게 잘리거나 확장되도록 설정 */
+}
+
+/* 호스트 비디오 */
+.host-video {
+    width: 100%;
+    border-radius: 10px;
+}
+
+/* 비디오 컨트롤 */
+.video-controls {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px; /* 버튼 간의 간격을 늘림 */
+    position: absolute;
+    top: 100%; /* 호스트 비디오 컨테이너 바로 아래에 위치시킴 */
+    margin-top: 10px; /* 호스트 비디오 컨테이너와의 간격 */
+    left: 50%;
+    transform: translateX(-50%); /* 가로 중앙 정렬 */
+    padding: 15px;
+    border-radius: 8px;
+    z-index: 10;
+}
+
+.video-controls button {
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.video-controls button svg {
+    width: 36px; /* 아이콘 크기 증가 */
+    height: 36px; /* 아이콘 크기 증가 */
+    fill: white; /* 아이콘 색상 */
+}
+
+.video-controls button.leave {
+    background-color: #E74C3C; /* 나가기 버튼 배경색 */
+    border-radius: 50%;
+    padding: 10px;
+}
+
+/* 채팅 컨테이너 */
+.chat-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    background-color: #2C2F33;
+    padding: 10px;
+}
+
+/* 사용자 컨테이너 */
+.user-container {
+    background: #2C2F33;
+    flex: 1;
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.5rem;
+}
+
+.user-container label {
+    font-size: 14px;
+    margin-right: 1rem;
+    color: white;
+}
+
+.user-container input {
+    border-radius: 3px;
+    border: none;
+    height: 100%;
+}
+
+/* 디스플레이 컨테이너 */
+.display-container {
+    flex: 12;
+    background: #2C2F33;
+    overflow-y: scroll;
+    color: white;
+}
+
+/* 입력 컨테이너 */
+.input-container {
+    flex: 1;
+    display: flex;
+    justify-content: stretch;
+    align-items: stretch;
+}
+
+.input-container span {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    padding: 0.3rem;
+    width: 100%;
+}
+
+.chatting-input {
+    font-size: 12px;
+    height: 100%;
+    flex: 8;
+    border: none;
+    background-color: #23272A;
+    color: white;
+}
+
+.send-button {
+    flex: 1;
+    background: #7289DA;
+    border: none;
+    height: 100%;
+    border-radius: 3px;
+    color: white;
+}
+
+/* 채팅 목록 */
+.chatting-list li {
+    width: 90%;
+    padding: 0.3rem;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-end;
+    margin-top: 0.5rem;
+}
+
+/* 프로필 */
+.profile {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    flex: 1;
+}
+
+.profile .user {
+    font-size: 10px;
+    margin-bottom: 0.3rem;
+    color: white;
+}
+
+.profile .img {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* 메시지 */
+.message {
+    border-radius: 5px;
+    padding: 0.5rem;
+    font-size: 12px;
+    margin: 0 5px;
+    flex: 7;
+    background-color: #40444B;
+    color: white;
+}
+
+.time {
+    font-size: 10px;
+    margin: 0 5px;
+    color: #72767D;
+}
+
+.sent {
+    flex-direction: row-reverse;
+    float: right;
+}
+
+.sent .message {
+    background: #7289DA;
+}
+
+.received .message {
+    background: #40444B;
+}
+
+/* 슬라이더 컨테이너 */
+.slider-container {
+    width: 100%;
+    overflow: hidden;
+    position: relative;
+}
+
+/* 슬라이더 래퍼 */
+.slider-wrapper {
+    display: flex;
+    transition: transform 0.5s ease-in-out;
+}
+
+/* 슬라이더 아이템 */
+.slider-item {
+    flex: 0 0 calc(20% - 10px); /* 한 화면에 5개의 항목이 보이도록 설정, gap 고려 */
+    margin: 0 5px; /* 좌우에 5px의 마진 추가 */
+    box-sizing: border-box;
+    background: black;
+    color: white;
+    text-align: center;
+}
+
+
+/* 슬라이더 컨트롤 */
+.slider-controls {
+    display: flex;
+    justify-content: center;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.slider-controls button {
+    background-color: #23272A;
+    border: none;
+    color: white;
+    padding: 10px;
+    cursor: pointer;
+    margin: 0 5px;
+}
+
+
+@media (max-width: 1880px) {
+    .host-video-container {
+        width: 80%;
+    }
+}
+
+@media (max-width: 1440px) {
+    .host-video-container {
+        width: 100%;
+    }
+}
+
+
+
+
