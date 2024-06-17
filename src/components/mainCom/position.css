@@ -31,56 +31,75 @@
 /* 미디어 쿼리 정리 */
 @media (max-width: 1200px) {
   .motion, .motion2 {
-      top: calc(50% - 15%);
+      top: calc(50% - 19%);
   }
   .titleText {
+      top: calc(50% - 29%);
+  }
+}
+
+@media (max-width: 1100px) {
+  .motion, .motion2 {
+      top: calc(50% - 23%);
+  }
+  .titleText {
+      top: calc(50% - 30%);
+  }
+}
+
+@media (max-width: 950px) {
+  .motion, .motion2 {
       top: calc(50% - 25%);
+  }
+  .titleText {
+      top: calc(50% - 31%);
   }
 }
 
 @media (max-width: 850px) {
   .motion, .motion2 {
-      top: calc(50% - 10%);
+      top: calc(50% - 24%);
   }
   .titleText {
-      top: calc(50% - 22%);
+      top: calc(50% - 30%);
   }
 }
 
 @media (max-width: 750px) {
   .motion, .motion2 {
-      top: calc(50% - 17%);
+      top: calc(50% - 27%);
+      height: calc(30% - 90px);
   }
   .titleText {
-      top: calc(50% - 23%);
+      top: calc(50% - 32%);
   }
 }
 
 @media (max-width: 650px) {
   .motion, .motion2 {
-      height: calc(30% - 50px);
-      top: calc(50% - 15%);
+      height: calc(30% - 100px);
+      top: calc(50% - 30%);
   }
   .titleText {
-      top: calc(50% - 23%);
+      top: calc(50% - 33%);
   }
 }
 
 @media (max-width: 550px) {
   .motion, .motion2 {
-      height: calc(30% - 10px);
-      top: calc(50% - 20%);
+      height: calc(30% - 100px);
+      top: calc(50% - 30%);
   }
   .titleText {
-      top: calc(50% - 25%);
+      top: calc(50% - 33%);
   }
 }
 
 @media (max-width: 500px) {
   .motion, .motion2 {
-      top: calc(50% - 23%);
+      top: calc(50% - 30%);
   }
   .titleText {
-      top: calc(50% - 28%);
+      top: calc(50% - 33%);
   }
 }

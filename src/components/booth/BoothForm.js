@@ -80,6 +80,7 @@ function BoothForm() {
 
   return (
     <div>
+      <br/>
       <form
         onSubmit={handleSubmit}
         className="max-w-xl mx-auto p-6 bg-white border border-gray-300 rounded-lg shadow-md"
@@ -147,9 +148,9 @@ function BoothForm() {
             className="w-full px-3 py-2 border rounded-lg"
             required
           >
-            <option value="CATEGORY_ONE">CATEGORY_ONE</option>
-            <option value="CATEGORY_TWO">CATEGORY_TWO</option>
-            <option value="CATEGORY_THREE">CATEGORY_THREE</option>
+            <option value="CATEGORY_ONE">기업 부스</option>
+            <option value="CATEGORY_TWO">개인 부스</option>
+            <option value="CATEGORY_THREE">기타</option>
           </select>
         </div>
         <div className="mb-4">
@@ -216,6 +217,7 @@ function BoothForm() {
         callbackFunction={handleCloseModal}
         message="부스 등록이 완료되었습니다."
       />
+      <br/>
     </div>
   );
 }

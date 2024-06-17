@@ -15,6 +15,8 @@ function TopNav() {
     const [scrollY, setScrollY] = useState(0);
     const {authState, logout}=useContext(AuthContext);
 
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+
     // 스크롤이벤트
     useEffect(() => {
         const handleScroll = () => {
@@ -31,6 +33,20 @@ function TopNav() {
     const handleClick = () => {
         setMobileMenuOpen(!mobileMenuOpen);
     };
+
+    
+    const openLogoutModal = () => {
+        setShowLogoutModal(true);
+    };
+
+    const closeLogoutModal = () => {
+        setShowLogoutModal(false);
+    };
+
+    const closeLogout = ()=>{
+        logout();
+        setShowLogoutModal(false);
+    }
 
     return (
         <>
@@ -109,7 +125,7 @@ function TopNav() {
                                     <a href="/myPage" className="-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
                                         {authState.name}님의 마이페이지
                                     </a>
-                                    <button onClick={logout} className="-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
+                                    <button onClick={openLogoutModal} className="-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
                                         로그아웃
                                     </button>
                                     </>
@@ -123,6 +139,27 @@ function TopNav() {
                     </div>
                 </div>
             </div>
+            {showLogoutModal && (
+                    <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                        <div className="bg-white p-6 rounded-lg shadow-md mx-auto">
+                            <p>로그아웃 하시겠습니까?</p>
+                            <div className="mt-4 flex justify-end mx-auto">
+                                <button
+                                    className="py-2 px-4 bg-gray-300 hover:bg-gray-400 text-black rounded-lg mr-2 mx-auto"
+                                    onClick={closeLogoutModal}
+                                >
+                                    아니오
+                                </button>
+                                <button
+                                    className="py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg mx-auto"
+                                    onClick={closeLogout}
+                                >
+                                    네
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
         </>
     );
 }

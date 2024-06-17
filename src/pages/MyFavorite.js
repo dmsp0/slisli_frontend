@@ -1,12 +1,12 @@
 import React from 'react';
 import BasicLayout from "../layouts/BasicLayout";
-import FavoriteComponent from "../components/FavoriteComponent";
+import FavoriteList from '../components/card/FavoriteList';
 
 function MyFavorite() {
     
     return (
         <BasicLayout>
-            <FavoriteComponent />
+            <FavoriteList />
         </BasicLayout>
     );
 }
