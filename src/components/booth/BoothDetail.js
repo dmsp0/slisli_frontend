@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { API_URLS } from '../../api/apiConfig';
 import BasicLayout from '../../layouts/BasicLayout';
-import '../../style/Videopage.css';
 import BoothLikeButton from './BoothLikeButton';
+import '../../style/Videopage.css';
 
 function BoothDetail() {
     const { videoRoomId } = useParams();
