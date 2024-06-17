@@ -6,10 +6,7 @@ import { AuthProvider } from "../context/AuthContext";
 const { createBrowserRouter } = require("react-router-dom");
 
 const Home = lazy(() => import("../pages/IndexPage"));
-const DetailForum = lazy(() => import("../pages/DetailForum"));
 const MyPage = lazy(() => import("../pages/MyPage"));
-const MyFavorite = lazy(() => import("../pages/MyFavorite"));
-const ViewHistory = lazy(() => import("../pages/ViewHistory"));
 const BoothHeld = lazy(() => import("../pages/BoothHeld"));
 const ChattingRoom = lazy(() => import("../pages/ChattingRoom"));
 const VideoRoom = lazy(() => import("../components/booth/VideoRoom"))
@@ -28,16 +25,6 @@ const root = createBrowserRouter([
         </Suspense>
         </AuthProvider>
     ),
-},
-{
-  path: "/detailForum",
-  element: (
-    <AuthProvider>
-    <Suspense fallback={<Loading />}>
-      <DetailForum />
-    </Suspense>
-    </AuthProvider>
-  ),
 },
 {
   path: "/myPage",

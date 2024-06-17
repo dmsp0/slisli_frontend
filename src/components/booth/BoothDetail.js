@@ -5,6 +5,7 @@ import { API_URLS } from '../../api/apiConfig';
 import BasicLayout from '../../layouts/BasicLayout';
 import BoothLikeButton from './BoothLikeButton';
 import '../../style/Videopage.css';
+import BoothLikeButton from './BoothLikeButton';
 
 function BoothDetail() {
     const { videoRoomId } = useParams();

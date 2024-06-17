@@ -1,10 +1,10 @@
 import React from 'react';
 import FavoriteList from "../components/card/FavoriteList"; 
 
-function FavoriteComponent({}) {
+function FavoriteComponent() {
 
   return (
-      <FavoriteList favoriteEvents={favoriteEvents} />
+      <FavoriteList/>
   );
 }
 
