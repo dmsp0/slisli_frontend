@@ -1,12 +1,12 @@
 import React from 'react';
 import BasicLayout from "../layouts/BasicLayout";
-import ViewHistoryComponent from "../components/ViewHistoryComponent";
+import ViewHistoryList from "../components/card/ViewHistoryList";
 
 function ViewHistory() {
     
     return (
         <BasicLayout>
-            <ViewHistoryComponent />
+            <ViewHistoryList />
         </BasicLayout>
     );
 }

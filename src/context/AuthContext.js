@@ -12,7 +12,8 @@ const AuthProvider = ({ children }) => {
     accessToken: localStorage.getItem('accessToken'),
     refreshToken: localStorage.getItem('refreshToken'),
     email: localStorage.getItem('email'),
-    name: localStorage.getItem('name')
+    name: localStorage.getItem('name'),
+    member_id:localStorage.getItem('member_id')
   });
 
   const logout = useCallback(() => {
@@ -20,12 +21,15 @@ const AuthProvider = ({ children }) => {
     localStorage.removeItem('refreshToken');
     localStorage.removeItem('email');
     localStorage.removeItem('name');
+    localStorage.removeItem('member_id');
     setAuthState({
       accessToken: null,
       refreshToken: null,
       email: null,
-      name: null
+      name: null,
+      member_id:null
     });
+
     navigate('/');
   }, [setAuthState]);
 
@@ -39,25 +43,27 @@ const AuthProvider = ({ children }) => {
     }
   }, [authState.accessToken]);
 
-  const setTokens = useCallback((accessToken, refreshToken, email, name) => {
+  const setTokens = useCallback((accessToken, refreshToken, email, name,member_id) => {
     localStorage.setItem('accessToken', accessToken);
     localStorage.setItem('refreshToken', refreshToken);
     localStorage.setItem('email', email);
     localStorage.setItem('name', name);
+    localStorage.setItem('member_id',member_id)
     setAuthState(prevState => ({
       ...prevState,
       accessToken,
       refreshToken,
       email,
       name,
+      member_id
     }));
   }, [setAuthState]);
 
   const refreshToken = useCallback(async () => {
     try {
       const response = await axios.post('/auth/refresh', { refreshToken: authState.refreshToken });
-      const { token: accessToken, refreshToken: newRefreshToken, email, name } = response.data;
-      setTokens(accessToken, newRefreshToken, email, name);
+      const { token: accessToken, refreshToken: newRefreshToken, email, name,member_id } = response.data;
+      setTokens(accessToken, newRefreshToken, email, name,member_id);
     } catch (error) {
       console.error('Failed to refresh token', error);
       logout();
@@ -87,6 +93,7 @@ const AuthProvider = ({ children }) => {
     const refreshToken = params.get('refreshToken');
     const email = params.get('email');
     const name = params.get('name');
+    const member_id = params.get('member_id');
 
     if (accessToken && refreshToken) {
       setTokens(accessToken, refreshToken, email, name);

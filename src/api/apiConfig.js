@@ -30,4 +30,8 @@ export const API_URLS = {
 
     //알림
     NOTIFICATION : `${BASE_URL}/sse/subscribe`,
+
+    //마이페이지 마이부스
+    BOOTH_GET_BY_USERID: `${BASE_URL}/api/booths/get_my`,
+    
 };
