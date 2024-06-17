@@ -1,5 +1,4 @@
 import BasicLayout from "../layouts/BasicLayout";
-import MainComponent from "../components/mainCom/MainComponent";
 import Chat from "../components/chat/Chat";
 
 

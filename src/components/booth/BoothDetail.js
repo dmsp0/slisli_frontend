@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { API_URLS } from '../../api/apiConfig';
-import BasicLayout from '../../layouts/BasicLayout';
 import BoothLikeButton from './BoothLikeButton';
 import '../../style/Videopage.css';
 
@@ -179,38 +178,36 @@ function BoothDetail() {
     console.log("Rendering component, isCreator:", isCreator);
 
     return (
-        
-            <div className="container mx-auto p-4">
-                <div className="bg-white rounded-lg shadow-lg overflow-hidden">
-                    <img src={booth.imgPath} alt={booth.title} className="w-1/2 h-auto object-cover" />
-                        <div className="p-6">
-                            <div className='flex gap-5 mb-4'>
+            <div className="h-screen container mx-auto p-20 flex justify-center">
+                <div className="bg-white rounded-lg overflow-hidden flex flex-col sm:flex-row w-4/5" >
+                    <div className="relative w-full sm:w-1/2">
+                        <img src={booth.imgPath} alt={booth.title} className="absolute top-0 left-0 w-full h-full object-cover" />
+                    </div>
+                    <div className="w-full sm:w-1/2 flex-col justify-center p-4">
+                        <div className='text-center'>
+                            <div className='flex justify-between items-center mb-10 ml-10'>
                                 <h1 className="text-3xl font-bold">{booth.title}</h1>
-                                <br/>
                                 <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
                             </div>
-                        <p className="text-gray-700 mb-4">{booth.info}</p>
-                        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
-                            <div>
+                            <div className='justify-center text-left ml-10 mb-10'>
+                                <p className="text-gray-700">{booth.info}</p>
                                 <p className="text-gray-700"><span className="font-semibold">카테고리:</span> {booth.category}</p>
                                 <p className="text-gray-700"><span className="font-semibold">일시:</span> {booth.date}</p>
                                 <p className="text-gray-700"><span className="font-semibold">시작 시간:</span> {booth.startTime}</p>
                                 <p className="text-gray-700"><span className="font-semibold">종료 시간:</span> {booth.endTime}</p>
-                            </div>
-                            <div>
                                 <p className="text-gray-700"><span className="font-semibold">참가 인원:</span> {booth.maxPeople}</p>
                                 <p className="text-gray-700"><span className="font-semibold">주최자:</span> {booth.openerName}</p>
                                 <p className="text-gray-700"><span className="font-semibold">방번호:</span> {roomNumber}</p>
                                 <p className="text-gray-700"><span className="font-semibold">대화명:</span> {username}</p>
                             </div>
                         </div>
-                        <div className="text-center mt-6">
+                        <div className="text-center flex items-center justify-center gap-4">
                             {isCreator ? (
-                                <button className="bg-blue-500 text-white font-bold py-8 px-16 text-3xl rounded-full hover:bg-blue-700 transition duration-300" onClick={handleCreateRoom} disabled={isCreateRoomDisabled()}>
+                                <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700 transition duration-300" onClick={handleCreateRoom} disabled={isCreateRoomDisabled()}>
                                     방 만들기
                                 </button>
                             ) : (
-                                <button className="bg-blue-500 text-white font-bold py-8 px-16 text-3xl rounded-full hover:bg-blue-700 transition duration-300" onClick={handleJoinRoom} disabled={isJoinRoomDisabled()}>
+                                <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700 transition duration-300" onClick={handleJoinRoom} disabled={isJoinRoomDisabled()}>
                                     참여하기
                                 </button>
                             )}

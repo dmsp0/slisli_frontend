@@ -44,7 +44,21 @@ const Mypagebutton = () =>{
     const [isOpen, setIsOpen] = useState(false);
     const scope = useMenuAnimation(isOpen);
     const {logout}=useContext(AuthContext);
-    const navigate = useNavigate(); // Initialize the useNavigate hook
+    const navigate = useNavigate(); 
+    const [showLogoutModal, setShowLogoutModal] = useState(false);
+
+    const openLogoutModal = () => {
+      setShowLogoutModal(true);
+  };
+
+  const closeLogoutModal = () => {
+      setShowLogoutModal(false);
+  };
+
+  const closeLogout = ()=>{
+      logout();
+      setShowLogoutModal(false);
+  }
 
     return(
         <nav className="menu" ref={scope}  style={{ position: "relative" }}>
@@ -79,8 +93,29 @@ const Mypagebutton = () =>{
                               <li onClick={() => navigate('/myPage')}>마이페이지</li>
                               <li onClick={() => navigate('/myPage?tab=favoritelist')}>좋아요 목록</li>
                               <li onClick={() => navigate('/myPage?tab=boothheld')}>시청 목록</li>
-                              <li onClick={logout}>로그아웃</li>
+                              <li onClick={openLogoutModal}>로그아웃</li>
                             </ul>{" "}
+                            {showLogoutModal && (
+                    <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                        <div className="bg-white p-6 rounded-lg shadow-md">
+                            <p>로그아웃 하시겠습니까?</p>
+                            <div className="mt-4 flex justify-end">
+                                <button
+                                    className="py-2 px-4 bg-gray-300 hover:bg-gray-400 text-black rounded-lg mr-2"
+                                    onClick={closeLogoutModal}
+                                >
+                                    아니오
+                                </button>
+                                <button
+                                    className="py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg"
+                                    onClick={closeLogout}
+                                >
+                                    네
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                )}
                           </nav>
     );
 };
