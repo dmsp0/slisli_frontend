@@ -1,39 +1,67 @@
 .chat-container {
-    width: 100%;
-    max-width: 600px;
-    margin: 0 auto;
-  }
-  
-  .chat-list {
-    max-height: 400px;
-    overflow-y: auto;
-  }
-  
-  .message {
-    display: flex;
-    align-items: center;
-  }
-  
-  .message.sent {
-    justify-content: flex-end;
-  }
-  
-  .message.received {
-    justify-content: flex-start;
-  }
-  
-  .profile {
-    margin-right: 10px;
-  }
-  
-  .message-text {
-    background-color: #f1f1f1;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  
-  .time {
-    font-size: 0.8rem;
-    color: gray;
-  }
-  
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.chat-list {
+  max-height: 500px; /* 채팅창 높이 설정 */
+  overflow-y: auto;
+}
+
+.input-container {
+  display: flex;
+  align-items: center;
+  margin-top: 2px; /* 입력창과 버튼 간격 조정 */
+}
+
+.input-container input {
+  flex: 1; /* 입력창이 창 너비를 가득 채우도록 설정 */
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-right: 10px;
+  background-color: #000000;
+}
+
+.input-container button {
+  padding: 8px 15px;
+  background-color: #3ba9f8;
+  color: rgb(255, 255, 255);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.input-container button:hover {
+  background-color: #0f74b3;
+}
+
+.message {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px; /* 메시지 간격 조정 */
+}
+
+.message.sent {
+  justify-content: flex-end;
+}
+
+.message.received {
+  justify-content: flex-start;
+}
+
+.profile {
+  margin-right: 10px;
+}
+
+.message-text {
+  background-color: #000000;
+  padding: 10px;
+  border-radius: 10px;
+}
+
+.time {
+  font-size: 0.7rem;
+  color: rgb(228, 228, 228);
+}

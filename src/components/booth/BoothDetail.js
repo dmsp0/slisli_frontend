@@ -3,8 +3,8 @@ import axios from 'axios';
 import { useNavigate, useParams } from "react-router-dom";
 import { API_URLS } from '../../api/apiConfig';
 import BasicLayout from '../../layouts/BasicLayout';
-import '../../style/Videopage.css';
 import BoothLikeButton from './BoothLikeButton';
+import '../../style/Videopage.css';
 
 function BoothDetail() {
     const { videoRoomId } = useParams();
@@ -179,7 +179,7 @@ function BoothDetail() {
     console.log("Rendering component, isCreator:", isCreator);
 
     return (
-        <BasicLayout>
+        
             <div className="container mx-auto p-4">
                 <div className="bg-white rounded-lg shadow-lg overflow-hidden">
                     <img src={booth.imgPath} alt={booth.title} className="w-1/2 h-auto object-cover" />
@@ -218,7 +218,7 @@ function BoothDetail() {
                     </div>
                 </div>
             </div>
-        </BasicLayout>
+        
     );
 }
 
