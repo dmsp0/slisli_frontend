@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './signStyle.css';
+import { API_URLS } from '../../api/apiConfig'
 
 const SignupComponent = () => {
     const [email, setEmail] = useState('');
@@ -67,7 +68,12 @@ const SignupComponent = () => {
         }
     
         try {
-            const response = await axios.post('/auth/send-code', { email });
+            const response = await axios.post(API_URLS.SEND_CODE, { email }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
             if (response.status === 200) {
                 alert("이메일을 전송했습니다.");
                 setEmailChecked(true);
@@ -79,6 +85,10 @@ const SignupComponent = () => {
                 alert("이메일 확인 중 오류가 발생했습니다.");
             }
             console.error('이메일 확인 오류:', error);
+            
+            if (error.response) {
+                console.error("응답 데이터:", error.response.data);
+            }
         }
     };
     
@@ -89,7 +99,12 @@ const SignupComponent = () => {
         }
     
         try {
-            const response = await axios.post('/auth/verify-code', { email, code: inputCode });
+            const response = await axios.post(API_URLS.VERIFIY_CODE, { email, code: inputCode }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
+            });
             if (response.status === 200) {
                 alert("인증번호가 확인되었습니다.");
                 setCodeValid(true);
@@ -98,6 +113,7 @@ const SignupComponent = () => {
             alert("인증번호가 유효하지 않습니다.");
             console.error('인증번호 확인 오류:', error);
         }
+        
     };
     
     const handleSubmit = async (e) => {
@@ -108,12 +124,17 @@ const SignupComponent = () => {
         }
     
         try {
-            const response = await axios.post('/signup', {
+            const response = await axios.post(API_URLS.SIGN_UP, {
                 email,
                 password,
                 passwordCheck: confirmPassword,
                 name,
                 verificationCode: inputCode
+            }, {
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                withCredentials: true
             });
     
             alert("회원가입 성공!");
@@ -261,17 +282,6 @@ const SignupComponent = () => {
                         회원가입하기
                     </button>
                 </div>
-                <hr className="my-8" />
-            <p className="mt-4 text-center text-sm text-gray-500">
-                SNS 계정으로 회원가입하기
-            </p>
-            <div className="flex justify-center items-center mt-3">
-                <div className='sign-up-content-sign-in-button-box'>
-                    <a href='/oauth2/authorization/kakao'> <img className="w-12" src='/images/kakao-icon.png' /> </a>
-                    <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png' /> </a>
-                    <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png' /> </a>
-                </div>
-            </div>
             </form>
         </>
     );

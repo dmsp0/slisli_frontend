@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 
 const AuthKakao = () => {
   useEffect(() => {
-    fetch('/auth/kakao', {
+    fetch('/api/auth/kakao', {
       method: 'GET',
       headers: {
         'Content-Type': 'application/json'

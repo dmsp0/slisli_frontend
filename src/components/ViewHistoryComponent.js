@@ -12,9 +12,7 @@ function ViewHistoryComponent({}) {
   ];
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', padding: '20px', width: '100%' }}>
       <ViewHistoryList historyEvents={historyEvents} />
-    </div>
   );
 }
 

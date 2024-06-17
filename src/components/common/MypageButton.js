@@ -1,13 +1,13 @@
 import React, {useContext, useEffect, useState} from "react";
 import { useAnimate, stagger, motion } from "framer-motion";
 import { AuthContext } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom"; // Import the useNavigate hook
 
 const staggerMenuItems = stagger(0.1, { startDelay: 0.15 });
 
 function useMenuAnimation(isOpen) {
     const [scope, animate] = useAnimate();
 
-  
     useEffect(() => {
       animate(".arrow", { rotate: isOpen ? 180 : 0 }, { duration: 0.2 });
   
@@ -44,6 +44,7 @@ const Mypagebutton = () =>{
     const [isOpen, setIsOpen] = useState(false);
     const scope = useMenuAnimation(isOpen);
     const {logout}=useContext(AuthContext);
+    const navigate = useNavigate(); // Initialize the useNavigate hook
 
     return(
         <nav className="menu" ref={scope}  style={{ position: "relative" }}>
@@ -75,9 +76,9 @@ const Mypagebutton = () =>{
                                 padding:"10px 10px"
                               }}
                             >
-                              <li>정보 수정 </li>
-                              <li>찜한 부스 </li>
-                              <li>등록한 부스 </li>
+                              <li onClick={() => navigate('/myPage')}>마이페이지</li>
+                              <li onClick={() => navigate('/myPage?tab=favoritelist')}>좋아요 목록</li>
+                              <li onClick={() => navigate('/myPage?tab=boothheld')}>시청 목록</li>
                               <li onClick={logout}>로그아웃</li>
                             </ul>{" "}
                           </nav>

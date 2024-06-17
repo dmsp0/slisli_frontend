@@ -1,29 +1,52 @@
-import React from "react";
+import axios from "axios";
+import React, { useState, useEffect } from "react";
+import { API_URLS } from "../../api/apiConfig";
+import { Link } from "react-router-dom";
 
-function FavoriteList({ favoriteEvents }) {
+
+function FavoriteList() {
+  const member_id = localStorage.getItem('member_id');
+  const [likedBooths, setLikedBooths] = useState([]);
+
+  useEffect(() => {
+    const fetchLikedBooths = async () => {
+      if (!member_id) return; // member_id가 없으면 호출하지 않음
+
+      try {
+        const response = await axios.get(`${API_URLS.BOOTH_LIKED_LIST}/${member_id}`);
+        setLikedBooths(response.data);
+      } catch (error) {
+        console.error(error);
+      }
+    };
+
+    fetchLikedBooths();
+  }, [member_id]);
 
   return (
-    <div className="grid grid-cols-12 justify-center p-10">
-      
-      <div className="col-span-10">
-        <h2 className="text-2xl text-center" style={{ marginBottom: "50px" }}>찜한 목록</h2> 
-        
+    <div className="flex justify-center">
+      <div className="w-full max-w-3xl">
+        <h3 className="pl-4">목록</h3>
+        <br/>
         {/* 찜목록 리스트 (이미지, 이벤트제목, 주최, 일시) */}
-        <div className="favorite-events-container p-30" style={{ display: "grid", gridTemplateColumns: "repeat(2, 1fr)", gap: "30px"}}>
-          {favoriteEvents.map((favoriteEvent, index) => (
-            <div key={index} className="favorite-event border-2" style={{ padding: "10px", marginBottom: "10px", display: "flex", alignItems: "center", borderWidth: "3px", gap: "30px"}}>
+        <div className="flex flex-col gap-6">
+          {likedBooths.map((booth) => (
+            <div key={booth.id} className="favorite-event border-2 p-4 flex flex-col items-center border-gray-300 rounded-lg shadow-md">
+              <img src={booth.imgPath} alt={booth.title} className="w-full h-48 object-cover rounded-md mb-4" />
+              <div className="w-full text-left p-2">
+                <h3 className="text-lg font-bold mb-2">{booth.title}</h3>
+                <p className="text-sm text-gray-700 mb-1">주최: {booth.openerName}</p>
+                <p className="text-sm text-gray-700">일시: {booth.date}, {booth.startTime} ~ {booth.endTime}</p>
               
-              <img src="imgURL" alt="Poster" style={{ marginRight: "20px", width: "auto", height: "auto"}} />
-
-              <div>
-                <h3 style={{ marginBottom: "5px", whiteSpace: "nowrap" }}>이벤트 제목: {favoriteEvent.eventName}</h3> 
-                <p style={{ marginBottom: "5px" }}>주최: {favoriteEvent.eventHost}</p>
-                <p style={{ marginBottom: "5px" }}>일시: {favoriteEvent.eventDate}</p>
-              </div>
-
+              <Link
+              to={`/booth/${booth.boothId}`}
+              className="text-blue-500 hover:underline"
+              >
+              자세히 보기
+            </Link>
+            </div>
             </div>
           ))}
-
         </div>
       </div>
     </div>
