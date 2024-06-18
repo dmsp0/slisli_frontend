@@ -11,7 +11,7 @@ function BoothForm() {
   const [boothData, setBoothData] = useState({
     title: "",
     info: "",
-    category: "CATEGORY_ONE",
+    category: "COMPANY_RECRUITMENT",
     type: "COMPANY",
     date: "",
     startTime: "",
@@ -184,9 +184,11 @@ function BoothForm() {
             className="w-full px-3 py-2 border rounded-lg"
             required
           >
-            <option value="CATEGORY_ONE">CATEGORY_ONE</option>
-            <option value="CATEGORY_TWO">CATEGORY_TWO</option>
-            <option value="CATEGORY_THREE">CATEGORY_THREE</option>
+            <option value="COMPANY_RECRUITMENT">기업/채용</option>
+            <option value="EDUCATION_TECH">교육/기술</option>
+            <option value="FOOD_BEVERAGE">식/음료</option>
+            <option value="LIFESTYLE_HEALTH">생활/건강</option>
+            <option value="CULTURE_ART">문화/예술</option>
           </select>
         </div>
         <div className="mb-4">
