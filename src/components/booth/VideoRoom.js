@@ -45,6 +45,8 @@ const VideoRoom = () => {
     const myVideoRef = useRef(null);
     const localVideoRef = useRef(null);
     const remoteVideoRef = useRef([]);
+    
+    
 
     useEffect(() => {
         // sessionStorage에서 boothId 가져오기
@@ -73,15 +75,51 @@ const VideoRoom = () => {
       }, [boothId]);
 
 
-// [jsflux] 새로운 유저 들어왔을때
-function newRemoteFeed(id, display, audio, video) {
-    console.log("새 원격 피드 생성 시도, ID: ", id);
-    console.log("구독 요청 전에 방 번호 확인:", myroom); // 방 번호 확인 로그 추가
+useEffect(() => {
+    const storedIsHost = window.localStorage.getItem('isHost');
+    const storedHostUsername = window.localStorage.getItem('hostUsername');
+    const isHostFlag = storedIsHost === 'true';
+    setIsHost(isHostFlag);
+    window.isHost = isHostFlag; // 상태 설정 후 window.isHost 설정
+    setHostUsername(storedHostUsername || "");
+}, []);
 
+
+// 마지막으로 추가된 피드 ID를 저장하는 변수
+var lastFeedId = null;
+
+// [jsflux] 새로운 유저 들어왔을때
+window.newRemoteFeed = function(id, display, audio, video) {
+    console.log("새 원격 피드 생성 시도, ID: ", id);
+
+    // 자신의 피드인지 확인하고 무시
+    if (id === myid) {
+        console.log("자신의 피드는 무시합니다. ID: ", id);
+        return;
+    }
+
+    // 이미 존재하는 피드인지 확인
+    if (feeds.some(feed => feed && feed.rfid === id)) {
+        console.log(`Feed with id ${id} already exists.`);
+        return;
+    }
+
+     // 마지막으로 추가된 피드 ID와 비교하여 중복 피드 확인
+     if (id === lastFeedId) {
+        console.log(`Feed with id ${id} is already being processed.`);
+        return;
+    }
+
+    // 유효하지 않은 피드 ID 확인
     if (!id) {
         console.error("유효하지 않은 피드 ID");
         return;
     }
+
+    // 새로운 피드를 추가하기 전에 lastFeedId를 현재 피드 ID로 설정
+    lastFeedId = id;
+
+    
 
     var remoteFeed = null;
     janus.attach({
@@ -110,7 +148,7 @@ function newRemoteFeed(id, display, audio, video) {
                 if (video) {
                     video = video.toUpperCase();
                     toastr.warning("퍼블리셔가 " + video + " 코덱을 사용 중입니다. Safari에서 지원하지 않으므로 비디오를 비활성화합니다.");
-                    subscribe["offer_video"] = false;
+                    subscribe["offer_video"] = true;
                 }
             }
             remoteFeed.videoCodec = video;
@@ -179,7 +217,7 @@ function newRemoteFeed(id, display, audio, video) {
                 Janus.debug("SDP 처리 중...", jsep);
                 remoteFeed.createAnswer({
                     jsep: jsep,
-                    media: { audioSend: false, videoSend: false },
+                    media: { audioSend: true, videoSend: true },
                     success: function(jsep) {
                         Janus.debug("SDP 생성 완료!", jsep);
                         var body = { request: "start", room: myroom };
@@ -202,14 +240,25 @@ function newRemoteFeed(id, display, audio, video) {
             // 구독자 스트림은 recvonly이므로 여기서는 아무 것도 기대하지 않습니다
         },
         onremotestream: function(stream) {
+            if (stream.id === mystream.id || (isHost && remoteFeed.rfdisplay === username)) {
+                console.log("자신의 스트림이므로 무시합니다.");
+                return;
+            }
+
             Janus.debug("원격 피드 #" + remoteFeed.rfindex + ", 스트림:", stream);
             var addButtons = false;
             var videoElementId = `#videoremote${remoteFeed.rfindex}`;
             var videoElement = document.getElementById(`videoremote${remoteFeed.rfindex}`);
 
             if (!videoElement) {
-                console.error("videoElement를 찾을 수 없습니다.", videoElementId);
-                return;
+                // 비디오 요소가 존재하지 않으면 동적으로 생성
+                const videoContainer = document.createElement('div');
+                videoContainer.className = 'participant-video slider-item';
+                videoContainer.innerHTML = `<video class="relative videoremote" id="videoremote${remoteFeed.rfindex}" autoPlay playsInline></video>`;
+                document.querySelector('.slider-wrapper').appendChild(videoContainer);
+        
+                // 새로 생성한 비디오 요소 참조
+                videoElement = document.getElementById(`videoremote${remoteFeed.rfindex}`);
             }
 
             if ($(videoElementId).length === 0) {
@@ -317,101 +366,114 @@ function newRemoteFeed(id, display, audio, video) {
 
 
 
-    useEffect(() => {
-        if (mystream) {
-            const attachStreamToElement = (elementRef, stream, elementName) => {
-                if (elementRef && elementRef.current) {
-                    Janus.attachMediaStream(elementRef.current, stream);
-                } else {
-                    console.warn(`${elementName} element not found. Retrying...`);
-                }
-            };
-    
-            const observerCallback = (mutationsList, observer) => {
-                for (let mutation of mutationsList) {
-                    if (mutation.type === 'childList') {
-                        if (isHost && localVideoRef.current) {
-                            attachStreamToElement(localVideoRef, mystream, "videolocal");
-                            observer.disconnect();
-                        } else if (!isHost && remoteVideoRef.current[0]) {
-                            attachStreamToElement(remoteVideoRef.current[0], mystream, "videoremote0");
-                            observer.disconnect();
-                        }
-                    }
-                }
-            };
-    
-            const observer = new MutationObserver(observerCallback);
-            observer.observe(document.body, { childList: true, subtree: true });
-    
-            // Initial check
-            if (isHost) {
-                attachStreamToElement(localVideoRef, mystream, "videolocal");
-            } else {
-                attachStreamToElement(remoteVideoRef.current[0], mystream, "videoremote0");
-            }
-        }
-    }, [mystream, isHost]);
-    
-
-    // onlocalstream 함수에서 비디오 트랙 활성화 비활성화 논리 추가
+// onlocalstream 함수에서 비디오 트랙 활성화 비활성화 논리 추가
 window.onlocalstream = function (stream) {
-    console.log(" ::: Got a local stream :::", stream);
-    mystream = stream;
+    console.log("Local stream received:", stream);
+    const isHost = localStorage.getItem('isHost') === 'true'; // localStorage에서 isHost 값을 가져옴
+    console.log("isHost value:", isHost); // 디버깅용
 
-    const attachStreamToElement = (element, stream) => {
-        if (element) {
-            Janus.attachMediaStream(element, stream);
+    const localVideoElement = document.getElementById('videolocal');
+    const remoteVideoElement = document.getElementById('videoremote0');
+
+    if (isHost && localVideoElement) {
+        if (localVideoElement.srcObject !== stream) {
+            localVideoElement.srcObject = stream;
+            localVideoElement.muted = true;
+            localVideoElement.volume = 0;
+            localVideoElement.play().catch(error => {
+                console.error("비디오 재생 오류:", error);
+            });
         } else {
-            console.error("Element not found.");
+            console.warn("Local video element already has the stream.");
         }
-    };
-
-    const waitForElementAndAttachStream = (elementRef, stream, elementName) => {
-        const interval = setInterval(() => {
-            if (elementRef.current) {
-                attachStreamToElement(elementRef.current, stream);
-                clearInterval(interval);
-            } else {
-                console.warn(`${elementName} element not found. Retrying...`);
-            }
-        }, 100); // 100ms 간격으로 재시도
-    };
-
-    if (isHost) {
-        waitForElementAndAttachStream(localVideoRef, stream, "videolocal");
+    } else if (!isHost && remoteVideoElement) {
+        if (remoteVideoElement.srcObject !== stream) {
+            remoteVideoElement.srcObject = stream;
+            remoteVideoElement.muted = true;
+            remoteVideoElement.volume = 0;
+            remoteVideoElement.play().catch(error => {
+                console.error("비디오 재생 오류:", error);
+            });
+        } else {
+            console.warn("Remote video element already has the stream.");
+        }
     } else {
-        waitForElementAndAttachStream(remoteVideoRef.current[0], stream, "videoremote0");
+        console.error("적절한 비디오 요소를 찾을 수 없습니다.");
     }
 
-    // 스트림 트랙 종료 시 재시작 로직 추가
+    mystream = stream;
+
+    // 트랙 종료 시 재초기화 로직 추가
     stream.getTracks().forEach(track => {
-        track.onended = function () {
+        track.onended = function() {
             console.warn("Track ended:", track);
-            // 스트림 재시작 로직
             navigator.mediaDevices.getUserMedia({ audio: true, video: true })
                 .then(newStream => {
-                    mystream = newStream;
-                    newStream.getVideoTracks()[0].enabled = false;  // 기본적으로 비디오 트랙을 비활성화
-                    newStream.getAudioTracks()[0].enabled = false;  // 기본적으로 오디오 트랙을 비활성화
-
-                    if (isHost) {
-                        waitForElementAndAttachStream(localVideoRef, newStream, "videolocal");
-                    } else {
-                        waitForElementAndAttachStream(remoteVideoRef.current[0], stream, "videoremote0");
-                    }
+                    onlocalstream(newStream);
                 })
                 .catch(err => {
-                    console.error("Failed to get new user media", err);
+                    console.error("새 사용자 미디어 가져오기 실패", err);
                 });
         };
     });
-
-    const videoTracks = stream.getVideoTracks();
-    if (!videoTracks || videoTracks.length === 0) {
-        console.log("No webcam available");
-    }
 };
+
+    
+
+
+
+
+
+useEffect(() => {
+    if (mystream) {
+        const attachStreamToElement = (elementRef, stream, elementName) => {
+            if (elementRef && elementRef.current) {
+                if (elementRef.current.srcObject !== stream) {
+                    elementRef.current.srcObject = null; // 기존 스트림 해제
+                    Janus.attachMediaStream(elementRef.current, stream);
+                } else {
+                    console.warn(`${elementName} element already has the stream.`);
+                }
+            } else {
+                console.warn(`${elementName} element not found. Retrying...`);
+            }
+        };
+
+        // 초기 체크
+        if (isHost) {
+            attachStreamToElement(localVideoRef, mystream, "videolocal");
+        } else {
+            attachStreamToElement(remoteVideoRef.current[0], mystream, "videoremote0");
+        }
+
+        const observerCallback = (mutationsList, observer) => {
+            for (let mutation of mutationsList) {
+                if (mutation.type === 'childList') {
+                    if (isHost && localVideoRef.current) {
+                        attachStreamToElement(localVideoRef, mystream, "videolocal");
+                        observer.disconnect();
+                    } else if (!isHost && remoteVideoRef.current[0]) {
+                        attachStreamToElement(remoteVideoRef.current[0], mystream, "videoremote0");
+                        observer.disconnect();
+                    }
+                }
+            }
+        };
+
+        const observer = new MutationObserver(observerCallback);
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        return () => {
+            observer.disconnect();
+        };
+    }
+}, [mystream, isHost]);
+
+
+
+    
+
+
 
 
    
@@ -420,7 +482,6 @@ useEffect(() => {
     if (state && state.numParticipants) {
         setNumParticipants(state.numParticipants);
     }
-
     const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
     if (loggedInUser) {
         setUsername(loggedInUser.username);
@@ -626,12 +687,7 @@ useEffect(() => {
 
     
 
-    useEffect(() => {
-        const storedIsHost = window.localStorage.getItem('isHost');
-        const storedHostUsername = window.localStorage.getItem('hostUsername');
-        setIsHost(storedIsHost === 'true');
-        setHostUsername(storedHostUsername || "");
-    }, []);
+
 
     const toggleMute = () => {
         if (mystream && mystream.getAudioTracks().length > 0) {
@@ -665,8 +721,7 @@ useEffect(() => {
              const videoElement = isHost ? localVideoRef.current : remoteVideoRef.current[0];
              if (videoElement) {
                 videoElement.srcObject = mystream;
-            } else {
-                console.warn("비디오 요소를 찾을 수 없습니다.");
+            } else {;
             }
             if (sfutest && sfutest.webrtcStuff && sfutest.webrtcStuff.pc) {
                 sfutest.send({
@@ -684,21 +739,22 @@ useEffect(() => {
         }
     };
 
-    useEffect(() => {
-        const attachStreamToVideoElements = () => {
-            if (remoteVideoRef.current && feeds) {
-                feeds.forEach((feed, index) => {
-                    if (feed && remoteVideoRef.current[index]) {
-                        console.log(`Attaching stream to video element for feed ${index}`);
-                        Janus.attachMediaStream(remoteVideoRef.current[index], feed.stream);
-                    }
-                });
-            }
-        };
-    
-        // 비디오 엘리먼트에 스트림을 연결
-        attachStreamToVideoElements();
-    }, [feeds]);
+
+// useEffect에서 비디오 엘리먼트에 스트림 연결
+useEffect(() => {
+    const attachStreamToVideoElements = () => {
+        if (remoteVideoRef.current && feeds) {
+            feeds.forEach((feed, index) => {
+                if (feed && remoteVideoRef.current[index] && feed.stream !== remoteVideoRef.current[index].srcObject) {
+                    console.log(`Attaching stream to video element for feed ${index}`);
+                    Janus.attachMediaStream(remoteVideoRef.current[index], feed.stream);
+                }
+            });
+        }
+    };
+
+    attachStreamToVideoElements();
+}, [feeds]);
     
 
 
@@ -718,14 +774,15 @@ useEffect(() => {
 
     const renderVideoPanels = () => {
         const panels = [];
-        for (let i = 0; i < numParticipants; i++) {
-            const index = isHost ? i + 1 : i; // 호스트는 1부터 시작하고, 참가자는 0부터 시작
-            panels.push(
-                <div className="participant-video slider-item" key={index}>
-                    <video className="relative videoremote" id={`videoremote${index}`} autoPlay playsInline ref={(el) => remoteVideoRef.current[index] = el}></video>
-                </div>
-            );
-        }
+        feeds.forEach((feed, index) => {
+            if (feed && feed.rfid !== myid) { // 자신의 비디오 제외
+                panels.push(
+                    <div className="participant-video slider-item" key={feed.rfid}>
+                        <video className="relative videoremote" id={`videoremote${feed.rfindex}`} autoPlay playsInline ref={(el) => remoteVideoRef.current[feed.rfindex] = el}></video>
+                    </div>
+                );
+            }
+        });
         return panels;
     };
 
