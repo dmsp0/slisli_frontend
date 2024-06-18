@@ -33,5 +33,6 @@ export const API_URLS = {
     
     //마이페이지 마이부스
     BOOTH_GET_BY_USERID: `${BASE_URL}/api/booths/get_my`,
-    
+    BOOTH_DELETE: `${BASE_URL}/api/booths/delete`,
+    BOOTH_UPDATE: `${BASE_URL}/api/booths/update`,
 };

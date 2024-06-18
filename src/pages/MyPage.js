@@ -2,7 +2,7 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import BasicLayout from "../layouts/BasicLayout";
-import profileImg from '../img/profile.png';
+// import profileImg from '../img/profile.png';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
 import FavoriteList from '../components/card/FavoriteList';
@@ -17,6 +17,7 @@ function MyPage() {
     const [token, setToken] = useState(null);
     const [email, setEmail] = useState(null);
     const [name, setName] = useState(null);
+    const [profileImg, setprofileImg] = useState(null);
     const [showEditForm, setShowEditForm] = useState(false);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -30,11 +31,13 @@ function MyPage() {
         const storedToken = localStorage.getItem('accessToken');
         const storedEmail = localStorage.getItem('email');
         const storedName = localStorage.getItem('name');
+        const profileImg = localStorage.getItem('profileImgPath');
 
         if (storedToken) {
             setToken(storedToken);
             setEmail(storedEmail);
             setName(storedName);
+            setprofileImg(profileImg)
         } else {
             alert('로그인이 필요합니다.');
             navigate('/login');
@@ -121,7 +124,7 @@ function MyPage() {
                 <div className="bg-white w-full md:w-1/2 p-5 shadow-md rounded-md ">
                     <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full h-auto bg-white rounded-md">
                         <div className="flex justify-center md:justify-center md:mr-8">
-                            <img src={userProfile.profileImg} alt="프로필 이미지" className="w-40 h-40 rounded-md" />
+                            <img src={profileImg} alt="프로필 이미지" className="w-40 h-40 rounded-md" />
                         </div>
                         <div className="flex flex-col items-center md:items-start">
                             <br />

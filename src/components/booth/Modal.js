@@ -1,6 +1,6 @@
 import React from "react";
 
-const Modal = ({ showModal, message, callbackFunction }) => {
+const Modal = ({ showModal, message, onConfirm, onCancel, showCancel = true }) => {
   if (!showModal) return null;
 
   return (
@@ -10,13 +10,21 @@ const Modal = ({ showModal, message, callbackFunction }) => {
           <div className="text-center w-full h-2/3 mb-2 flex justify-center items-center">
             {message}
           </div>
-          <div className="text-center">
+          <div className="flex justify-center gap-4">
             <button
-              className="border py-2 px-5 rounded-md bg-yellow-400"
-              onClick={callbackFunction}
+              className="border py-2 px-5 rounded-md bg-blue-500 text-white"
+              onClick={onConfirm}
             >
-              닫기
+              확인
             </button>
+            {showCancel && (
+              <button
+                className="border py-2 px-5 rounded-md bg-red-500 text-white"
+                onClick={onCancel}
+              >
+                취소
+              </button>
+            )}
           </div>
         </div>
       </div>
