@@ -21,6 +21,7 @@ export const API_URLS = {
     SIGN_UP: `${BASE_URL}/api/member/signup`,
     LOG_IN: `${BASE_URL}/api/member/login`,
     MEMBER_UPDATE: `${BASE_URL}/api/member/update`,
+    MEMBER_DELETE:`${BASE_URL}/api/member/delete`,
 
     // 좋아요
     BOOTH_LIKED:`${BASE_URL}/api/booths/liked`,

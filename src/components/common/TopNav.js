@@ -77,7 +77,7 @@ function TopNav() {
                         ))}
                     </div>
                     <div className="hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-5">
-                        {authState.accessToken ? (
+                        {localStorage.accessToken ? (
                             <Mypagebutton />
                         ) : (
                             <a href="/login" className={`text-sm font-semibold leading-6 ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
