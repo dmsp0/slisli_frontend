@@ -10,6 +10,7 @@ import BoothHeldForm from '../components/card/BoothHeldForm';
 import MyBoothList from '../components/card/MyBoothList';
 import ProfileUpdate from '../components/card/ProfileUpdate';
 import { API_URLS } from '../api/apiConfig';
+import defaultImg from '../img/profile.png';
 
 function MyPage() {
     const navigate = useNavigate();
@@ -27,29 +28,6 @@ function MyPage() {
     const queryParams = new URLSearchParams(location.search);
     const initialTab = queryParams.get('tab') || 'favoritelist';
     const [activeTab, setActiveTab] = useState(initialTab);
-
-    useEffect(() => {
-        const storedToken = localStorage.getItem('accessToken');
-        const storedEmail = localStorage.getItem('email');
-        const storedName = localStorage.getItem('name');
-        const profileImg = localStorage.getItem('profileImgPath');
-
-        if (storedToken) {
-            setToken(storedToken);
-            setEmail(storedEmail);
-            setName(storedName);
-            setprofileImg(profileImg)
-        } else {
-            alert('로그인이 필요합니다.');
-            navigate('/login');
-        }
-    }, [navigate]);
-
-    const userProfile = {
-        nickname: name,
-        email: email,
-        profileImg: profileImg
-    };
 
     const renderContent = () => {
         switch (activeTab) {
@@ -120,7 +98,11 @@ function MyPage() {
                 <div className="bg-white w-full md:w-1/2 p-5 shadow-md rounded-md ">
                     <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full h-auto bg-white rounded-md">
                         <div className="flex justify-center md:justify-center md:mr-8">
-                            <img src={localStorage.getItem('profileImgPath')} alt="프로필 이미지" className="w-40 h-40 rounded-md" />
+                        <img
+                            src={localStorage.getItem('profileImgPath') == 'null' ? defaultImg : localStorage.getItem('profileImgPath')}
+                            alt="프로필 이미지"
+                            className="w-40 h-40 rounded-md"
+                            />
                         </div>
                         <div className="flex flex-col items-center md:items-start">
                             <br />
