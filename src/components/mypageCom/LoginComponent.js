@@ -48,16 +48,16 @@ const LoginComponent = () => {
                 withCredentials: true
             });
     
-            const { token: accessToken, refreshToken, member_id, email: userEmail, name: userName } = response.data;
-    
-            
-            localStorage.setItem('accessToken', accessToken);
-            localStorage.setItem('refreshToken', refreshToken);
-            localStorage.setItem('email', userEmail);
-            localStorage.setItem('name', userName);
-            localStorage.setItem('member_id', member_id);
-            
-            setShowModal(true);
+            const { token: accessToken, refreshToken, member_id, email: userEmail, name: userName, profileImgPath } = response.data;
+
+        localStorage.setItem('accessToken', accessToken);
+        localStorage.setItem('refreshToken', refreshToken);
+        localStorage.setItem('email', userEmail);
+        localStorage.setItem('name', userName);
+        localStorage.setItem('member_id', member_id);
+        localStorage.setItem('profileImgPath', profileImgPath); // 프로필 이미지 경로 저장
+
+        setShowModal(true);
             
             
         } catch (error) {

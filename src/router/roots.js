@@ -13,6 +13,7 @@ const VideoRoom = lazy(() => import("../components/booth/VideoRoom"))
 const Login = lazy(() => import("../pages/Login"));
 const BoothListPage = lazy(() => import("../pages/BoothListPage"));
 const BoothDetailPage = lazy(() => import("../pages/BoothDetailPage"));
+const BoothForm = lazy(() => import("../components/booth/BoothForm"));
 
 const root = createBrowserRouter([
 
@@ -146,7 +147,17 @@ element: (
       </AuthProvider>
     ),
   },
+  {
 
+    path: "/booth/edit/:boothId",
+    element: (
+      <AuthProvider>
+      <Suspense fallback={<Loading />}>
+        <BoothForm />
+      </Suspense>
+      </AuthProvider>
+    ),
+  },
 
 ]);
 
