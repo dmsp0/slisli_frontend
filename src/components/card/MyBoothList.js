@@ -79,7 +79,6 @@ function MyBoothList() {
 
   return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">내 부스 리스트</h1>
       <CategoryFilter
         selectedCategory={category}
         onCategoryChange={handleCategoryChange}
@@ -117,7 +116,7 @@ function MyBoothList() {
           </div>
         ))}
       </div>
-      <div className="mt-4">
+      <div className="mt-4 mx-auto flex justify-center">
         <button
           onClick={() => setPage(page - 1)}
           disabled={page === 0}

@@ -1,28 +1,39 @@
 .message {
-    display: flex;
-    align-items: center;
-  }
-  
-  .message.sent {
-    justify-content: flex-end;
-  }
-  
-  .message.received {
-    justify-content: flex-start;
-  }
-  
-  .profile {
-    margin-right: 10px;
-  }
-  
-  .message-text {
-    background-color: #f1f1f1;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  
-  .time {
-    font-size: 0.8rem;
-    color: gray;
-  }
-  
+  display: flex;
+  align-items: flex-end; /* 메시지 아래 정렬 */
+  margin-bottom: 8px;
+}
+
+.message.sent {
+  justify-content: flex-end;
+}
+
+.message.received {
+  justify-content: flex-start;
+}
+
+.profile {
+  margin-right: 10px;
+  width: 30px; /* 프로필 이미지 크기 설정 */
+  height: 30px;
+  border-radius: 50%; /* 프로필 이미지를 원형으로 설정 */
+  overflow: hidden; /* 넘치는 부분 숨김 */
+}
+
+.message-text {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: #f1f1f1;
+  max-width: 70%; /* 메시지 너비 제한 */
+  word-break: break-word; /* 긴 단어나 URL을 줄 바꿈 */
+}
+
+.message.received .message-text {
+  background-color: #ffffff; /* 받은 메시지 배경색 */
+}
+
+.time {
+  font-size: 0.8rem;
+  color: gray;
+  margin-left: 5px; /* 시간과 메시지 간격 추가 */
+}

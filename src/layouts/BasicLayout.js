@@ -14,14 +14,14 @@ function BasicLayout({ children }) {
     const isLoggedIn = !!userId;
 
     useEffect(() => {
-        if (isLoggedIn && !eventSourceRef.current) {
+        if (isLoggedIn && (!eventSourceRef.current || eventSourceRef.current.readyState === EventSource.CLOSED)) {
             eventSourceRef.current = new EventSourcePolyfill(
                 `${API_URLS.NOTIFICATION}/${userId}`,
                 {
                     headers: {
                         "Content-Type": "text/event-stream",
-                        "ACCESS_KEY": `${Access_key}`,
-                        "REFRESH_KEY": `${Refresh_key}`,
+                        "ACCESS_KEY": Access_key,
+                        "REFRESH_KEY": Refresh_key,
                     },
                     withCredentials: true,
                     heartbeatTimeout: 86400000,
@@ -56,7 +56,7 @@ function BasicLayout({ children }) {
                 eventSourceRef.current = null;
             }
         };
-    }, [isLoggedIn, Access_key, Refresh_key, userId]);
+    }, [isLoggedIn, userId, Access_key, Refresh_key]);
 
     return (
         <div>

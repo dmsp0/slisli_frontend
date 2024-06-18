@@ -92,7 +92,7 @@ const Mypagebutton = () =>{
                             >
                               <li onClick={() => navigate('/myPage')}>마이페이지</li>
                               <li onClick={() => navigate('/myPage?tab=favoritelist')}>좋아요 목록</li>
-                              <li onClick={() => navigate('/myPage?tab=boothheld')}>시청 목록</li>
+                              <li onClick={() => navigate('/myPage?tab=myboothlist')}>개최한 부스 목록</li>
                               <li onClick={openLogoutModal}>로그아웃</li>
                             </ul>{" "}
                             {showLogoutModal && (
