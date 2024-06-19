@@ -7,6 +7,7 @@ const Chat = ({ boothId }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [nickname] = useState(localStorage.getItem('name') || '');
+  const [name, setName] = useState([]);
   const [accessToken] = useState(localStorage.getItem('accessToken') || '');
   const [isConnected, setIsConnected] = useState(false);  
 
@@ -54,7 +55,11 @@ const Chat = ({ boothId }) => {
     }
 
     if (input.trim()) {
-      socketRef.current.emit('chat message', { message: input, userId: socketRef.current.id, nickname: nickname, roomId: boothId }); // roomId 전송
+      socketRef.current.emit('chat message', 
+        { message: input, 
+          userId: socketRef.current.id, 
+          nickname: nickname, 
+          roomId: boothId }); // roomId 전송
       setInput('');
     }
   };

@@ -201,12 +201,20 @@ function BoothDetail() {
                         </div>
                         <div className="text-center flex items-center justify-center gap-4 mt-4 pb-4">
                             {isCreator ? (
-                                <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700 transition duration-300" onClick={handleCreateRoom} disabled={isCreateRoomDisabled()}>
-                                    방 만들기
-                                </button>
+                                <button 
+                                className={`font-bold py-2 px-4 rounded-full transition duration-300 ${isCreateRoomDisabled() ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-700'} text-white`}
+                                onClick={handleCreateRoom} 
+                                disabled={isCreateRoomDisabled()}
+                            >
+                                방 만들기
+                            </button>
                             ) : (
-                                <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700 transition duration-300" onClick={handleJoinRoom} disabled={isJoinRoomDisabled()}>
-                                    참여하기
+                                <button 
+                                className={`font-bold py-2 px-4 rounded-full transition duration-300 ${isJoinRoomDisabled() ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-700'} text-white`}
+                                onClick={handleJoinRoom} 
+                                disabled={isJoinRoomDisabled()}
+                                >            
+                                참여하기
                                 </button>
                             )}
                         </div>
