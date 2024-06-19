@@ -26,7 +26,7 @@ function BoothDetail() {
                 // 여기서 데이터를 변환하여 일관된 케이스로 만듭니다.
                 boothData = {
                     ...boothData,
-                    memberId: boothData.member_id
+                    memberId: boothData.memberId
                 };
 
                 setUserBoothId(boothData.id);

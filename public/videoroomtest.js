@@ -162,7 +162,7 @@ $(document).ready(function() {
 													var audio = list[f]["audio_codec"];
 													var video = list[f]["video_codec"];
 													Janus.debug("  >> [" + id + "] " + display + " (audio: " + audio + ", video: " + video + ")");
-													newRemoteFeed(id, display, audio, video);
+                                                    // window.newRemoteFeed(id, display, audio, video);
 												}
 											}
 										} else if(event === "destroyed") {
@@ -182,7 +182,7 @@ $(document).ready(function() {
 													var audio = list[f]["audio_codec"];
 													var video = list[f]["video_codec"];
 													Janus.debug("  >> [" + id + "] " + display + " (audio: " + audio + ", video: " + video + ")");
-													newRemoteFeed(id, display, audio, video);
+                                                    // window.newRemoteFeed(id, display, audio, video);
 												}
 											} else if(msg["leaving"]) {
 												// One of the publishers has gone away?
@@ -517,7 +517,7 @@ function publishOwnFeed(useAudio) {
 
     $('#publish').attr('disabled', true).unbind('click');
     sfutest.createOffer({
-        media: { audioRecv: false, videoRecv: false, audioSend: true, videoSend: true },
+        media: { audioRecv: true, videoRecv: true, audioSend: true, videoSend: true },
         success: function(jsep) {
             Janus.debug("Got publisher SDP!", jsep);
             var publish = { request: "configure", audio: true, video: true };
@@ -541,8 +541,6 @@ function publishOwnFeed(useAudio) {
         }
     });
 }
-
-
 
 
 
@@ -572,7 +570,11 @@ window.sfutest.onmessage = function(msg, jsep) {
                         var audio = list[f]["audio_codec"];
                         var video = list[f]["video_codec"];
                         Janus.debug("  >> [" + id + "] " + display + " (audio: " + audio + ", video: " + video + ")");
-                        newRemoteFeed(id, display, audio, video);
+                        if (!feeds.some(feed => feed && feed.rfid === id)) {
+                            window.newRemoteFeed(id, display, audio, video);
+                        } else {
+                            console.warn("Feed already exists with ID:", id);
+                        }
                     }
                 }
             } else if (event === "event") {
@@ -588,7 +590,7 @@ window.sfutest.onmessage = function(msg, jsep) {
                         Janus.debug("  >> [" + id + "] " + display + " (audio: " + audio + ", video: " + video + ")");
                         if (id) {
                             if (!feeds.some(feed => feed && feed.rfid === id)) {
-                                newRemoteFeed(id, display, audio, video);
+                                // window.newRemoteFeed(id, display, audio, video);
                             } else {
                                 console.warn("Feed already exists with ID:", id);
                             }
@@ -659,77 +661,6 @@ window.sfutest.onmessage = function(msg, jsep) {
 };
 
 
-
-
-
-
-
-
-// function toggleMic() {
-//     if (window.toggleMute) {
-//         window.toggleMute();
-//     } else {
-//         console.warn("toggleMute 함수가 정의되지 않았습니다.");
-//     }
-// }
-
-// // 카메라 기능 on/off
-// function toggleCam() {
-//     if (!janusConfigured) {
-//         console.warn("Janus participant is not configured yet.");
-//         return;
-//     }
-//     if (mystream && mystream.getVideoTracks().length > 0) {
-//         var videoTrack = mystream.getVideoTracks()[0];
-//         videoTrack.enabled = !videoTrack.enabled;
-//         console.log("현재 비디오 트랙 상태: " + (videoTrack.enabled ? "켜짐" : "꺼짐"));
-
-//         // 비디오 요소 업데이트
-//         var videoElement = document.getElementById('videolocal') || document.getElementById('videoremote0');
-//         if (videoElement) {
-//             videoElement.srcObject = mystream;
-//         } else {
-//             console.warn("비디오 요소를 찾을 수 없습니다.");
-//         }
-
-//         if (sfutest && sfutest.webrtcStuff && sfutest.webrtcStuff.pc) {
-//             sfutest.send({
-//                 message: {
-//                     request: "configure",
-//                     video: videoTrack.enabled
-//                 }
-//             });
-//         } else {
-//             console.warn("Janus participant is not configured yet.");
-//         }
-//     } else {
-//         console.warn("No video track available to toggle.");
-//     }
-// }
-
-// function toggleMute() {
-//     if (!window.sfutest) {
-//         console.warn("플러그인 핸들이 없습니다.");
-//         return;
-//     }
-//     const pc = window.sfutest.webrtcStuff ? window.sfutest.webrtcStuff.pc : null;
-//     console.log("toggleMute PeerConnection state:", pc ? pc.iceConnectionState : "No PeerConnection");
-//     if (!pc) {
-//         console.warn("유효한 PeerConnection이 없습니다.");
-//         return;
-//     }
-//     const audioTracks = mystream ? mystream.getAudioTracks() : [];
-//     console.log("Current audioTracks:", audioTracks);
-//     if (audioTracks.length === 0) {
-//         console.warn("오디오 트랙이 없습니다.");
-//         return;
-//     }
-//     const audioTrack = audioTracks[0];
-//     const enabled = !audioTrack.enabled;
-//     audioTrack.enabled = enabled;
-//     console.log("Audio " + (enabled ? "unmuted" : "muted"));
-// }
-
 // [jsflux] 방나가기
 function unpublishOwnFeed() {
 	// Unpublish our stream
@@ -737,224 +668,6 @@ function unpublishOwnFeed() {
 	var unpublish = { request: "unpublish" };
 	sfutest.send({ message: unpublish });
 }
-
-// // [jsflux] 새로운 유저 들어왔을때
-// function newRemoteFeed(id, display, audio, video) {
-//     console.log("새 원격 피드 생성 시도, ID: ", id);
-
-//     if (!id) {
-//         console.error("유효하지 않은 피드 ID");
-//         return;
-//     }
-
-//     var remoteFeed = null;
-//     janus.attach({
-//         plugin: "janus.plugin.videoroom",
-//         opaqueId: opaqueId,
-//         success: function(pluginHandle) {
-//             remoteFeed = pluginHandle;
-//             remoteFeed.simulcastStarted = false;
-//             Janus.log("플러그인 부착 완료! (" + remoteFeed.getPlugin() + ", id=" + remoteFeed.getId() + ")");
-//             Janus.log("  -- 구독자입니다");
-
-//             sfutest = pluginHandle;
-
-//             sfutest.onmessage = onmessage;
-
-//             var subscribe = {
-//                 request: "join",
-//                 room: myroom,
-//                 ptype: "subscriber",
-//                 feed: id,
-//                 private_id: mypvtid
-//             };
-
-//             console.log("구독 요청 데이터:", subscribe);
-
-//             if (Janus.webRTCAdapter.browserDetails.browser === "safari" &&
-//                 (video === "vp9" || (video === "vp8" && !Janus.safariVp8))) {
-//                 if (video) {
-//                     video = video.toUpperCase();
-//                     toastr.warning("퍼블리셔가 " + video + " 코덱을 사용 중입니다. Safari에서 지원하지 않으므로 비디오를 비활성화합니다.");
-//                     subscribe["offer_video"] = false;
-//                 }
-//             }
-//             remoteFeed.videoCodec = video;
-//             remoteFeed.send({ message: subscribe });
-//         },
-//         error: function(error) {
-//             Janus.error("플러그인 부착 중 오류 발생...", error);
-//             bootbox.alert("플러그인 부착 중 오류 발생: " + error);
-//         },
-//         onmessage: function(msg, jsep) {
-//             Janus.debug(" ::: 구독자로부터 메시지를 받았습니다 :::", msg);
-//             var event = msg["videoroom"];
-//             Janus.debug("이벤트: " + event);
-//             if (msg["error"]) {
-//                 bootbox.alert(msg["error"]);
-//             } else if (event) {
-//                 if (event === "attached") {
-//                     for (var i = 1; i < 6; i++) {
-//                         if (!feeds[i]) {
-//                             feeds[i] = remoteFeed;
-//                             remoteFeed.rfindex = i;
-//                             break;
-//                         }
-//                     }
-//                     remoteFeed.rfid = msg["id"];
-//                     remoteFeed.rfdisplay = msg["display"];
-//                     Janus.log("피드 " + remoteFeed.rfid + " (" + remoteFeed.rfdisplay + ")에 성공적으로 연결되었습니다. 룸 " + msg["room"] + "에서");
-//                     $('#remote' + remoteFeed.rfindex).removeClass('hide').html(remoteFeed.rfdisplay).show();
-//                 } else if (event === "event") {
-//                     var substream = msg["substream"];
-//                     var temporal = msg["temporal"];
-//                     if ((substream !== null && substream !== undefined) || (temporal !== null && temporal !== undefined)) {
-//                         if (!remoteFeed.simulcastStarted) {
-//                             remoteFeed.simulcastStarted = true;
-//                             addSimulcastButtons(remoteFeed.rfindex, remoteFeed.videoCodec === "vp8" || remoteFeed.videoCodec === "h264");
-//                         }
-//                         updateSimulcastButtons(remoteFeed.rfindex, substream, temporal);
-//                     }
-//                 }
-//             }
-//             if (jsep) {
-//                 Janus.debug("SDP 처리 중...", jsep);
-//                 remoteFeed.createAnswer({
-//                     jsep: jsep,
-//                     media: { audioSend: false, videoSend: false },
-//                     success: function(jsep) {
-//                         Janus.debug("SDP 생성 완료!", jsep);
-//                         var body = { request: "start", room: myroom };
-//                         remoteFeed.send({ message: body, jsep: jsep });
-//                     },
-//                     error: function(error) {
-//                         Janus.error("WebRTC 오류 발생:", error);
-//                         bootbox.alert("WebRTC 오류 발생: " + error.message);
-//                     }
-//                 });
-//             }
-//         },
-//         iceState: function(state) {
-//             Janus.log("이 WebRTC PeerConnection의 ICE 상태 (피드 #" + remoteFeed.rfindex + ")가 " + state + "로 변경되었습니다.");
-//         },
-//         webrtcState: function(on) {
-//             Janus.log("Janus가 이 WebRTC PeerConnection (피드 #" + remoteFeed.rfindex + ")이 " + (on ? "업" : "다운") + " 상태라고 알립니다.");
-//         },
-//         onlocalstream: function(stream) {
-//             // 구독자 스트림은 recvonly이므로 여기서는 아무 것도 기대하지 않습니다
-//         },
-//         onremotestream: function(stream) {
-//             Janus.debug("원격 피드 #" + remoteFeed.rfindex + ", 스트림:", stream);
-//             var addButtons = false;
-//             var videoElementId = '#videoremote' + remoteFeed.rfindex;
-//             if ($(videoElementId).length === 0) {
-//                 addButtons = true;
-//                 $('#videoremote' + remoteFeed.rfindex).append('<video class="rounded centered" id="waitingvideo' + remoteFeed.rfindex + '" width="100%" height="100%" />');
-//                 $('#videoremote' + remoteFeed.rfindex).append('<video class="rounded centered relative hide" id="remotevideo' + remoteFeed.rfindex + '" width="100%" height="100%" autoplay playsinline/>');
-//                 $('#videoremote' + remoteFeed.rfindex).append(
-//                     '<span class="label label-primary hide" id="curres' + remoteFeed.rfindex + '" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;"></span>' +
-//                     '<span class="label label-info hide" id="curbitrate' + remoteFeed.rfindex + '" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;"></span>');
-//                 $("#remotevideo" + remoteFeed.rfindex).bind("playing", function() {
-//                     if (remoteFeed.spinner) {
-//                         remoteFeed.spinner.stop();
-//                     }
-//                     remoteFeed.spinner = null;
-//                     $('#waitingvideo' + remoteFeed.rfindex).remove();
-//                     if (this.videoWidth) {
-//                         $('#remotevideo' + remoteFeed.rfindex).removeClass('hide').show();
-//                     }
-//                     var width = this.videoWidth;
-//                     var height = this.videoHeight;
-//                     $('#curres' + remoteFeed.rfindex).removeClass('hide').text(width + 'x' + height).show();
-//                     if (Janus.webRTCAdapter.browserDetails.browser === "firefox") {
-//                         setTimeout(function() {
-//                             var videoElement = $("#remotevideo" + remoteFeed.rfindex).get(0);
-//                             if (videoElement) {
-//                                 var width = videoElement.videoWidth;
-//                                 var height = videoElement.videoHeight;
-//                                 $('#curres' + remoteFeed.rfindex).removeClass('hide').text(width + 'x' + height).show();
-//                             } else {
-//                                 console.error("videoElement가 정의되지 않았습니다.");
-//                             }
-//                         }, 2000);
-//                     }
-//                 });
-
-//                 $("#remotevideo" + remoteFeed.rfindex).on("loadedmetadata", function() {
-//                     var width = this.videoWidth;
-//                     var height = this.videoHeight;
-//                     $('#curres' + remoteFeed.rfindex).removeClass('hide').text(width + 'x' + height).show();
-//                 });
-//             }
-
-//             var videoElement = $(videoElementId).get(0);
-//             if (videoElement) {
-//                 Janus.attachMediaStream(videoElement, stream);
-//                 var videoTracks = stream.getVideoTracks();
-//                 if (!videoTracks || videoTracks.length === 0) {
-//                     $(videoElementId).hide();
-//                     if ($('#videoremote' + remoteFeed.rfindex + ' .no-video-container').length === 0) {
-//                         $('#videoremote' + remoteFeed.rfindex).append(
-//                             '<div class="no-video-container">' +
-//                             '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
-//                             '<span class="no-video-text">사용 가능한 원격 비디오가 없습니다</span>' +
-//                             '</div>');
-//                     }
-//                 } else {
-//                     $('#videoremote' + remoteFeed.rfindex + ' .no-video-container').remove();
-//                     $(videoElementId).removeClass('hide').show();
-//                 }
-//                 if (!addButtons) {
-//                     return;
-//                 }
-//                 if (Janus.webRTCAdapter.browserDetails.browser === "chrome" || Janus.webRTCAdapter.browserDetails.browser === "firefox" ||
-//                     Janus.webRTCAdapter.browserDetails.browser === "safari") {
-//                     $('#curbitrate' + remoteFeed.rfindex).removeClass('hide').show();
-//                     bitrateTimer[remoteFeed.rfindex] = setInterval(function() {
-//                         var bitrate = remoteFeed.getBitrate();
-//                         $('#curbitrate' + remoteFeed.rfindex).text(bitrate);
-//                         var width = videoElement.videoWidth;
-//                         var height = videoElement.videoHeight;
-//                         if (width > 0 && height > 0) {
-//                             $('#curres' + remoteFeed.rfindex).removeClass('hide').text(width + 'x' + height).show();
-//                         } else {
-//                             console.error("비디오 요소의 너비와 높이를 가져올 수 없습니다.");
-//                         }
-//                     }, 1000);
-//                 }
-//             } else {
-//                 console.error("videoElement가 정의되지 않았습니다.");
-//             }
-//         },
-//         oncleanup: function() {
-//             Janus.log(" ::: 원격 피드 " + id + "에 대한 정리 알림을 받았습니다 :::");
-//             if (remoteFeed.spinner) {
-//                 remoteFeed.spinner.stop();
-//             }
-//             remoteFeed.spinner = null;
-//             $('#remotevideo' + remoteFeed.rfindex).remove();
-//             $('#waitingvideo' + remoteFeed.rfindex).remove();
-//             $('#novideo' + remoteFeed.rfindex).remove();
-//             $('#curbitrate' + remoteFeed.rfindex).remove();
-//             $('#curres' + remoteFeed.rfindex).remove();
-//             if (bitrateTimer[remoteFeed.rfindex]) {
-//                 clearInterval(bitrateTimer[remoteFeed.rfindex]);
-//             }
-//             bitrateTimer[remoteFeed.rfindex] = null;
-//             remoteFeed.simulcastStarted = false;
-//             $('#simulcast' + remoteFeed.rfindex).remove();
-
-//             feeds[remoteFeed.rfindex] = null;
-//         }
-//     });
-// }
-
-
-
-
-
-
-
 
 
 // Helper to parse query string
@@ -1089,104 +802,37 @@ function updateSimulcastButtons(feed, substream, temporal) {
 		$('#tl' + index + '-0').removeClass('btn-primary btn-success').addClass('btn-primary');
 	}
 }
-// onlocalstream function 수정
-
-
-// function onlocalstream(stream) {
-//     Janus.debug(" ::: Got a local stream :::", stream);
-//     mystream = stream;
-//     const pc = sfutest.webrtcStuff ? sfutest.webrtcStuff.pc : null;
-//     console.log("onlocalstream PeerConnection state:", pc ? pc.iceConnectionState : "No PeerConnection");
-
-//     if (!pc) {
-//         console.warn("유효한 PeerConnection이 없습니다.");
-//         return;
-//     }
-
-//     $('#videojoin').hide();
-//     $('#videos').removeClass('hide').show();
-//     if ($('#myvideo').length === 0) {
-//         $('#videolocal').append('<video class="rounded centered" id="myvideo" width="100%" height="100%" autoplay playsinline muted="muted"/>');
-//         $('#videolocal').append('<button class="btn btn-warning btn-xs" id="mute" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;">Mute</button>');
-//         $('#mute').click(toggleMute);
-//         $('#videolocal').append('<button class="btn btn-warning btn-xs" id="unpublish" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;">Unpublish</button>');
-//         $('#unpublish').click(unpublishOwnFeed);
-//         $('#videolocal').append('<button class="btn btn-warning btn-xs" id="toggleCam" style="position: absolute; bottom: 0px; left: 100px; margin: 15px;">Toggle Camera</button>');
-//         $('#toggleCam').click(toggleCam);
-//     }
-//     $('#publisher').removeClass('hide').html(myusername).show();
-//     Janus.attachMediaStream($('#myvideo').get(0), stream);
-//     $("#myvideo").get(0).muted = "muted";
-//     if (sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
-//         sfutest.webrtcStuff.pc.iceConnectionState !== "connected") {
-//         $("#videolocal").parent().parent().block({
-//             message: '<b>Publishing...</b>',
-//             css: {
-//                 border: 'none',
-//                 backgroundColor: 'transparent',
-//                 color: 'white'
-//             }
-//         });
-//     }
-//     var videoTracks = stream.getVideoTracks();
-//     if (!videoTracks || videoTracks.length === 0) {
-//         $('#myvideo').hide();
-//         if ($('#videolocal .no-video-container').length === 0) {
-//             $('#videolocal').append(
-//                 '<div class="no-video-container">' +
-//                 '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
-//                 '<span class="no-video-text">No webcam available</span>' +
-//                 '</div>');
-//         }
-//     } else {
-//         $('#videolocal .no-video-container').remove();
-//         $('#myvideo').removeClass('hide').show();
-//     }
-
-//     // ICE 연결 상태 변경에 대한 로깅 추가
-//     sfutest.webrtcStuff.pc.oniceconnectionstatechange = function(event) {
-//         Janus.log("ICE connection state changed to " + sfutest.webrtcStuff.pc.iceConnectionState);
-//         if (sfutest.webrtcStuff.pc.iceConnectionState === "connected" || sfutest.webrtcStuff.pc.iceConnectionState === "completed") {
-//             Janus.log("ICE connection established");
-//             $("#videolocal").parent().parent().unblock();
-//         } else if (sfutest.webrtcStuff.pc.iceConnectionState === "failed" || sfutest.webrtcStuff.pc.iceConnectionState === "disconnected") {
-//             Janus.warn("ICE connection failed or disconnected. Please check your network connection.");
-//             $("#videolocal").parent().parent().unblock();
-//         }
-//     };
-
-//     // 로컬 스트림의 각 트랙 상태를 로깅
-//     stream.getTracks().forEach(track => {
-//         Janus.log(`Track kind: ${track.kind}, enabled: ${track.enabled}, muted: ${track.muted}`);
-//         track.onended = () => {
-//             Janus.log(`Track of kind ${track.kind} ended.`);
-//         };
-//     });
-    
-// }
-
 
 function onlocalstream(stream) {
     console.log("Local stream received:", stream);
-    console.log("isHost value:", window.isHost); // 디버깅용
+    const isHost = localStorage.getItem('isHost') === 'true'; // localStorage에서 isHost 값을 가져옴
+    console.log("isHost value:", isHost); // 디버깅용
 
     const localVideoElement = document.getElementById('videolocal');
     const remoteVideoElement = document.getElementById('videoremote0');
-    const myVideoElement = window.isHost ? localVideoElement : remoteVideoElement;
+    const myVideoElement = isHost ? localVideoElement : remoteVideoElement;
 
     if (myVideoElement) {
         if ('srcObject' in myVideoElement) {
-            myVideoElement.srcObject = stream;
+            if (myVideoElement.srcObject !== stream) {
+                myVideoElement.srcObject = stream;
+            } else {
+                console.warn("Element already has the stream.");
+            }
         } else {
-            myVideoElement.src = window.URL.createObjectURL(stream);
+            if (myVideoElement.src !== window.URL.createObjectURL(stream)) {
+                myVideoElement.src = window.URL.createObjectURL(stream);
+            } else {
+                console.warn("Element already has the stream.");
+            }
         }
         myVideoElement.muted = true;
         myVideoElement.volume = 0;
         myVideoElement.play().catch(error => {
-            console.error("Error playing the video:", error);
+            console.error("비디오 재생 오류:", error);
         });
     } else {
-        console.error("myVideoElement not found.");
+        console.error("myVideoElement를 찾을 수 없습니다.");
     }
 
     mystream = stream;
@@ -1200,7 +846,7 @@ function onlocalstream(stream) {
                     onlocalstream(newStream);
                 })
                 .catch(err => {
-                    console.error("Failed to get new user media", err);
+                    console.error("새 사용자 미디어 가져오기 실패", err);
                 });
         };
     });
@@ -1209,11 +855,15 @@ function onlocalstream(stream) {
 
 
 
-
 function onremotestream(stream) {
-    Janus.debug(" ::: Got a remote stream :::", stream);
+    Janus.debug(" ::: 원격 스트림 수신 :::", stream);
 
-    // Find an available video element for the remote stream
+    if (stream.id === mystream.id) {
+        console.log("자신의 스트림이므로 무시합니다.");
+        return;
+    }
+
+    // 원격 스트림을 위한 사용 가능한 비디오 요소 찾기
     let availableIndex = -1;
     for (let i = 1; i <= numParticipants - 2; i++) {
         const videoElement = document.getElementById(`remotevideo${i}`);
@@ -1224,13 +874,13 @@ function onremotestream(stream) {
     }
 
     if (availableIndex === -1) {
-        console.error('No available video element for remote stream.');
+        console.error('원격 스트림을 위한 사용 가능한 비디오 요소가 없습니다.');
         return;
     }
 
     const videoElement = document.getElementById(`remotevideo${availableIndex}`);
     if (!videoElement) {
-        console.error('Remote video element not found.');
+        console.error('원격 비디오 요소를 찾을 수 없습니다.');
         return;
     }
 
@@ -1249,17 +899,17 @@ function onremotestream(stream) {
                 curResElement.classList.remove('hide');
                 curResElement.textContent = `${videoWidth}x${videoHeight}`;
             } else {
-                console.error(`Element with id curres${availableIndex} not found.`);
+                console.error(`curres${availableIndex} 요소를 찾을 수 없습니다.`);
             }
         } else {
-            console.error('Video dimensions are not available.');
+            console.error('비디오 크기를 가져올 수 없습니다.');
         }
     });
 
     videoElement.play().then(() => {
-        console.log("Remote video playing");
+        console.log("원격 비디오 재생 중");
     }).catch((error) => {
-        console.error("Error playing remote video:", error);
+        console.error("원격 비디오 재생 오류:", error);
     });
 }
 
@@ -1305,22 +955,26 @@ function initjanus(callback) {
         return;
     }
     console.log("Janus 초기화 시작");
-    janus = new Janus({
-        server: server,
-        success: function () {
-            console.log("Janus 세션 생성 성공");
-            attachPlugin(callback);
-        },
-        error: function (error) {
-            Janus.error(error);
-            bootbox.alert("Janus 서버 연결 오류: " + error, function () {
+    if (!janus) {
+        janus = new Janus({
+            server: server,
+            success: function () {
+                console.log("Janus 세션 생성 성공");
+                attachPlugin(callback);
+            },
+            error: function (error) {
+                Janus.error(error);
+                bootbox.alert("Janus 서버 연결 오류: " + error, function () {
+                    window.location.reload();
+                });
+            },
+            destroyed: function () {
                 window.location.reload();
-            });
-        },
-        destroyed: function () {
-            window.location.reload();
-        },
-    });
+            },
+        });
+    } else {
+        attachPlugin(callback);
+    }
 }
 
 function attachPlugin(callback, attempt = 1) {
@@ -1415,7 +1069,13 @@ function attachPlugin(callback, attempt = 1) {
                             var audio = list[f]["audio_codec"];
                             var video = list[f]["video_codec"];
                             Janus.debug("  >> [" + id + "] " + display + " (오디오: " + audio + ", 비디오: " + video + ")");
-                            newRemoteFeed(id, display, audio, video);
+                            // 이미 구독된 피드인지 확인
+                            if (!feeds.some(feed => feed && feed.rfid === id)) {
+        
+                                window.newRemoteFeed(id, display, audio, video);
+                            } else {
+                                console.warn("Feed already exists with ID:", id);
+                            }
                         }
                     }
                 } else if (event === "destroyed") {
@@ -1436,7 +1096,11 @@ function attachPlugin(callback, attempt = 1) {
                             var audio = list[f]["audio_codec"];
                             var video = list[f]["video_codec"];
                             Janus.debug("  >> [" + id + "] " + display + " (오디오: " + audio + ", 비디오: " + video + ")");
-                            newRemoteFeed(id, display, audio, video);
+                            if (!feeds.some(feed => feed && feed.rfid === id)) {
+                                window.newRemoteFeed(id, display, audio, video);
+                            } else {
+                                console.warn("Feed already exists with ID:", id);
+                            }
                         }
                     } else if (msg["leaving"]) {
                         var leaving = msg["leaving"];
@@ -1486,7 +1150,7 @@ function attachPlugin(callback, attempt = 1) {
                 window.sfutest.handleRemoteJsep({ jsep: jsep });
             }
         },
-        onlocalstream: onlocalstream,
+        onlocalstream: window.onlocalstream,
         onremotestream: onremotestream,
         oncleanup: function() {
             Janus.log(" ::: 플러그인 핸들링 클린업 :::");

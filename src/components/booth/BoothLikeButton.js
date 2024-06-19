@@ -9,7 +9,7 @@ const BoothLikeButton = ({boothId, member_id}) =>{
     useEffect(() => {
         const checkIfLiked = async () => {
             if (!member_id) {
-                alert("로그인을 해주세요");
+                // alert("로그인을 해주세요");
                 return;
             }
             try {
