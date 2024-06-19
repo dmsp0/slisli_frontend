@@ -89,10 +89,10 @@ function BoothDetail() {
                 request: "exists",
                 room: parseInt(roomNumber, 10)
             },
-            success: function(result) {
+            success: function (result) {
                 callback(result.exists);
             },
-            error: function(error) {
+            error: function (error) {
                 console.error("Error checking room existence:", error);
                 callback(false);
             }
@@ -178,30 +178,28 @@ function BoothDetail() {
     console.log("Rendering component, isCreator:", isCreator);
 
     return (
-            <div className="h-screen container mx-auto p-20 flex justify-center">
-                <div className="bg-white rounded-lg overflow-hidden flex flex-col sm:flex-row w-4/5" >
-                    <div className="relative w-full sm:w-1/2">
+        <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen flex flex-col items-center">
+            <div className="container mx-auto p-20 flex justify-center flex-1">
+                <div className="bg-white rounded-lg flex flex-col sm:flex-row w-4/5 h-auto" >
+                    <div className="relative w-full sm:w-1/2 h-auto">
                         <img src={booth.imgPath} alt={booth.title} className="absolute top-0 left-0 w-full h-full object-cover" />
                     </div>
-                    <div className="w-full sm:w-1/2 flex-col justify-center p-4">
+                    <div className="w-full sm:w-1/2 flex-col justify-center p-2">
                         <div className='text-center'>
-                            <div className='flex justify-between items-center mb-10 ml-10'>
-                                <h1 className="text-3xl font-bold">{booth.title}</h1>
+                            <div className='flex justify-between items-center mb-10 ml-10 pr-10'>
+                                <h1 className="text-3xl font-bold pt-4">{booth.title}</h1>
                                 <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
                             </div>
-                            <div className='justify-center text-left ml-10 mb-10'>
+                            <div className='justify-center text-left ml-10 mb-10 pr-8'>
                                 <p className="text-gray-700">{booth.info}</p>
-                                <p className="text-gray-700"><span className="font-semibold">카테고리:</span> {booth.category}</p>
-                                <p className="text-gray-700"><span className="font-semibold">일시:</span> {booth.date}</p>
-                                <p className="text-gray-700"><span className="font-semibold">시작 시간:</span> {booth.startTime}</p>
-                                <p className="text-gray-700"><span className="font-semibold">종료 시간:</span> {booth.endTime}</p>
-                                <p className="text-gray-700"><span className="font-semibold">참가 인원:</span> {booth.maxPeople}</p>
-                                <p className="text-gray-700"><span className="font-semibold">주최자:</span> {booth.openerName}</p>
-                                <p className="text-gray-700"><span className="font-semibold">방번호:</span> {roomNumber}</p>
-                                <p className="text-gray-700"><span className="font-semibold">대화명:</span> {username}</p>
+                                <p className="text-gray-700 mt-4"><span className="font-semibold">카테고리</span> <br /> {booth.category}</p>
+                                <p className="text-gray-700 mt-4"><span className="font-semibold">일시</span> <br /> {booth.date}</p>
+                                <p className="text-gray-700 mt-4"><span className="font-semibold">부스 시간</span> <br /> {booth.startTime} ~ {booth.endTime}</p>
+                                <p className="text-gray-700 mt-4"><span className="font-semibold">참가 인원</span> <br /> {booth.maxPeople}</p>
+                                <p className="text-gray-700 mt-4"><span className="font-semibold">주최자</span> <br /> {booth.openerName}</p>
                             </div>
                         </div>
-                        <div className="text-center flex items-center justify-center gap-4">
+                        <div className="text-center flex items-center justify-center gap-4 mt-4 pb-4">
                             {isCreator ? (
                                 <button className="bg-blue-500 text-white font-bold py-2 px-4 rounded-full hover:bg-blue-700 transition duration-300" onClick={handleCreateRoom} disabled={isCreateRoomDisabled()}>
                                     방 만들기
@@ -215,7 +213,7 @@ function BoothDetail() {
                     </div>
                 </div>
             </div>
-        
+        </div>
     );
 }
 
