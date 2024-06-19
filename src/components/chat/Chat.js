@@ -17,19 +17,19 @@ const Chat = ({ boothId }) => {
 
     const socket = io('http://localhost:5000', {
       path: '/socket',
-      auth: { token: accessToken }
+      auth: { token: accessToken, userId: nickname }
     });
 
     socketRef.current = socket;
 
     socket.on('connect', () => {
       console.log('Connected to server');
-      socket.emit('joinRoom', boothId);
+      socket.emit('joinRoom', boothId); // 채팅방에 참여하는 이벤트 보내기
       setIsConnected(true);  
     });
 
     socket.on('chat message', (data) => {
-      setMessages(prevMessages => [...prevMessages, data]);
+      setMessages(prevMessages => [...prevMessages, { ...data, time: new Date().toLocaleTimeString() }]);
     });
 
     socket.on('disconnect', () => {
@@ -45,7 +45,7 @@ const Chat = ({ boothId }) => {
       socket.disconnect();
       socketRef.current = null;
     };
-  }, [accessToken, boothId]);
+  }, [accessToken, boothId, nickname]);
 
   const sendMessage = () => {
     if (!isConnected) {
@@ -54,7 +54,7 @@ const Chat = ({ boothId }) => {
     }
 
     if (input.trim()) {
-      socketRef.current.emit('chat message', { message: input, name: nickname, time: new Date().toLocaleTimeString() });
+      socketRef.current.emit('chat message', { message: input, userId: socketRef.current.id, nickname: nickname, roomId: boothId }); // roomId 전송
       setInput('');
     }
   };
@@ -63,7 +63,13 @@ const Chat = ({ boothId }) => {
     <div className="chat-container">
       <div className="chat-list">
         {messages.map((msg, index) => (
-          <Message key={index} name={msg.name} msg={msg.message} time={msg.time} nickname={nickname} />
+          <Message 
+            key={index} 
+            message={msg.message} 
+            userId={msg.userId} 
+            time={msg.time} 
+            nickname={msg.nickname} 
+          />
         ))}
       </div>
       <div className="input-container">
