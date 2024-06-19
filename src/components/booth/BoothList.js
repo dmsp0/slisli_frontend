@@ -61,21 +61,24 @@ function BoothList({ type }) {
 
   const renderTitle = () => {
     if (type === "COMPANY") {
-      return <h1 className="text-3xl font-bold mb-6 mt-6 text-center">기업부스 리스트</h1>;
+      return <h1 className="text-3xl font-bold mb-6 mt-6 text-center text-white">기업부스 리스트</h1>;
     } else if (type === "INDIVIDUAL") {
-      return <h1 className="text-3xl font-bold mb-6 mt-6 text-center">개인부스 리스트</h1>;
+      return <h1 className="text-3xl font-bold mb-6 mt-6 text-center text-white">개인부스 리스트</h1>;
     }
     return null;
   };
 
   return (
-    <div className="container mx-auto p-4">
+    <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen flex flex-col items-center">
+
+    <div className="container mx-auto">
       {renderTitle()}
       
       <CategoryFilter
         selectedCategory={category}
         onCategoryChange={handleCategoryChange}
       />
+      
       <div className="flex justify-center mb-4">
         <form onSubmit={handleSearchSubmit} className="w-full md:w-2/3 flex">
           <input
@@ -101,9 +104,9 @@ function BoothList({ type }) {
         </form>
       </div>
       
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-10">
         {booths.map((booth) => (
-          <div key={booth.boothId} className="border p-4 rounded-lg shadow hover:shadow-lg transition-shadow duration-200">
+          <div key={booth.boothId} className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200">
             <img src={booth.imgPath} 
               alt={booth.title}
               className="w-full h-64 object-cover mb-4 rounded"
@@ -138,6 +141,7 @@ function BoothList({ type }) {
         >
           다음
         </button>
+      </div>
       </div>
     </div>
   );

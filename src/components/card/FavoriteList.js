@@ -61,7 +61,7 @@ function FavoriteList() {
         selectedCategory={category}
         onCategoryChange={handleCategoryChange}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
         {likedBooths.length > 0 ? (
           likedBooths.map((booth) => (
             <div key={booth.boothId} className="border-2 p-4 flex items-center border-gray-300 rounded-lg shadow-md">

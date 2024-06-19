@@ -13,8 +13,7 @@ const navigation = [
 function TopNav() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
     const [scrollY, setScrollY] = useState(0);
-    const {authState, logout}=useContext(AuthContext);
-
+    const { authState, logout } = useContext(AuthContext);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
 
     // 스크롤이벤트
@@ -34,7 +33,6 @@ function TopNav() {
         setMobileMenuOpen(!mobileMenuOpen);
     };
 
-    
     const openLogoutModal = () => {
         setShowLogoutModal(true);
     };
@@ -43,10 +41,10 @@ function TopNav() {
         setShowLogoutModal(false);
     };
 
-    const closeLogout = ()=>{
+    const closeLogout = () => {
         logout();
         setShowLogoutModal(false);
-    }
+    };
 
     return (
         <>
@@ -60,7 +58,7 @@ function TopNav() {
                             </p>
                         </a>
                     </div>
-                    <div className="flex lg:hidden">
+                    <div className="nav flex lg:hidden">
                         <button
                             type="button"
                             className="-m-2.5 inline-flex items-center justify-center rounded-md p-2.5"
@@ -71,16 +69,16 @@ function TopNav() {
                     </div>
                     <div className="hidden lg:flex lg:gap-x-12">
                         {navigation.map((item) => (
-                            <a key={item.name} href={item.href} className={`text-sm font-semibold leading-6 ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
+                            <a key={item.name} href={item.href} className={`text-sm font-semibold leading-6 navigation-font ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
                                 {item.name}
                             </a>
                         ))}
                     </div>
                     <div className={`hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-5`}>
-                        {localStorage.accessToken ? (
+                        {authState.accessToken ? (
                             <Mypagebutton />
                         ) : (
-                            <a href="/login" className={`text-sm font-semibold leading-6  ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
+                            <a href="/login" className={`text-sm font-semibold leading-6 navigation-font ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
                             로그인 <span aria-hidden="true">&rarr;</span>
                             </a>
                         )}
@@ -113,7 +111,7 @@ function TopNav() {
                                     <a
                                         key={item.name}
                                         href={item.href}
-                                        className="-mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
+                                        className="navigation-font -mx-3 block rounded-lg px-3 py-2 text-base font-semibold leading-7 text-gray-900 hover:bg-gray-50"
                                     >
                                         {item.name}
                                     </a>
@@ -122,15 +120,15 @@ function TopNav() {
                             <div className="py-6">
                                 {authState.accessToken ? (
                                     <>
-                                    <a href="/myPage" className="-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
+                                    <a href="/myPage" className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
                                         {authState.name}님의 마이페이지
                                     </a>
-                                    <button onClick={openLogoutModal} className="-mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
+                                    <button onClick={openLogoutModal} className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
                                         로그아웃
                                     </button>
                                     </>
                                 ) : (
-                                    <a href="/login" className="-mx-3 block rounded-lg px-3 py-2.5 text-base  leading-7 text-gray-900 hover:bg-gray-50">
+                                    <a href="/login" className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
                                     로그인
                                     </a>
                                 )}

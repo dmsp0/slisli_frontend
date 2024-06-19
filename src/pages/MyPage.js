@@ -38,7 +38,7 @@ function MyPage() {
             case 'myboothlist':
                 return <MyBoothList />;
             default:
-                return null;
+                return <FavoriteList />;
         }
     };
 

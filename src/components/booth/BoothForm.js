@@ -114,7 +114,7 @@ function BoothForm() {
   };
 
   return (
-    <div>
+    <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen pt-6 pb-10">
       <form
         onSubmit={handleSubmit}
         className="max-w-xl mx-auto p-6 bg-white border border-gray-300 rounded-lg shadow-md"
