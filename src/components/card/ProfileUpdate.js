@@ -1,14 +1,17 @@
 import React, { useState } from 'react';
 import axios from 'axios';
 import { API_URLS } from "../../api/apiConfig";
+import { useNavigate } from 'react-router-dom';
 
-const ProfileUpdate = ({ userData, setUserData, closeEditForm, navigate }) => {
+const ProfileUpdate = ({ closeEditForm }) => {
+    const navigate = useNavigate();
+
     const [data, setData] = useState({
-        email: userData.email,
+        email: localStorage.getItem('email'),
         password: "",
         passwordCheck: "",
-        name: userData.name,
-        profileImgPath: null
+        name: localStorage.getItem('name'),
+        profileImgPath: localStorage.getItem('profileImgPath')
     });
 
     const [passwordValid, setPasswordValid] = useState(false);
@@ -44,9 +47,9 @@ const ProfileUpdate = ({ userData, setUserData, closeEditForm, navigate }) => {
         const formData = new FormData();
         const filteredData = {
             email: data.email,
-            ...(data.password && { password: data.password }),
-            ...(data.passwordCheck && { passwordCheck: data.passwordCheck }),
-            ...(data.name && { name: data.name })
+            password:data.password,
+            passwordCheck:data.passwordCheck,
+            name:data.name
         };
         formData.append(
             "member_profile",
@@ -69,14 +72,16 @@ const ProfileUpdate = ({ userData, setUserData, closeEditForm, navigate }) => {
                 withCredentials: true
             });
 
-            if (response.status === 200) {
-                alert('정보가 성공적으로 수정되었습니다.');
-                setUserData({ ...userData, name: data.name, email: data.email });
-                closeEditForm();
-                navigate('/mypage');
-            } else {
-                alert(`정보 수정에 실패했습니다. ${response.data.message}`);
-            }
+            const { profileImgPath } = response.data;
+
+        localStorage.setItem('email', data.email);
+        localStorage.setItem('name', data.name);
+        localStorage.setItem('profileImgPath', profileImgPath); // 프로필 이미지 경로 저장
+
+        setShowUpdateModal(false);
+        closeEditForm();
+        navigate('/myPage');
+
         } catch (error) {
             alert('네트워크 오류가 발생했습니다. 다시 시도해주세요.');
         }
@@ -159,6 +164,7 @@ const ProfileUpdate = ({ userData, setUserData, closeEditForm, navigate }) => {
 
             <div className="flex justify-center space-x-4 mt-6">
                 <button
+                type="button"
                     onClick={openUpdateModal}
                     className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
                 >
@@ -178,12 +184,14 @@ const ProfileUpdate = ({ userData, setUserData, closeEditForm, navigate }) => {
                         <p>수정하시겠습니까?</p>
                         <div className="mt-4 flex justify-end">
                             <button
+                            type="button"
                                 className="py-2 px-4 bg-gray-300 hover:bg-gray-400 text-black rounded-lg mr-2"
                                 onClick={closeUpdateModal}
                             >
                                 아니오
                             </button>
                             <button
+                            type="button"
                                 className="py-2 px-4 bg-blue-500 hover:bg-blue-600 text-white rounded-lg"
                                 onClick={handleModified}
                             >

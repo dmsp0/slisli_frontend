@@ -12,29 +12,31 @@ function BoothList({ type }) {
   const [page, setPage] = useState(0);
   const [size] = useState(9); // 한 페이지에 9개씩 보여줌
 
-  useEffect(() => {
-    async function fetchBooths() {
-      try {
-        const token = localStorage.getItem("token"); // 로컬 스토리지에서 JWT 토큰을 가져옴
-        const response = await axios.get(API_URLS.BOOTH_GET_LIST, {
-          params: {
-            page,
-            size,
-            category,
-            search, // 검색어 추가
-            type, // 여기에 type 추가
-          },
-          headers: {
-            Authorization: `Bearer ${token}`, // 요청 헤더에 JWT 토큰을 추가
-          },
-        });
-        setBooths(response.data.content); // 페이지네이션 데이터 구조에 맞게 수정
-      } catch (error) {
-        console.error("Error fetching booths", error);
-      }
+  // 검색 및 필터링된 데이터를 가져오는 함수
+  const fetchBooths = async (page, size, category, search, type) => {
+    try {
+      const token = localStorage.getItem("token"); // 로컬 스토리지에서 JWT 토큰을 가져옴
+      const response = await axios.get(API_URLS.BOOTH_GET_LIST, {
+        params: {
+          page,
+          size,
+          category,
+          search,
+          type,
+        },
+        headers: {
+          Authorization: `Bearer ${token}`, // 요청 헤더에 JWT 토큰을 추가
+        },
+      });
+      setBooths(response.data.content); // 페이지네이션 데이터 구조에 맞게 수정
+    } catch (error) {
+      console.error("Error fetching booths", error);
     }
-    fetchBooths();
-  }, [page, size, category, search, type]);
+  };
+
+  useEffect(() => {
+    fetchBooths(page, size, category, search, type);
+  }, [page, size, category, type]); // 페이지, 사이즈, 카테고리 또는 타입이 변경될 때만 서버 요청
 
   const handleCategoryChange = (newCategory) => {
     setCategory(newCategory);
@@ -42,8 +44,19 @@ function BoothList({ type }) {
   };
 
   const handleSearchChange = (e) => {
-    setSearch(e.target.value);
-    setPage(0); // 검색어가 변경되면 첫 페이지로 이동
+    setSearch(e.target.value); // 입력 값만 업데이트하고 서버 요청은 하지 않음
+  };
+
+  const handleSearchSubmit = (e) => {
+    e.preventDefault();
+    setPage(0); // 검색을 누르면 첫 페이지로 이동
+    fetchBooths(0, size, category, search, type); // 검색어를 사용하여 서버 요청 발생
+  };
+
+  const handleSearchReset = () => {
+    setSearch(""); // 검색어 상태 초기화
+    setPage(0); // 첫 페이지로 이동
+    fetchBooths(0, size, category, "", type); // 검색어 없이 전체 데이터를 다시 로드
   };
 
   const renderTitle = () => {
@@ -64,13 +77,28 @@ function BoothList({ type }) {
         onCategoryChange={handleCategoryChange}
       />
       <div className="flex justify-center mb-4">
-        <input
-          type="text"
-          value={search}
-          onChange={handleSearchChange}
-          placeholder="부스 제목 검색"
-          className="mt-4 px-3 py-2 border rounded-lg w-full md:w-2/3"
-        />
+        <form onSubmit={handleSearchSubmit} className="w-full md:w-2/3 flex">
+          <input
+            type="text"
+            value={search}
+            onChange={handleSearchChange}
+            placeholder="부스 제목 검색"
+            className="mt-4 px-3 py-2 border rounded-lg w-full"
+          />
+          <button
+            type="submit"
+            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg ml-2"
+          >
+            검색
+          </button>
+          <button
+            type="button"
+            onClick={handleSearchReset}
+            className="mt-4 px-4 py-2 bg-gray-500 text-white rounded-lg ml-2"
+          >
+            초기화
+          </button>
+        </form>
       </div>
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
@@ -90,7 +118,7 @@ function BoothList({ type }) {
               >
                 자세히 보기
               </Link>
-              <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')}/>
+              <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
             </div>
           </div>
         ))}

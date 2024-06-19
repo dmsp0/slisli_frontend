@@ -9,6 +9,8 @@ import FavoriteList from '../components/card/FavoriteList';
 import BoothHeldForm from '../components/card/BoothHeldForm';
 import MyBoothList from '../components/card/MyBoothList';
 import ProfileUpdate from '../components/card/ProfileUpdate';
+import { API_URLS } from '../api/apiConfig';
+import defaultImg from '../img/profile.png';
 
 function MyPage() {
     const navigate = useNavigate();
@@ -27,36 +29,13 @@ function MyPage() {
     const initialTab = queryParams.get('tab') || 'favoritelist';
     const [activeTab, setActiveTab] = useState(initialTab);
 
-    useEffect(() => {
-        const storedToken = localStorage.getItem('accessToken');
-        const storedEmail = localStorage.getItem('email');
-        const storedName = localStorage.getItem('name');
-        const profileImg = localStorage.getItem('profileImgPath');
-
-        if (storedToken) {
-            setToken(storedToken);
-            setEmail(storedEmail);
-            setName(storedName);
-            setprofileImg(profileImg)
-        } else {
-            alert('로그인이 필요합니다.');
-            navigate('/login');
-        }
-    }, [navigate]);
-
-    const userProfile = {
-        nickname: name,
-        email: email,
-        profileImg: profileImg
-    };
-
     const renderContent = () => {
         switch (activeTab) {
             case 'boothheld':
                 return <BoothHeldForm />;
             case 'favoritelist':
                 return <FavoriteList />;
-            case 'historylist':
+            case 'myboothlist':
                 return <MyBoothList />;
             default:
                 return null;
@@ -68,15 +47,10 @@ function MyPage() {
         navigate(`?tab=${tab}`);
     };
 
-    const setUserData = (data) => {
-        setName(data.name);
-        setEmail(data.email);
-    };
-
     const handleDelete = async (e) => {
         e.preventDefault();
         try {
-            const response = await axios.post('/delete', {
+            const response = await axios.post(API_URLS.MEMBER_DELETE, {
                 member_id: localStorage.getItem('member_id')
             }, {
                 headers: {
@@ -124,14 +98,18 @@ function MyPage() {
                 <div className="bg-white w-full md:w-1/2 p-5 shadow-md rounded-md ">
                     <div className="grid grid-cols-1 md:grid-cols-2 items-center w-full h-auto bg-white rounded-md">
                         <div className="flex justify-center md:justify-center md:mr-8">
-                            <img src={profileImg} alt="프로필 이미지" className="w-40 h-40 rounded-md" />
+                        <img
+                            src={localStorage.getItem('profileImgPath') == 'null' ? defaultImg : localStorage.getItem('profileImgPath')}
+                            alt="프로필 이미지"
+                            className="w-40 h-40 rounded-md"
+                            />
                         </div>
                         <div className="flex flex-col items-center md:items-start">
                             <br />
                             <p className="text-lg">닉네임
-                                <br />{userProfile.nickname}</p>
+                                <br />{localStorage.getItem('name')}</p>
                             <br />
-                            <p className="text-md">{userProfile.email}</p>
+                            <p className="text-md">{localStorage.getItem('email')}</p>
                             {!showEditForm && (
                                 <div className="flex justify-center space-x-4 mt-6">
                                     <button className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600" onClick={() => setShowEditForm(true)}>
@@ -148,12 +126,7 @@ function MyPage() {
                         </div>
                     </div>
                     {showEditForm && (
-                        <ProfileUpdate
-                            userData={{ name, email }}
-                            setUserData={setUserData}
-                            closeEditForm={() => setShowEditForm(false)}
-                            navigate={navigate}
-                        />
+                        <ProfileUpdate closeEditForm={() => setShowEditForm(false)} />
                     )}
                 </div>
                 {showDeleteModal && (
@@ -214,8 +187,8 @@ function MyPage() {
                                 부스 등록
                             </div>
                             <div
-                                className={`flex-1 p-2 border-b-2 cursor-pointer transition-colors duration-300 text-center rounded-tr-md ${activeTab === 'historylist' ? 'border-blue-900 bg-blue-900 text-white' : 'border-transparent bg-white text-black'}`}
-                                onClick={() => handleTabClick('historylist')}
+                                className={`flex-1 p-2 border-b-2 cursor-pointer transition-colors duration-300 text-center rounded-tr-md ${activeTab === 'myboothlist' ? 'border-blue-900 bg-blue-900 text-white' : 'border-transparent bg-white text-black'}`}
+                                onClick={() => handleTabClick('myboothlist')}
                             >
                                 내 부스 목록
                             </div>

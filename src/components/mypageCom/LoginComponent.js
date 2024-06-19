@@ -170,7 +170,7 @@ const LoginComponent = () => {
                 <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-md mx-auto">
                         <p>로그인 성공!</p>
-                        <p>{`${userName}님 환영합니다!`}</p>
+                        <p>{`${localStorage.getItem('name')}님 환영합니다!`}</p>
                         <div className="mt-4 flex justify-end mx-auto">
                             <button
                                 className="py-2 px-4 bg-blue-400 hover:bg-blue-500 text-white rounded-lg mr-2 mx-auto"
