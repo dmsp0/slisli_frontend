@@ -4,6 +4,7 @@ import axios from "axios";
 import { API_URLS } from "../../api/apiConfig";
 import BoothLikeButton from "../booth/BoothLikeButton";
 import CategoryFilter from "./CategoryFilter";
+import {motion} from "framer-motion";
 
 function BoothList({ type }) {
   const [booths, setBooths] = useState([]);
@@ -71,7 +72,7 @@ function BoothList({ type }) {
   return (
     <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen flex flex-col items-center">
 
-    <div className="container mx-auto">
+    <div className="container mx-auto mt-20">
       {renderTitle()}
       
       <CategoryFilter
@@ -79,25 +80,25 @@ function BoothList({ type }) {
         onCategoryChange={handleCategoryChange}
       />
       
-      <div className="flex justify-center mb-4">
-        <form onSubmit={handleSearchSubmit} className="w-full md:w-2/3 flex">
+      <div className="flex flex-row justify-center my-10">
+        <form onSubmit={handleSearchSubmit} className="flex flex-row w-full md:w-3/4">
           <input
             type="text"
             value={search}
             onChange={handleSearchChange}
             placeholder="부스 제목 검색"
-            className="mt-4 px-3 py-2 border rounded-lg w-full"
+            className="px-3 py-2 border rounded-lg h-12 basis-10/12"
           />
           <button
             type="submit"
-            className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg ml-2"
+            className="py-2 px-4 bg-blue-500 text-white rounded-lg ml-2 h-12 basis-1/12"
           >
             검색
           </button>
           <button
             type="button"
             onClick={handleSearchReset}
-            className="mt-4 px-4 py-2 bg-gray-500 text-white rounded-lg ml-2"
+            className="py-2 px-4 bg-gray-500 text-white rounded-lg ml-2 h-12 basis-1/12"
           >
             초기화
           </button>
@@ -106,26 +107,33 @@ function BoothList({ type }) {
       
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-10">
         {booths.map((booth) => (
-          <div key={booth.boothId} className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200">
-            <img src={booth.imgPath} 
-              alt={booth.title}
-              className="w-full h-64 object-cover mb-4 rounded"
-            />
-            <h2 className="text-xl font-bold mb-2">{booth.title}</h2>
-            <p className="text-gray-700 mb-2">{booth.info}</p>
-            <p className="text-gray-700 mb-2">카테고리: {booth.category}</p>
-            <div className="flex justify-between items-center">
-              <Link
-                to={`/booth/${booth.boothId}`}
-                className="text-blue-500 hover:underline"
-              >
-                자세히 보기
-              </Link>
-              <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
-            </div>
-          </div>
-        ))}
+            <motion.div 
+            key={booth.boothId} 
+            className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200"
+            whileHover={{ scale: 1.03 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+                <Link to={`/booth/${booth.boothId}`}>
+                    <img 
+                        src={booth.imgPath} 
+                        alt={booth.title}
+                        className="w-full h-64 object-cover mb-4 rounded"
+                    />
+                </Link>
+                <div className="flex justify-between items-start mb-4">
+                    <Link to={`/booth/${booth.boothId}`} >
+                        <h2 className="text-xl font-bold text-blue-800">{booth.title}</h2>
+                    </Link>
+                    <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
+                </div>
+                <Link to={`/booth/${booth.boothId}`} className="block">
+                    <p className="text-gray-700 mb-2">{booth.info}</p>
+                    <p className="text-gray-700 mb-2">카테고리: {booth.category}</p>
+                    <p className="text-gray-700 mb-2">일시: {booth.date}, {booth.startTime} ~ {booth.endTime}</p>
+                </Link>
+            </motion.div>
+          ))}
       </div>
+
       
       <div className="mt-4 flex justify-center">
         <button

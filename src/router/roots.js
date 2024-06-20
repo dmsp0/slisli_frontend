@@ -1,8 +1,9 @@
 import { Suspense, lazy } from "react";
 import Loading from "../components/common/Loading";
 import BoothInsertPage from "../pages/BoothInsertPage";
-import AuthKakao from "../components/mypageCom/AuthKakao";
+import AuthKakao from "../components/signInUp/AuthKakao";
 import { AuthProvider } from "../context/AuthContext";
+import SiteInfoPage from "../pages/SiteInfoPage";
 const { createBrowserRouter } = require("react-router-dom");
 
 const Home = lazy(() => import("../pages/IndexPage"));
@@ -154,6 +155,17 @@ element: (
       <AuthProvider>
       <Suspense fallback={<Loading />}>
         <BoothForm />
+      </Suspense>
+      </AuthProvider>
+    ),
+  },
+  {
+
+    path: "/siteInfo",
+    element: (
+      <AuthProvider>
+      <Suspense fallback={<Loading />}>
+        <SiteInfoPage />
       </Suspense>
       </AuthProvider>
     ),

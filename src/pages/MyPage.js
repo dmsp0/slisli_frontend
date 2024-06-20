@@ -5,10 +5,10 @@ import BasicLayout from "../layouts/BasicLayout";
 // import profileImg from '../img/profile.png';
 import axios from 'axios';
 import { AuthContext } from '../context/AuthContext';
-import FavoriteList from '../components/card/FavoriteList';
-import BoothHeldForm from '../components/card/BoothHeldForm';
-import MyBoothList from '../components/card/MyBoothList';
-import ProfileUpdate from '../components/card/ProfileUpdate';
+import FavoriteList from '../components/mypage/FavoriteList';
+import BoothHeldForm from '../components/mypage/BoothHeldForm';
+import MyBoothList from '../components/mypage/MyBoothList';
+import ProfileUpdate from '../components/mypage/ProfileUpdate';
 import { API_URLS } from '../api/apiConfig';
 import defaultImg from '../img/profile.png';
 
@@ -16,10 +16,6 @@ function MyPage() {
     const navigate = useNavigate();
     const location = useLocation();
     const { logout } = useContext(AuthContext);
-    const [token, setToken] = useState(null);
-    const [email, setEmail] = useState(null);
-    const [name, setName] = useState(null);
-    const [profileImg, setprofileImg] = useState(null);
     const [showEditForm, setShowEditForm] = useState(false);
 
     const [showDeleteModal, setShowDeleteModal] = useState(false);
@@ -106,10 +102,9 @@ function MyPage() {
                         </div>
                         <div className="flex flex-col items-center md:items-start">
                             <br />
-                            <p className="text-lg">닉네임
-                                <br />{localStorage.getItem('name')}</p>
-                            <br />
-                            <p className="text-md">{localStorage.getItem('email')}</p>
+                            <p className="text-lg">
+                                {localStorage.getItem('name')} 님 안녕하세요!</p>
+                            <p className="text-md mt-2 text-gray-500">{localStorage.getItem('email')}</p>
                             {!showEditForm && (
                                 <div className="flex justify-center space-x-4 mt-6">
                                     <button className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600" onClick={() => setShowEditForm(true)}>

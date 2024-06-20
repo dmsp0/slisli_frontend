@@ -7,7 +7,7 @@ const navigation = [
     { name: '기업부스', href: '/booths/company' },
     { name: '개인부스', href: '/booths/individual' },
     { name: '부스리스트', href: '/booth/list'},
-    { name: '부스등록', href: '/booth/registration' },
+    { name: '참가 / 주최 안내', href: '/siteInfo' },
 ];
 
 function TopNav() {
@@ -123,7 +123,7 @@ function TopNav() {
                                     <a href="/myPage" className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
                                         {authState.name}님의 마이페이지
                                     </a>
-                                    <button onClick={openLogoutModal} className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
+                                    <button onClick={openLogoutModal} className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50 w-full text-left">
                                         로그아웃
                                     </button>
                                     </>

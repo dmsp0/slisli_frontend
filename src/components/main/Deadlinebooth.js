@@ -7,7 +7,7 @@ function Deadlinebooth(){
         <div className="bg-indigo-500 h-screen">
     <Section>
         <p className="text-6xl font-extrabold text-white">
-        DEADLINE BOOTH
+        TODAY'S BOOTH
         </p>
     </Section>
     </div>

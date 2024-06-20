@@ -4,6 +4,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { API_URLS } from '../../api/apiConfig';
 import BoothLikeButton from './BoothLikeButton';
 import '../../style/Videopage.css';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css'
 
 function BoothDetail() {
     const { videoRoomId } = useParams();
@@ -179,15 +181,13 @@ function BoothDetail() {
 
     return (
         <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen flex flex-col items-center">
-            <div className="container mx-auto p-20 flex justify-center flex-1">
-                <div className="bg-white rounded-lg flex flex-col sm:flex-row w-4/5 h-auto" >
+                <div className="bg-white rounded-lg flex flex-col sm:flex-row w-4/5 h-auto mt-24" >
                     <div className="relative w-full sm:w-1/2 h-auto">
                         <img src={booth.imgPath} alt={booth.title} className="absolute top-0 left-0 w-full h-full object-cover" />
                     </div>
-                    <div className="w-full sm:w-1/2 flex-col justify-center p-2">
-                        <div className='text-center'>
+                    <div className="w-full sm:w-1/2 flex-col justify-center p-2 text-center">
                             <div className='flex justify-between items-center mb-10 ml-10 pr-10'>
-                                <h1 className="text-3xl font-bold pt-4">{booth.title}</h1>
+                                <h1 className="text-3xl font-bold pt-4 text-blue-800">{booth.title}</h1>
                                 <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
                             </div>
                             <div className='justify-center text-left ml-10 mb-10 pr-8'>
@@ -197,31 +197,38 @@ function BoothDetail() {
                                 <p className="text-gray-700 mt-4"><span className="font-semibold">부스 시간</span> <br /> {booth.startTime} ~ {booth.endTime}</p>
                                 <p className="text-gray-700 mt-4"><span className="font-semibold">참가 인원</span> <br /> {booth.maxPeople}</p>
                                 <p className="text-gray-700 mt-4"><span className="font-semibold">주최자</span> <br /> {booth.openerName}</p>
-                            </div>
                         </div>
                         <div className="text-center flex items-center justify-center gap-4 mt-4 pb-4">
-                            {isCreator ? (
-                                <button 
-                                className={`font-bold py-2 px-4 rounded-full transition duration-300 ${isCreateRoomDisabled() ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-700'} text-white`}
-                                onClick={handleCreateRoom} 
+                        {isCreator ? (
+                            <button
+                                data-tooltip-content='시작 15분 전에 열립니다' 
+                                data-tooltip-id={`  ${isCreateRoomDisabled() ? 'tooltip' : ''}`}
+                                className={`text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${isCreateRoomDisabled() ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-700'}`}
+                                onClick={handleCreateRoom}
                                 disabled={isCreateRoomDisabled()}
                             >
                                 방 만들기
                             </button>
-                            ) : (
-                                <button 
-                                className={`font-bold py-2 px-4 rounded-full transition duration-300 ${isJoinRoomDisabled() ? 'bg-gray-400' : 'bg-blue-500 hover:bg-blue-700'} text-white`}
-                                onClick={handleJoinRoom} 
+                        ) : (
+                            <button
+                                data-tooltip-content='시작 15분 전에 열립니다' 
+                                data-tooltip-id={`  ${isJoinRoomDisabled() ? 'tooltip' : ''}`}
+                                className={` text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${isJoinRoomDisabled() ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-700'}`}
+                                onClick={handleJoinRoom}
                                 disabled={isJoinRoomDisabled()}
-                                >            
+                            >
                                 참여하기
-                                </button>
-                            )}
+                            </button>
+                        )}
+                        <Tooltip
+                        id='tooltip'
+                        place="top"
+                        style={{ backgroundColor: "rgb(051, 102, 204)", color: "#ffffff" , borderRadius: "10px"}}
+                        />
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
     );
 }
 

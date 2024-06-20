@@ -43,35 +43,35 @@
       top: calc(50% - 23%);
   }
   .titleText {
-      top: calc(50% - 30%);
+      top: calc(50% - 32%);
   }
 }
 
 @media (max-width: 950px) {
   .motion, .motion2 {
-      top: calc(50% - 25%);
+      top: calc(50% - 27%);
   }
   .titleText {
-      top: calc(50% - 31%);
+      top: calc(50% - 34%);
   }
 }
 
 @media (max-width: 850px) {
   .motion, .motion2 {
-      top: calc(50% - 24%);
+      top: calc(50% - 27%);
   }
   .titleText {
-      top: calc(50% - 30%);
+      top: calc(50% - 34%);
   }
 }
 
 @media (max-width: 750px) {
   .motion, .motion2 {
-      top: calc(50% - 27%);
+      top: calc(50% - 28%);
       height: calc(30% - 90px);
   }
   .titleText {
-      top: calc(50% - 32%);
+      top: calc(50% - 34%);
   }
 }
 
@@ -81,7 +81,7 @@
       top: calc(50% - 30%);
   }
   .titleText {
-      top: calc(50% - 33%);
+      top: calc(50% - 35%);
   }
 }
 
@@ -100,6 +100,6 @@
       top: calc(50% - 30%);
   }
   .titleText {
-      top: calc(50% - 33%);
+      top: calc(50% - 35%);
   }
 }

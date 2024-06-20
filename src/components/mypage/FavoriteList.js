@@ -4,6 +4,7 @@ import { API_URLS } from "../../api/apiConfig";
 import { Link } from "react-router-dom";
 import CategoryFilter from "../booth/CategoryFilter";
 import BoothLikeButton from "../booth/BoothLikeButton";
+import {motion} from "framer-motion";
 
 function FavoriteList() {
   const member_id = localStorage.getItem('member_id');
@@ -64,28 +65,30 @@ function FavoriteList() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
         {likedBooths.length > 0 ? (
           likedBooths.map((booth) => (
-            <div key={booth.boothId} className="border-2 p-4 flex items-center border-gray-300 rounded-lg shadow-md">
-              <div className="relative w-96 h-64">
-                <img src={booth.imgPath} 
-                  alt={booth.title}
-                  className="absolute top-0 left-0 w-full h-full object-cover"
+            <motion.div 
+            key={booth.boothId} 
+            className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200"
+            whileHover={{ scale: 1.03 }}
+            transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+            <Link to={`/booth/${booth.boothId}`}>
+                <img 
+                    src={booth.imgPath} 
+                    alt={booth.title}
+                    className="w-full h-64 object-cover mb-4 rounded"
                 />
-              </div>
-              <div className="w-1/2 text-left p-4">
-                <h2 className="text-md font-bold mb-2">제목 : {booth.title}</h2>
-                <p className="text-sm text-gray-700 mb-1">카테고리 : {booth.category}</p>
-                <p className="text-sm text-gray-700 mb-1">일시: {booth.date}, {booth.startTime} ~ {booth.endTime}</p>
-                <div className="flex gap-5">
-                <Link
-                  to={`/booth/${booth.boothId}`}
-                  className="text-blue-500 hover:underline"
-                >
-                  자세히 보기
+            </Link>
+            <div className="flex justify-between items-start mb-4">
+                <Link to={`/booth/${booth.boothId}`} >
+                    <h2 className="text-xl font-bold text-blue-800">{booth.title}</h2>
                 </Link>
-                <BoothLikeButton boothId={booth.boothId} member_id={member_id}/>
-              </div>
-              </div>
+                <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
             </div>
+            <Link to={`/booth/${booth.boothId}`} className="block">
+                <p className="text-gray-700 mb-2">{booth.info}</p>
+                <p className="text-gray-700 mb-2">카테고리: {booth.category}</p>
+                <p className="text-gray-700 mb-2">일시: {booth.date}, {booth.startTime} ~ {booth.endTime}</p>
+            </Link>
+        </motion.div>
           ))
         ) : (
           <div className="col-span-12 text-center">

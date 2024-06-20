@@ -34,7 +34,7 @@ const MotionTest=()=> {
             exit={{ y: -10, opacity: 0 }}
             transition={{ duration: 0.2 }}
           >
-            {selectedTab ? selectedTab.icon : "😋"}
+            {selectedTab ? selectedTab.icon : "정보없음"}
           </motion.div>
         </AnimatePresence>
       </main>

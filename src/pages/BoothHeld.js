@@ -1,6 +1,6 @@
 import React from 'react';
 import BasicLayout from "../layouts/BasicLayout";
-import BoothHeldForm from "../components/card/BoothHeldForm";
+import BoothHeldForm from "../components/mypage/BoothHeldForm";
 
 function BoothHeld() {
 
