@@ -117,7 +117,7 @@ function BoothForm() {
     <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen pt-6 pb-10">
       <form
         onSubmit={handleSubmit}
-        className="max-w-xl mx-auto p-6 bg-white border border-gray-300 rounded-lg shadow-md"
+        className="max-w-xl mx-auto p-6 bg-white border rounded-lg shadow-md"
       >
         <h1 className="text-2xl font-bold text-center mb-6">
           {state && state.booth ? "부스 수정" : "부스 등록"}

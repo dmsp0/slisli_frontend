@@ -33,7 +33,7 @@ function BasicLayout({ children }) {
                 const boothTitle = eventData.boothTitle;
                 const minutesUntilStart = eventData.minutesUntilStart;
 
-                const notificationMessage = `${boothTitle}가 ${minutesUntilStart}분 후에 시작합니다`;
+                const notificationMessage = `<${boothTitle}>이(가) ${minutesUntilStart}분 후에 시작합니다`;
 
                 setNotifications((prevList) => [...prevList, notificationMessage]);
 

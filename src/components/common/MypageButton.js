@@ -7,6 +7,7 @@ const staggerMenuItems = stagger(0.1, { startDelay: 0.15 });
 
 function useMenuAnimation(isOpen) {
   const [scope, animate] = useAnimate();
+  
 
   useEffect(() => {
     animate(".arrow", { rotate: isOpen ? 180 : 0 }, { duration: 0.2 });
@@ -41,6 +42,8 @@ function useMenuAnimation(isOpen) {
 }
 
 const Mypagebutton = () => {
+
+  const [scrollY, setScrollY] = useState(0);
   const [isOpen, setIsOpen] = useState(false);
   const scope = useMenuAnimation(isOpen);
   const { logout } = useContext(AuthContext);
@@ -60,17 +63,29 @@ const Mypagebutton = () => {
     setShowLogoutModal(false);
   };
 
+  // 스크롤이벤트
+  useEffect(() => {
+    const handleScroll = () => {
+        const currentScrollY = window.scrollY;
+        setScrollY(currentScrollY);
+    };
+    window.addEventListener('scroll', handleScroll);
+    return () => {
+        window.removeEventListener('scroll', handleScroll);
+    };
+}, []);
+
   return (
     <nav className="menu" ref={scope} style={{ position: "relative" }}>
       <motion.button
         whileTap={{ scale: 0.97 }}
         onClick={() => setIsOpen(!isOpen)}
-        className="flex text-white gap-2 navigation-font"
+        className={`flex gap-2 navigation-font items-center ${scrollY > 50 ? 'text-black' : 'text-white'} $`}
       >
         {localStorage.name}님의 마이페이지
         <div className="arrow" style={{ transformOrigin: "50% 55%" }}>
           <svg width="15" height="15" viewBox="0 0 20 20">
-            <path d="M0 7 L 20 7 L 10 16" fill="white" />
+            <path d="M0 7 L 20 7 L 10 16" fill={scrollY > 50 ? 'black' : 'white'}  />
           </svg>
         </div>
       </motion.button>

@@ -1,6 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Modal from '../common/Modal';
 import { useNavigate } from 'react-router-dom';
 import './signStyle.css';
 import { API_URLS } from '../../api/apiConfig';

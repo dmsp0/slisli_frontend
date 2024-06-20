@@ -54,25 +54,25 @@ const VideoRoom = () => {
         setBoothId(boothIdFromStorage);
       }, []);
     
-      useEffect(() => {
-        if (!boothId) return;
+    //   useEffect(() => {
+    //     if (!boothId) return;
     
-        // 소켓 연결
-        const socket = io('http://localhost:5000', {
-          path: '/socket',
-          auth: { token: localStorage.getItem('accessToken') }, // 토큰 전달
-        });
+    //     // 소켓 연결
+    //     const socket = io('http://localhost:5000', {
+    //       path: '/socket',
+    //       auth: { token: localStorage.getItem('accessToken') }, // 토큰 전달
+    //     });
     
-        socket.on('connect', () => {
-          console.log('Connected to server');
-          socket.emit('joinRoom', boothId); // 방 번호 전달
-        });
+    //     socket.on('connect', () => {
+    //       console.log('Connected to server');
+    //       socket.emit('joinRoom', boothId); // 방 번호 전달
+    //     });
     
-        return () => {
-          // 컴포넌트 언마운트 시 소켓 연결 해제
-          socket.disconnect();
-        };
-      }, [boothId]);
+    //     return () => {
+    //       // 컴포넌트 언마운트 시 소켓 연결 해제
+    //       socket.disconnect();
+    //     };
+    //   }, [boothId]);
 
 
 useEffect(() => {

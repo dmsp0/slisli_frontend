@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { API_URLS } from "../../api/apiConfig";
 import { useNavigate } from 'react-router-dom';
+import { Tooltip } from 'react-tooltip';
+import 'react-tooltip/dist/react-tooltip.css'
 
 const ProfileUpdate = ({ closeEditForm }) => {
     const navigate = useNavigate();
@@ -17,6 +19,7 @@ const ProfileUpdate = ({ closeEditForm }) => {
     const [passwordValid, setPasswordValid] = useState(false);
     const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
     const [showUpdateModal, setShowUpdateModal] = useState(false);
+    const [formValid, setFormValid] = useState(false);
 
     const handleInputChange = (e) => {
         const { name, value } = e.target;
@@ -42,8 +45,14 @@ const ProfileUpdate = ({ closeEditForm }) => {
         setData({ ...data, profileImgPath: file });
     };
 
+    useEffect(() => {
+        const isFormValid = data.name && data.password && data.passwordCheck && passwordValid && confirmPasswordValid;
+        setFormValid(isFormValid);
+    }, [data, passwordValid, confirmPasswordValid]);
+
     const handleModified = async (e) => {
         e.preventDefault();
+
         const formData = new FormData();
         const filteredData = {
             email: data.email,
@@ -96,7 +105,7 @@ const ProfileUpdate = ({ closeEditForm }) => {
     };
 
     return (
-        <form className="mt-4 p-4 bg-white border border-gray-300 rounded-lg shadow-md">
+        <form className="mt-4 p-4 bg-white border rounded-lg shadow-md">
             <div className="mb-4 flex flex-col items-start">
                 <label className="text-gray-700 text-sm font-bold mb-2" htmlFor="name">
                     닉네임
@@ -163,10 +172,13 @@ const ProfileUpdate = ({ closeEditForm }) => {
             </div>
 
             <div className="flex justify-center space-x-4 mt-6">
-                <button
-                type="button"
+            <button
+                    data-tooltip-content='필수 입력사항을 입력해주세요' 
+                    data-tooltip-id={`${formValid ? '' : 'tooltip'}`}
+                    type="button"
                     onClick={openUpdateModal}
-                    className="py-2 px-4 bg-blue-500 text-white rounded-lg hover:bg-blue-600"
+                    className={`py-2 px-4 ${formValid ? 'bg-blue-500 hover:bg-blue-600' : 'bg-gray-300'} text-white rounded-lg`}
+                    disabled={!formValid}
                 >
                     정보 수정
                 </button>
@@ -177,6 +189,11 @@ const ProfileUpdate = ({ closeEditForm }) => {
                 >
                     뒤로가기
                 </button>
+                <Tooltip
+                        id='tooltip'
+                        place="top"
+                        style={{ backgroundColor: "rgb(051, 102, 204)", color: "#ffffff" , borderRadius: "10px"}}
+                        />
             </div>
             {showUpdateModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">

@@ -1,15 +1,17 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useParams, useLocation } from "react-router-dom";
 import { API_URLS } from "../../api/apiConfig";
 import Modal from "../booth/Modal";
 
-function BoothHeldForm() {
+function BoothForm() {
   const navigate = useNavigate();
+  const { state } = useLocation();
+  const { boothId } = useParams();
   const [boothData, setBoothData] = useState({
     title: "",
     info: "",
-    category: "CATEGORY_ONE",
+    category: "COMPANY_RECRUITMENT",
     type: "COMPANY",
     date: "",
     startTime: "",
@@ -17,10 +19,32 @@ function BoothHeldForm() {
     imgPath: "",
     maxPeople: "",
     openerName: "",
-    member_id: localStorage.getItem('member_id') // member_id 추가
+    memberId: localStorage.getItem('member_id')
   });
 
   const [showModal, setShowModal] = useState(false);
+
+  useEffect(() => {
+    if (state && state.booth) {
+      setBoothData(state.booth);
+    } else if (boothId) {
+      fetchBoothData(boothId);
+    }
+  }, [state, boothId]);
+
+  const fetchBoothData = async (boothId) => {
+    try {
+      const token = localStorage.getItem("token");
+      const response = await axios.get(`${API_URLS.BOOTH_GET_BY_ID}/${boothId}`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      setBoothData(response.data);
+    } catch (error) {
+      console.error("Error fetching booth data", error);
+    }
+  };
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -34,26 +58,50 @@ function BoothHeldForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-
-    const token = localStorage.getItem('jwtToken');
-    if (!token) {
-      console.error("Token not found");
-      navigate('/login');
-      return;
-    }
-
+    console.log(localStorage.getItem('member_id'));
+    console.log(boothData.memberId);
     const formData = new FormData();
-    formData.append("booth", new Blob([JSON.stringify(boothData)], { type: "application/json" }));
+    formData.append(
+      "booth",
+      new Blob(
+        [
+          JSON.stringify({
+            title: boothData.title,
+            info: boothData.info,
+            category: boothData.category,
+            type: boothData.type,
+            date: boothData.date,
+            startTime: boothData.startTime,
+            endTime: boothData.endTime,
+            maxPeople: boothData.maxPeople,
+            openerName: boothData.openerName,
+            memberId: boothData.memberId
+          }),
+        ],
+        { type: "application/json" }
+      )
+    );
     formData.append("file", boothData.imgPath);
 
     try {
-      const response = await axios.post(API_URLS.BOOTH_INSERT, formData, {
-        headers: {
-          "Content-Type": "multipart/form-data",
-          "Authorization": `Bearer ${token}` // JWT 토큰 추가
-        },
-      });
-      console.log(response.data);
+      const token = localStorage.getItem("token");
+      if (state && state.booth) {
+        // 부스 수정
+        await axios.post(`${API_URLS.BOOTH_UPDATE}/${boothId}`, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      } else {
+        // 부스 등록
+        await axios.post(API_URLS.BOOTH_INSERT, formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+            Authorization: `Bearer ${token}`,
+          },
+        });
+      }
       setShowModal(true);
     } catch (error) {
       console.error("There was an error!", error);
@@ -66,14 +114,14 @@ function BoothHeldForm() {
   };
 
   return (
-    <div className="flex justify-center">
-      <div className="w-full max-w-5xl p-4">
-        <br/>
+    <>
       <form
         onSubmit={handleSubmit}
-        className="bg-white border border-gray-300 rounded-lg shadow-md p-6"
+        className="max-w-xl mx-auto p-6 bg-white border rounded-lg shadow-md"
       >
-        <h1 className="text-2xl font-bold text-center mb-6">부스 등록</h1>
+        <h1 className="text-2xl font-bold text-center mb-6">
+          {state && state.booth ? "부스 수정" : "부스 등록"}
+        </h1>
         <div className="mb-4">
           <label className="block text-gray-700 font-bold mb-2">부스명</label>
           <input
@@ -136,9 +184,11 @@ function BoothHeldForm() {
             className="w-full px-3 py-2 border rounded-lg"
             required
           >
-            <option value="CATEGORY_ONE">CATEGORY_ONE</option>
-            <option value="CATEGORY_TWO">CATEGORY_TWO</option>
-            <option value="CATEGORY_THREE">CATEGORY_THREE</option>
+            <option value="COMPANY_RECRUITMENT">기업/채용</option>
+            <option value="EDUCATION_TECH">교육/기술</option>
+            <option value="FOOD_BEVERAGE">식/음료</option>
+            <option value="LIFESTYLE_HEALTH">생활/건강</option>
+            <option value="CULTURE_ART">문화/예술</option>
           </select>
         </div>
         <div className="mb-4">
@@ -163,7 +213,7 @@ function BoothHeldForm() {
             name="imgPath"
             onChange={handleFileChange}
             className="w-full px-3 py-2 border rounded-lg"
-            required
+            required={!boothData.imgPath}
           />
           <span className="text-red-500 text-sm mt-1 block">
             * 부스 이미지 등록은 필수입니다.
@@ -196,18 +246,18 @@ function BoothHeldForm() {
           type="submit"
           className="w-full py-3 mt-6 bg-blue-500 text-white font-bold rounded-lg hover:bg-blue-700"
         >
-          부스 등록
+          {state && state.booth ? "부스 수정" : "부스 등록"}
         </button>
       </form>
 
       <Modal
         showModal={showModal}
-        callbackFunction={handleCloseModal}
-        message="부스 등록이 완료되었습니다."
+        onConfirm={handleCloseModal} // 이 부분 수정
+        message={state && state.booth ? "부스 수정이 완료되었습니다." : "부스 등록이 완료되었습니다."}
+        showCancel={false}
       />
-    </div>
-  </div>
+</>
   );
 }
 
-export default BoothHeldForm;
+export default BoothForm;

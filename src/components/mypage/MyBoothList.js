@@ -4,6 +4,7 @@ import axios from "axios";
 import { API_URLS } from "../../api/apiConfig";
 import CategoryFilter from "../booth/CategoryFilter";
 import Modal from "../booth/Modal"; // 모달 컴포넌트 임포트
+import {motion} from "framer-motion";
 
 function MyBoothList() {
   const member_id = localStorage.getItem('member_id');
@@ -83,37 +84,36 @@ function MyBoothList() {
         selectedCategory={category}
         onCategoryChange={handleCategoryChange}
       />
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 pt-4">
+      <div className="grid grid-cols-1 md:grid-cols-2  gap-4 pt-4">
         {mybooths.map((booth) => (
-          <div key={booth.boothId} className="border p-4 rounded-lg shadow">
-            <img src={booth.imgPath} 
-              alt={booth.title}
-              className="w-full h-64 object-cover mb-4"
-            />
-            <h2 className="text-xl font-bold">부스 제목 : {booth.title}</h2>
-            <p className="text-gray-700">부스 소개 : {booth.info}</p>
-            <p className="text-gray-700">부스 카테고리 : {booth.category}</p>
-            <div className="flex gap-5">
-              <Link
-                to={`/booth/${booth.boothId}`}
-                className="text-blue-500 hover:underline"
-              >
-                자세히 보기
-              </Link>
+          <motion.div 
+          key={booth.boothId} 
+          className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200"
+          whileHover={{ scale: 1.03 }}
+          transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+          <Link to={`/booth/${booth.boothId}`}>
+              <img 
+                  src={booth.imgPath} 
+                  alt={booth.title}
+                  className="w-full h-64 object-cover mb-4 rounded"
+              />
+              <h2 className="text-xl font-bold text-blue-800">{booth.title}</h2>
+              <p className="text-gray-700 mb-2">카테고리: {booth.category}</p>
+              <p className="text-gray-700 mb-2">일시: {booth.date}, {booth.startTime} ~ {booth.endTime}</p>
+          </Link>
               <button
                 onClick={() => handleEdit(booth)}
-                className="text-blue-500 hover:underline"
-              >
+                className="bg-blue-800 text-white px-2 rounded-md mr-5"
+                >
                 수정
               </button>
               <button
                 onClick={() => handleDeleteClick(booth.boothId)}
-                className="text-red-500 hover:underline"
-              >
+                className="bg-red-600 text-white px-2 rounded-md"
+                >
                 삭제
               </button>
-            </div>
-          </div>
+            </motion.div>
         ))}
       </div>
       <div className="mt-4 mx-auto flex justify-center">

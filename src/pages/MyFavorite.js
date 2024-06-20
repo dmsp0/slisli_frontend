@@ -1,6 +1,6 @@
 import React from 'react';
 import BasicLayout from "../layouts/BasicLayout";
-import FavoriteList from '../components/card/FavoriteList';
+import FavoriteList from '../components/mypage/FavoriteList';
 
 function MyFavorite() {
     
