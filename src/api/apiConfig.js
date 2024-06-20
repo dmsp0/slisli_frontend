@@ -36,4 +36,6 @@ export const API_URLS = {
     BOOTH_GET_BY_USERID: `${BASE_URL}/api/booths/get_my`,
     BOOTH_DELETE: `${BASE_URL}/api/booths/delete`,
     BOOTH_UPDATE: `${BASE_URL}/api/booths/update`,
+
+    KAKAO: `${BASE_URL}/api/auth/kakao`,
 };

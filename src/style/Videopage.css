@@ -219,7 +219,7 @@ html, body {
     border-radius: 5px;
     padding: 0.5rem;
     font-size: 12px;
-    margin: 0 5px;
+    /* margin: 0 5px; */
     flex: 7;
     background-color: #40444B;
     color: white;
