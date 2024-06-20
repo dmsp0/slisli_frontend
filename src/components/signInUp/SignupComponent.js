@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './signStyle.css';
-import { API_URLS } from '../../api/apiConfig'
+import { API_URLS } from '../../api/apiConfig';
+import Modal from '../common/Modal'; // Modal 컴포넌트를 가져옴
 
 const SignupComponent = () => {
     const [email, setEmail] = useState('');
@@ -17,6 +18,10 @@ const SignupComponent = () => {
     const [confirmPasswordValid, setConfirmPasswordValid] = useState(false);
     const [emailChecked, setEmailChecked] = useState(false);
     const [codeValid, setCodeValid] = useState(false);
+
+    const [showModal, setShowModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('');
+    const [onSuccess, setOnSuccess] = useState(false);
 
     const navigate = useNavigate();
 
@@ -63,7 +68,8 @@ const SignupComponent = () => {
 
     const handleEmailVerification = async () => {
         if (!emailValid) {
-            alert("유효한 이메일을 입력해주세요.");
+            setModalMessage("유효한 이메일을 입력해주세요.");
+            setShowModal(true);
             return;
         }
     
@@ -75,15 +81,17 @@ const SignupComponent = () => {
                 withCredentials: true
             });
             if (response.status === 200) {
-                alert("이메일을 전송했습니다.");
+                setModalMessage("이메일을 전송했습니다.");
+                setShowModal(true);
                 setEmailChecked(true);
             }
         } catch (error) {
             if (error.response && error.response.status === 409) {
-                alert("이미 사용 중인 이메일입니다.");
+                setModalMessage("이미 사용 중인 이메일입니다.");
             } else {
-                alert("이메일 확인 중 오류가 발생했습니다.");
+                setModalMessage("이메일 확인 중 오류가 발생했습니다.");
             }
+            setShowModal(true);
             console.error('이메일 확인 오류:', error);
             
             if (error.response) {
@@ -94,7 +102,8 @@ const SignupComponent = () => {
     
     const handleCodeVerification = async () => {
         if (!emailChecked || !inputCode) {
-            alert("이메일 인증번호를 입력해주세요.");
+            setModalMessage("이메일 인증번호를 입력해주세요.");
+            setShowModal(true);
             return;
         }
     
@@ -106,20 +115,22 @@ const SignupComponent = () => {
                 withCredentials: true
             });
             if (response.status === 200) {
-                alert("인증번호가 확인되었습니다.");
+                setModalMessage("인증번호가 확인되었습니다.");
+                setShowModal(true);
                 setCodeValid(true);
             }
         } catch (error) {
-            alert("인증번호가 유효하지 않습니다.");
+            setModalMessage("인증번호가 유효하지 않습니다.");
+            setShowModal(true);
             console.error('인증번호 확인 오류:', error);
         }
-        
     };
     
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!emailValid || !passwordValid || !confirmPasswordValid || !emailChecked || !codeValid) {
-            alert("유효한 이메일, 비밀번호, 비밀번호 확인을 입력하고, 이메일 인증을 완료해주세요.");
+            setModalMessage("유효한 이메일, 비밀번호, 비밀번호 확인을 입력하고, 이메일 인증을 완료해주세요.");
+            setShowModal(true);
             return;
         }
     
@@ -137,15 +148,24 @@ const SignupComponent = () => {
                 withCredentials: true
             });
     
-            alert("회원가입 성공!");
-            navigate("/");
+            setModalMessage("회원가입 성공!");
+            setShowModal(true);
+            setOnSuccess(true); // 성공 상태 설정
         } catch (error) {
             if (error.response && error.response.status === 401) {
-                alert('아이디 혹은 비밀번호가 틀렸습니다.');
+                setModalMessage('아이디 혹은 비밀번호가 틀렸습니다.');
             } else {
-                alert('서버 오류');
+                setModalMessage('서버 오류');
             }
+            setShowModal(true);
             console.error('회원가입 오류:', error);
+        }
+    };
+
+    const closeModal = () => {
+        setShowModal(false);
+        if (onSuccess) {
+            window.location.href = "/login"
         }
     };
 
@@ -283,17 +303,21 @@ const SignupComponent = () => {
                     </button>
                 </div>
 
-            <p className="mt-4 text-center text-sm text-gray-500">
-                SNS 계정으로 회원가입하기
-            </p>
-            <div className="flex justify-center items-center mt-3">
-                <div className='sign-up-content-sign-in-button-box'>
-                    <a href='/api/auth/kakao'> <img className="w-12" src='/images/kakao-icon.png' /> </a>
-                    <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png' /> </a>
-                    <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png' /> </a>
+                <p className="mt-4 text-center text-sm text-gray-500">
+                    SNS 계정으로 회원가입하기
+                </p>
+                <div className="flex justify-center items-center mt-3">
+                    <div className='sign-up-content-sign-in-button-box'>
+                        <a href='/api/auth/kakao'> <img className="w-12" src='/images/kakao-icon.png' alt="Kakao" /> </a>
+                        <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png' alt="Naver" /> </a>
+                        <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png' alt="Google" /> </a>
+                    </div>
                 </div>
-            </div>
             </form>
+
+            {showModal && (
+                <Modal message={modalMessage} callbackFunction={closeModal} />
+            )}
         </>
     );
 };
