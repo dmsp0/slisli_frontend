@@ -39,10 +39,10 @@
   background-image: url(../../../public/images/booth5.png);
 }
 
-.child {
+/* .child {
   visibility: visible;
   display: inline-block;
-}
+} */
 
 .parent.open1 .child,
 .parent.open2 .child,
@@ -52,9 +52,7 @@
     visibility: hidden;
 }
 
-.parent .btn {
-  display: none; /* 버튼 숨기기 */
-}
+
 
 .parent.open1 .btn,
 .parent.open2 .btn,

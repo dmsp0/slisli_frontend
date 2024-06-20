@@ -6,7 +6,7 @@ import Mypagebutton from "./MypageButton";
 const navigation = [
     { name: '기업부스', href: '/booths/company' },
     { name: '개인부스', href: '/booths/individual' },
-    { name: '부스리스트', href: '/booth/list'},
+    { name: '부스리스트', href: '/booth/list' },
     { name: '참가 / 주최 안내', href: '/siteInfo' },
 ];
 
@@ -15,8 +15,9 @@ function TopNav() {
     const [scrollY, setScrollY] = useState(0);
     const { authState, logout } = useContext(AuthContext);
     const [showLogoutModal, setShowLogoutModal] = useState(false);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
 
-    // 스크롤이벤트
+    // 스크롤 이벤트
     useEffect(() => {
         const handleScroll = () => {
             const currentScrollY = window.scrollY;
@@ -28,7 +29,12 @@ function TopNav() {
         };
     }, []);
 
-    // 모바일nav
+    // authState 변화를 감지하여 인증 상태 업데이트
+    useEffect(() => {
+        setIsAuthenticated(!!authState.accessToken);
+    }, [authState]);
+
+    // 모바일 nav
     const handleClick = () => {
         setMobileMenuOpen(!mobileMenuOpen);
     };
@@ -75,11 +81,11 @@ function TopNav() {
                         ))}
                     </div>
                     <div className={`hidden lg:flex lg:flex-1 lg:justify-end lg:gap-x-5`}>
-                        {authState.accessToken ? (
+                        {isAuthenticated ? (
                             <Mypagebutton />
                         ) : (
                             <a href="/login" className={`text-sm font-semibold leading-6 navigation-font ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
-                            로그인 <span aria-hidden="true">&rarr;</span>
+                                로그인 <span aria-hidden="true">&rarr;</span>
                             </a>
                         )}
                     </div>
@@ -118,18 +124,18 @@ function TopNav() {
                                 ))}
                             </div>
                             <div className="py-6">
-                                {authState.accessToken ? (
+                                {isAuthenticated ? (
                                     <>
-                                    <a href="/myPage" className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
-                                        {authState.name}님의 마이페이지
-                                    </a>
-                                    <button onClick={openLogoutModal} className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50 w-full text-left">
-                                        로그아웃
-                                    </button>
+                                        <a href="/myPage" className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
+                                            {authState.name}님의 마이페이지
+                                        </a>
+                                        <button onClick={openLogoutModal} className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50 w-full text-left">
+                                            로그아웃
+                                        </button>
                                     </>
                                 ) : (
                                     <a href="/login" className="navigation-font -mx-3 block rounded-lg px-3 py-2.5 text-base leading-7 text-gray-900 hover:bg-gray-50">
-                                    로그인
+                                        로그인
                                     </a>
                                 )}
                             </div>
@@ -138,26 +144,26 @@ function TopNav() {
                 </div>
             </div>
             {showLogoutModal && (
-                    <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                        <div className="bg-white p-6 rounded-lg shadow-md mx-auto">
-                            <p>로그아웃 하시겠습니까?</p>
-                            <div className="mt-4 flex justify-end mx-auto">
-                                <button
-                                    className="py-2 px-4 bg-gray-300 hover:bg-gray-400 text-black rounded-lg mr-2 mx-auto"
-                                    onClick={closeLogoutModal}
-                                >
-                                    아니오
-                                </button>
-                                <button
-                                    className="py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg mx-auto"
-                                    onClick={closeLogout}
-                                >
-                                    네
-                                </button>
-                            </div>
+                <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                    <div className="bg-white p-6 rounded-lg shadow-md mx-auto">
+                        <p>로그아웃 하시겠습니까?</p>
+                        <div className="mt-4 flex justify-end mx-auto">
+                            <button
+                                className="py-2 px-4 bg-gray-300 hover:bg-gray-400 text-black rounded-lg mr-2 mx-auto"
+                                onClick={closeLogoutModal}
+                            >
+                                아니오
+                            </button>
+                            <button
+                                className="py-2 px-4 bg-red-500 hover:bg-red-600 text-white rounded-lg mx-auto"
+                                onClick={closeLogout}
+                            >
+                                네
+                            </button>
                         </div>
                     </div>
-                )}
+                </div>
+            )}
         </>
     );
 }

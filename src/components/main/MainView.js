@@ -1,6 +1,7 @@
 import React from "react";
 import MotionTest from './motion';
 import './position.css';
+import LatestBoothsByCategory from "./LatestBoothsByCategory";
 
 function MainView(){
     return(
@@ -12,7 +13,7 @@ function MainView(){
                     </p>
                 </div>
                 <div className="motion">
-                    <MotionTest />
+                    <LatestBoothsByCategory />
                 </div>
                 <div className="motion2">
                     <MotionTest />

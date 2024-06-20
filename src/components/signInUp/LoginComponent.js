@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import './signStyle.css';
 import { API_URLS } from '../../api/apiConfig';
+import Modal from '../common/Modal';
 
 const LoginComponent = () => {
     const [email, setEmail] = useState('');
@@ -11,12 +12,12 @@ const LoginComponent = () => {
     const [emailValid, setEmailValid] = useState(false);
     const [passwordValid, setPasswordValid] = useState(false);
 
-    const [userName, setUserName] = useState('');
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     const [showModal, setShowModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
+    const [onSuccess, setOnSuccess] = useState(false);
 
     const handleEmail = (e) => {
         setEmail(e.target.value);
@@ -32,7 +33,8 @@ const LoginComponent = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!emailValid || !passwordValid) {
-            alert("유효한 아이디와 비밀번호를 입력해주세요.");
+            setMessage("유효한 아이디와 비밀번호를 입력해주세요.");
+            setShowErrorModal(true);
             return;
         }
     
@@ -49,14 +51,15 @@ const LoginComponent = () => {
     
             const { token: accessToken, refreshToken, member_id, email: userEmail, name: userName, profileImgPath } = response.data;
 
-        localStorage.setItem('accessToken', accessToken);
-        localStorage.setItem('refreshToken', refreshToken);
-        localStorage.setItem('email', userEmail);
-        localStorage.setItem('name', userName);
-        localStorage.setItem('member_id', member_id);
-        localStorage.setItem('profileImgPath', profileImgPath); // 프로필 이미지 경로 저장
-
-        setShowModal(true);
+            localStorage.setItem('accessToken', accessToken);
+            localStorage.setItem('refreshToken', refreshToken);
+            localStorage.setItem('email', userEmail);
+            localStorage.setItem('name', userName);
+            localStorage.setItem('member_id', member_id);
+            localStorage.setItem('profileImgPath', profileImgPath); // 프로필 이미지 경로 저장
+            setOnSuccess(true); // 성공 상태 설정
+            setMessage(`${userName}님 환영합니다!`);
+            setShowModal(true);
             
             
         } catch (error) {
@@ -65,21 +68,27 @@ const LoginComponent = () => {
                 setShowErrorModal(true);
             } else {
                 setMessage('서버 오류');
+                setShowErrorModal(true);
             }
             console.error('로그인 오류:', error);
         }
     };
     
+    // const closeModal = () => {
+    //     setShowModal(false);
+    //     navigate('/');
+    // };
+
     const closeModal = () => {
-        setUserName(userName);
         setShowModal(false);
-        navigate('/');
+        if (onSuccess) {
+            window.location.href = "/"
+        }
     };
 
     const closeErrorModal = ()=>{
         setShowErrorModal(false);
     }
-    
 
     return (
         <>
@@ -166,36 +175,11 @@ const LoginComponent = () => {
 
             {/* 로그인 성공 모달 */}
             {showModal && (
-                <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg shadow-md mx-auto">
-                        <p>로그인 성공!</p>
-                        <p>{`${localStorage.getItem('name')}님 환영합니다!`}</p>
-                        <div className="mt-4 flex justify-end mx-auto">
-                            <button
-                                className="py-2 px-4 bg-blue-400 hover:bg-blue-500 text-white rounded-lg mr-2 mx-auto"
-                                onClick={closeModal} // 모달 닫기 함수 호출
-                            >
-                                안녕하세요!
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <Modal message={message} callbackFunction={closeModal} />
             )}
             {/* 로그인 실패 모달 */}
             {showErrorModal && (
-                <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
-                    <div className="bg-white p-6 rounded-lg shadow-md mx-auto">
-                        <p>이메일 혹은 비밀번호가 틀렸습니다.</p>
-                        <div className="mt-4 flex justify-end mx-auto">
-                            <button
-                                className="py-2 px-4 bg-gray-300 hover:bg-gray-400 text-black rounded-lg mr-2 mx-auto"
-                                onClick={closeModal} // 모달 닫기 함수 호출
-                            >
-                                확인
-                            </button>
-                        </div>
-                    </div>
-                </div>
+                <Modal message={message} callbackFunction={closeErrorModal} />
             )}
         </>
     );

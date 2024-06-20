@@ -1,3 +1,4 @@
+import React from "react";
 import BasicLayout from "../layouts/BasicLayout";
 import MainView from "../components/main/MainView";
 import BoothType from "../components/main/BoothType";
