@@ -5,7 +5,6 @@ import BoothType from "../components/main/BoothType";
 import Trendbooth from "../components/main/Trendbooth";
 import Deadlinebooth from "../components/main/Deadlinebooth";
 
-
 function IndexPage() {
   return (
     <BasicLayout>

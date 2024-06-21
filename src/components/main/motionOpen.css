@@ -7,6 +7,7 @@
   justify-content: center;
   align-items: center;
   transition: width 0.3s, height 0.3s; /* 너비와 높이 변경에 애니메이션 적용 */
+  cursor: pointer;
 }
 
 .parent[data-isOpen="true"] {
@@ -20,24 +21,7 @@
   box-sizing: border-box; /* 패딩을 포함하도록 설정 */
   position: relative;
 }
-.open1 {
-  background-image: url(../../../public/images/booth1.jpg);
-}
 
-.open2 {
-  background-image: url(../../../public/images/booth2.jpg);
-}
-
-.open3 {
-  background-image: url(../../../public/images/booth3.jpg);
-}
-
-.open4 {
-  background-image: url(../../../public/images/booth4.jpg);
-}
-.open5 {
-  background-image: url(../../../public/images/booth5.png);
-}
 
 /* .child {
   visibility: visible;

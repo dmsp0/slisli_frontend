@@ -75,7 +75,7 @@ function TopNav() {
                     </div>
                     <div className="hidden lg:flex lg:gap-x-12">
                         {navigation.map((item) => (
-                            <a key={item.name} href={item.href} className={`text-sm font-semibold leading-6 navigation-font ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
+                            <a key={item.name} href={item.href} className={` font-semibold leading-6 navigation-font ${scrollY > 50 ? 'text-black' : 'text-white'}`}>
                                 {item.name}
                             </a>
                         ))}
