@@ -41,4 +41,5 @@ export const API_URLS = {
 
     BOOTH_TOP_LIKED_BY_CATEGORY: `${BASE_URL}/api/booths/top-liked-by-category`,
     BOOTH_LATEST_BY_CATEGORY: `${BASE_URL}/api/booths/latest-by-category`,
+    MAIN_COUNTING: `${BASE_URL}/api/booths/counting`,
 };

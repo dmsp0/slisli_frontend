@@ -1,18 +1,22 @@
  
-  .motion, .motion2 {
+  .motion {
     position: absolute;
-    width: 25%;
-    height: calc(30% - 30px);
+    width: 40%;
+    height: 32%;
     pointer-events: auto; /* Allow interaction */
+  }
+ 
+  .motion2 {
+    position: absolute;
   }
   
   .motion {
     left: calc(50% - 32%);
-    top: calc(50% - 17%);
+    top: calc(50% - 20%);
   }
   
   .motion2 {
-    left: calc(50% - 5%);
+    left: calc(50% + 10%);
     top: calc(50% - 17%);
   }
   
@@ -31,16 +35,22 @@
 /* 미디어 쿼리 정리 */
 @media (max-width: 1200px) {
   .motion, .motion2 {
-      top: calc(50% - 19%);
+      top: calc(50% - 21%);
+  }
+  .motion{
+    height: calc(30% - 20px);
   }
   .titleText {
-      top: calc(50% - 29%);
+      top: calc(50% - 30%);
   }
 }
 
 @media (max-width: 1100px) {
   .motion, .motion2 {
       top: calc(50% - 23%);
+  }
+  .motion{
+    height: calc(30% - 30px);
   }
   .titleText {
       top: calc(50% - 32%);
@@ -49,16 +59,22 @@
 
 @media (max-width: 950px) {
   .motion, .motion2 {
-      top: calc(50% - 27%);
+      top: calc(50% - 26%);
+  }
+  .motion{
+    height: calc(30% - 40px);
   }
   .titleText {
-      top: calc(50% - 34%);
+      top: calc(50% - 33%);
   }
 }
 
 @media (max-width: 850px) {
   .motion, .motion2 {
       top: calc(50% - 27%);
+  }
+  .motion{
+    height: calc(30% - 60px);
   }
   .titleText {
       top: calc(50% - 34%);
@@ -68,7 +84,9 @@
 @media (max-width: 750px) {
   .motion, .motion2 {
       top: calc(50% - 28%);
-      height: calc(30% - 90px);
+  }
+  .motion{
+    height: calc(30% - 90px);
   }
   .titleText {
       top: calc(50% - 34%);
@@ -77,8 +95,10 @@
 
 @media (max-width: 650px) {
   .motion, .motion2 {
-      height: calc(30% - 100px);
       top: calc(50% - 30%);
+  }
+  .motion{
+    height: calc(30% - 100px);
   }
   .titleText {
       top: calc(50% - 35%);
@@ -87,8 +107,10 @@
 
 @media (max-width: 550px) {
   .motion, .motion2 {
-      height: calc(30% - 100px);
-      top: calc(50% - 30%);
+    top: calc(50% - 30%);
+  }
+  .motion{
+    height: calc(30% - 100px);
   }
   .titleText {
       top: calc(50% - 33%);
@@ -98,6 +120,9 @@
 @media (max-width: 500px) {
   .motion, .motion2 {
       top: calc(50% - 30%);
+  }
+  .motion{
+    height: calc(30% - 100px);
   }
   .titleText {
       top: calc(50% - 35%);

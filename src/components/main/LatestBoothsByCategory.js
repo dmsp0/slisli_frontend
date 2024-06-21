@@ -3,7 +3,9 @@ import axios from 'axios';
 import { API_URLS } from '../../api/apiConfig';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useNavigate } from "react-router-dom";
+import "./motionStyle.css";
 
+// 최근등록
 // 카테고리 영어 키와 한글 라벨 매핑
 const categoryMap = {
     "COMPANY_RECRUITMENT": "기업/채용",
@@ -39,9 +41,9 @@ const LatestBoothsByCategory = () => {
     };
 
     return (
-        <div className="top-liked-booths">
+        <div className="window h-full w-full">
             <nav className="tab-nav">
-                <ul className="tab-list flex justify-center">
+                <ul className="tab-list">
                     {categories.map((category) => (
                         <li
                             key={category}
@@ -49,9 +51,6 @@ const LatestBoothsByCategory = () => {
                             onClick={() => setSelectedCategory(category)}
                         >
                             {categoryMap[category]}
-                            {category === selectedCategory ? (
-                                <motion.div className="underline" layoutId="underline" />
-                            ) : null}
                         </li>
                     ))}
                 </ul>
@@ -65,26 +64,26 @@ const LatestBoothsByCategory = () => {
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -10, opacity: 0 }}
                             transition={{ duration: 0.2 }}
+                            className='grid grid-cols-2 gap-3 p-5'
                         >
-                            <div className="booth-card border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200">
                                 <img 
                                     src={booths[selectedCategory].imgPath} 
                                     alt={booths[selectedCategory].title} 
-                                    className="w-full h-64 object-cover mb-4 rounded"
+                                    className="object-cover rounded"
                                 />
-                                <div className="flex justify-between items-start mb-4">
-                                    <h2 className="text-xl font-bold text-blue-800">{booths[selectedCategory].title}</h2>
+                                <div className='basis-1/2'>
+                                    <div className="flex justify-between items-start mb-4">
+                                        <h2 className="text-2xl font-bold text-blue-800">{booths[selectedCategory].title}</h2>
+                                    </div>
+                                    <p className="text-gray-700 mb-2">{booths[selectedCategory].info}</p>
+                                    <p className="text-gray-700 mb-2">일시: {booths[selectedCategory].date}, {booths[selectedCategory].startTime} ~ {booths[selectedCategory].endTime}</p>
+                                    <button 
+                                        className="btn bg-blue-400 shadow-md mt-2"
+                                        onClick={() => handleDetailClick(booths[selectedCategory].boothId)}
+                                    >
+                                        상세보기
+                                    </button>
                                 </div>
-                                <p className="text-gray-700 mb-2">{booths[selectedCategory].info}</p>
-                                <p className="text-gray-700 mb-2">카테고리: {categoryMap[selectedCategory]}</p>
-                                <p className="text-gray-700 mb-2">일시: {booths[selectedCategory].date}, {booths[selectedCategory].startTime} ~ {booths[selectedCategory].endTime}</p>
-                                <button 
-                                    className="btn bg-blue-400 shadow-md mt-2"
-                                    onClick={() => handleDetailClick(booths[selectedCategory].boothId)}
-                                >
-                                    상세보기
-                                </button>
-                            </div>
                         </motion.div>
                     ) : (
                         <motion.div
@@ -94,7 +93,7 @@ const LatestBoothsByCategory = () => {
                             exit={{ y: -10, opacity: 0 }}
                             transition={{ duration: 0.2 }}
                         >
-                            <p className="text-center text-gray-700">해당 카테고리에 대한 정보가 없습니다.</p>
+                            <p className="text-center text-gray-700">해당 카테고리에 대한 부스가 없습니다.</p>
                         </motion.div>
                     )}
                 </AnimatePresence>

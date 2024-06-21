@@ -8,6 +8,7 @@ import './motionOpen.css';
 import axios from "axios";
 import { API_URLS } from '../../api/apiConfig'; // API_URLS에 /api/booths/top-liked-by-category 추가
 
+// 오늘 시작하는 부스 중 좋아요가 가장많은 부스 하나
 function BoothType() {
     const [isOpen1, setIsOpen1] = useState(false);
     const [isOpen2, setIsOpen2] = useState(false);
@@ -67,7 +68,7 @@ function BoothType() {
         <div className="w-full h-auto bg-gradient-to-b from-blue-100 to-white">
             <Section>
                 <p className="text-6xl font-extrabold text-blue-900 pb-10">
-                    TYPE OF BOOTH
+                    TODAY'S POPULAR BOOTH
                 </p>
                 <div className="flex col-span-5 gap-10 justify-center">
                     {renderBooth("COMPANY_RECRUITMENT", <MdBusinessCenter size={50} color="navy" className="mx-auto" />, "기업/채용", isOpen1, setIsOpen1)}
