@@ -1,13 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { API_URLS } from '../../api/apiConfig';
 import axios from 'axios';
+import './Counting.css';
 
-/** 진행률에 따라 count 속도 조절 */
 const easeOutExpo = (t) => {
   return t === 1 ? 1 : 1 - Math.pow(2, -10 * t);
 }
 
-/** 점차 느려지는 count up 함수 */
 const useCountUp = (targetNumbers, duration) => {
   const [counts, setCounts] = useState(targetNumbers.map(() => 0));
   const frameRate = 1000 / 60;
@@ -24,7 +23,6 @@ const useCountUp = (targetNumbers, duration) => {
           return newCounts;
         });
 
-        // 진행 완료시 interval 해제
         if (progressRate === 1) {
           clearInterval(counters[index]);
         }
@@ -34,33 +32,16 @@ const useCountUp = (targetNumbers, duration) => {
     return () => {
       counters.forEach(counter => clearInterval(counter));
     };
-  }, [targetNumbers, totalFrame]); // 변경된 부분
+  }, [targetNumbers, totalFrame]);
 
   return counts;
 }
 
-
-//     return () => {
-//       counters.forEach(counter => clearInterval(counter));
-//     };
-//   }, []);
-
-//   return counts;
-// }
-
-
-// // 예시에서 사용할 부스와 개최자 수
-// const numBooths = 500;
-// const numOrganizers = 96;
-// const numMembers = 1000; // 예시에서 추가한 회원 수
-
-// // 컴포넌트에서 사용할 예시
-// const Counting = () => {
-//   const [boothCount, organizerCount, memberCount] = useCountUp([numBooths, numOrganizers, numMembers], 2000);
-
 const Counting = () => {
   const [targetNumbers, setTargetNumbers] = useState([0, 0, 0]);
   const [isLoading, setIsLoading] = useState(true);
+  const [isVisible, setIsVisible] = useState(false);
+  const countingRef = useRef(null);
 
   useEffect(() => {
     const fetchStats = async () => {
@@ -78,18 +59,52 @@ const Counting = () => {
     fetchStats();
   }, []);
 
-  const [boothCount, organizerCount, memberCount] = useCountUp(targetNumbers, 2000);
+  useEffect(() => {
+    const options = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.5 // Trigger when 50% of the component is visible
+    };
 
+    const observer = new IntersectionObserver(([entry]) => {
+      setIsVisible(entry.isIntersecting);
+    }, options);
+
+    if (countingRef.current) {
+      observer.observe(countingRef.current);
+    }
+
+    return () => {
+      if (countingRef.current) {
+        observer.unobserve(countingRef.current);
+      }
+    };
+  }, []);
+
+  const [boothCount, organizerCount, memberCount] = useCountUp(
+    isVisible ? targetNumbers : [0, 0, 0],
+    2000
+  );
 
   return (
-    <div>
-      <h1 className='text-white text-3xl navigation-font mb-1'>등록된 부스 수</h1>
-      <p className='text-2xl'>{boothCount}개</p>
-      <h1 className='text-white text-3xl navigation-font mb-1 mt-6'>개최자 수</h1>
-      <p className='text-2xl'>{organizerCount}명</p>
-      <h1 className='text-white text-3xl navigation-font mb-1 mt-6'>회원 수</h1>
-      <p className='text-2xl'>{memberCount}명</p>
+    <div ref={countingRef}>
+    <h1 className='responsive-text text-white navigation-font'>부스 수</h1>
+    <div className='flex items-center'>
+        <p className='responsive-number pr-1 navigation-font'>{boothCount}</p>
+        <p className='ptext'>개</p>
     </div>
+    <h1 className='responsive-text text-white navigation-font mt-3'>개최자 수</h1>
+    <div className='flex items-center'>
+        <p className='responsive-number pr-1 navigation-font'>{organizerCount}</p>
+        <p className='ptext'>명</p>
+    </div>
+    <h1 className='responsive-text text-white navigation-font mt-3'>회원 수</h1>
+    <div className='flex items-center'>
+        <p className='responsive-number pr-1 navigation-font'>{memberCount}</p>
+        <p className='ptext'>명</p>
+    </div>
+</div>
+
   );
 }
 

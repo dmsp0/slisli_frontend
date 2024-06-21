@@ -202,7 +202,7 @@ function BoothDetail() {
                         {isCreator ? (
                             <button
                                 data-tooltip-content='시작 15분 전에 열립니다' 
-                                data-tooltip-id={`  ${isCreateRoomDisabled() ? 'tooltip' : ''}`}
+                                data-tooltip-id='tooltip'
                                 className={`text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${isCreateRoomDisabled() ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-700'}`}
                                 onClick={handleCreateRoom}
                                 disabled={isCreateRoomDisabled()}
@@ -211,8 +211,8 @@ function BoothDetail() {
                             </button>
                         ) : (
                             <button
-                                data-tooltip-content='시작 15분 전에 열립니다' 
-                                data-tooltip-id={`  ${isJoinRoomDisabled() ? 'tooltip' : ''}`}
+                                data-tooltip-content='개최 후에 열립니다' 
+                                data-tooltip-id='tooltip'
                                 className={` text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${isJoinRoomDisabled() ? 'bg-gray-500' : 'bg-blue-500 hover:bg-blue-700'}`}
                                 onClick={handleJoinRoom}
                                 disabled={isJoinRoomDisabled()}
@@ -220,11 +220,14 @@ function BoothDetail() {
                                 참여하기
                             </button>
                         )}
-                        <Tooltip
-                        id='tooltip'
-                        place="top"
-                        style={{ backgroundColor: "rgb(051, 102, 204)", color: "#ffffff" , borderRadius: "10px"}}
-                        />
+                        {isCreateRoomDisabled() || isJoinRoomDisabled() ? (
+                            <Tooltip
+                                id='tooltip'
+                                content='시작 15분 전에 열립니다'
+                                place="top"
+                                style={{ backgroundColor: "rgb(51, 102, 204)", color: "#ffffff", borderRadius: "10px" }}
+                            />
+                        ) : null}
                         </div>
                     </div>
                 </div>

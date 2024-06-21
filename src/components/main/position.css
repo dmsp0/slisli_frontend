@@ -4,20 +4,14 @@
     width: 40%;
     height: 32%;
     pointer-events: auto; /* Allow interaction */
-  }
- 
-  .motion2 {
-    position: absolute;
-  }
-  
-  .motion {
     left: calc(50% - 32%);
     top: calc(50% - 20%);
   }
   
   .motion2 {
+    position: absolute;
     left: calc(50% + 10%);
-    top: calc(50% - 17%);
+    top: calc(50% - 19%);
   }
   
   .titleText {
@@ -42,6 +36,7 @@
   }
   .titleText {
       top: calc(50% - 30%);
+
   }
 }
 
@@ -50,19 +45,29 @@
       top: calc(50% - 23%);
   }
   .motion{
-    height: calc(30% - 30px);
+    height: calc(30% - 20px);
   }
   .titleText {
       top: calc(50% - 32%);
   }
 }
 
+@media (max-width: 1000px) {
+  .motion, .motion2 {
+      top: calc(50% - 24%);
+  }
+  .motion{
+    height: calc(30% - 29px);
+  }
+  .titleText {
+      top: calc(50% - 32%);
+      font-size: 35px;
+  }
+}
+/* 
 @media (max-width: 950px) {
   .motion, .motion2 {
       top: calc(50% - 26%);
-  }
-  .motion{
-    height: calc(30% - 40px);
   }
   .titleText {
       top: calc(50% - 33%);
@@ -73,9 +78,6 @@
   .motion, .motion2 {
       top: calc(50% - 27%);
   }
-  .motion{
-    height: calc(30% - 60px);
-  }
   .titleText {
       top: calc(50% - 34%);
   }
@@ -84,9 +86,6 @@
 @media (max-width: 750px) {
   .motion, .motion2 {
       top: calc(50% - 28%);
-  }
-  .motion{
-    height: calc(30% - 90px);
   }
   .titleText {
       top: calc(50% - 34%);
@@ -97,9 +96,6 @@
   .motion, .motion2 {
       top: calc(50% - 30%);
   }
-  .motion{
-    height: calc(30% - 100px);
-  }
   .titleText {
       top: calc(50% - 35%);
   }
@@ -108,9 +104,6 @@
 @media (max-width: 550px) {
   .motion, .motion2 {
     top: calc(50% - 30%);
-  }
-  .motion{
-    height: calc(30% - 100px);
   }
   .titleText {
       top: calc(50% - 33%);
@@ -121,10 +114,7 @@
   .motion, .motion2 {
       top: calc(50% - 30%);
   }
-  .motion{
-    height: calc(30% - 100px);
-  }
   .titleText {
       top: calc(50% - 35%);
   }
-}
+} */

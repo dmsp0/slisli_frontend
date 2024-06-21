@@ -78,6 +78,29 @@ function MyBoothList() {
     setBoothToDelete(null);
   };
 
+  // 시작&종료시간 초단위 삭제
+function formatTimeWithoutSeconds(timeString) {
+  if (!timeString) return '';
+
+  const timeComponents = timeString.split(':');
+  if (timeComponents.length < 2) return '';
+
+  const hours = parseInt(timeComponents[0], 10);
+  const minutes = parseInt(timeComponents[1], 10);
+
+  if (isNaN(hours) || isNaN(minutes)) return '';
+
+  const time = new Date();
+  time.setHours(hours);
+  time.setMinutes(minutes);
+
+  const formattedHours = time.getHours().toString().padStart(2, '0');
+  const formattedMinutes = time.getMinutes().toString().padStart(2, '0');
+
+  return `${formattedHours}:${formattedMinutes}`;
+}
+
+
   return (
     <div className="container mx-auto p-4">
       <CategoryFilter
@@ -99,7 +122,7 @@ function MyBoothList() {
               />
               <h2 className="text-xl font-bold text-blue-800">{booth.title}</h2>
               <p className="text-gray-700 mb-2">카테고리: {booth.category}</p>
-              <p className="text-gray-700 mb-2">일시: {booth.date}, {booth.startTime} ~ {booth.endTime}</p>
+              <p className="text-gray-700 mb-2">일시: {booth.date}, {formatTimeWithoutSeconds(booth.startTime)} ~ {formatTimeWithoutSeconds(booth.endTime)}</p>
           </Link>
               <button
                 onClick={() => handleEdit(booth)}

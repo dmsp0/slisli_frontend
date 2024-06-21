@@ -52,6 +52,19 @@ function TopNav() {
         setShowLogoutModal(false);
     };
 
+    useEffect(() => {
+        if (showLogoutModal) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [showLogoutModal]);
+
+
     return (
         <>
             {/* PC 화면 Nav */}
@@ -144,7 +157,7 @@ function TopNav() {
                 </div>
             </div>
             {showLogoutModal && (
-                <div className="z-50 fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                <div className="z-50 h-screen fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-md mx-auto">
                         <p>로그아웃 하시겠습니까?</p>
                         <div className="mt-4 flex justify-end mx-auto">

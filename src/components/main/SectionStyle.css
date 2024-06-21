@@ -4,7 +4,7 @@ section {
   width: 100%;
   height: auto;
   display: flex;
-  justify-content: flex-start;
+  justify-content: center;
   overflow: hidden;
   padding: 70px;
 }

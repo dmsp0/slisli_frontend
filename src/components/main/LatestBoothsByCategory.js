@@ -21,6 +21,17 @@ const LatestBoothsByCategory = () => {
     const [booths, setBooths] = useState({});
     const [selectedCategory, setSelectedCategory] = useState(categories[0]);
     const navigate = useNavigate();
+    const [isHovered, setIsHovered] = useState(false); // 버튼의 호버 상태를 관리합니다.
+
+    // 버튼 호버 이벤트 핸들러
+    const handleButtonHover = () => {
+        setIsHovered(true);
+    };
+
+    // 버튼 호버 해제 이벤트 핸들러
+    const handleButtonLeave = () => {
+        setIsHovered(false);
+    };
 
     useEffect(() => {
         const fetchLatestBoothsByCategory = async () => {
@@ -64,21 +75,25 @@ const LatestBoothsByCategory = () => {
                             animate={{ y: 0, opacity: 1 }}
                             exit={{ y: -10, opacity: 0 }}
                             transition={{ duration: 0.2 }}
-                            className='grid grid-cols-2 gap-3 p-5'
+                            className='grid grid-cols-2 gap-3 p-3'
                         >
-                                <img 
+                                <motion.img 
                                     src={booths[selectedCategory].imgPath} 
                                     alt={booths[selectedCategory].title} 
-                                    className="object-cover rounded"
+                                    className={`object-cover rounded ${isHovered ? 'hovered' : ''}`}
+                                    whileHover={{ scale: 1.03 }} 
+                                    transition={{ type: "spring", stiffness: 400, damping: 10 }} 
                                 />
-                                <div className='basis-1/2'>
+                                <div className='basis-1/2 overflow-y-auto p-3'>
                                     <div className="flex justify-between items-start mb-4">
                                         <h2 className="text-2xl font-bold text-blue-800">{booths[selectedCategory].title}</h2>
                                     </div>
                                     <p className="text-gray-700 mb-2">{booths[selectedCategory].info}</p>
                                     <p className="text-gray-700 mb-2">일시: {booths[selectedCategory].date}, {booths[selectedCategory].startTime} ~ {booths[selectedCategory].endTime}</p>
                                     <button 
-                                        className="btn bg-blue-400 shadow-md mt-2"
+                                        className="btn bg-blue-500 shadow-md mt-2 px-3 py-1 rounded-lg text-white absolute bottom-8"
+                                        onMouseOver={handleButtonHover} // 버튼 호버 이벤트 설정
+                                        onMouseLeave={handleButtonLeave} // 버튼 호버 해제 이벤트 설정
                                         onClick={() => handleDetailClick(booths[selectedCategory].boothId)}
                                     >
                                         상세보기

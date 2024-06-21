@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import { motion } from "framer-motion";
 import { useNavigate } from "react-router-dom";
 import Section from "./sectionMotion"; // Section 컴포넌트를 가져옴
-import './boothStyle.css';
+import './SectionStyle.css';
 import { MdBusinessCenter, MdSchool, MdFastfood, MdHealthAndSafety, MdColorLens } from "react-icons/md";
 import './motionOpen.css';
 import axios from "axios";
@@ -50,8 +50,8 @@ function BoothType() {
                     {isOpen && booths[categoryKey] ? (
                         <>
                             <img src={booths[categoryKey].imgPath} alt={booths[categoryKey].title} className="w-full h-64 object-cover mb-4 rounded" />
-                            <p>{booths[categoryKey].title}</p>
-                            <button className="text-white font-bold py-3 px-6 rounded-2xl transition duration-300 bg-blue-500 hover:bg-blue-700" onClick={(e) => handleDetailClick(e, booths[categoryKey].boothId)}>상세보기</button>
+                            <p className="text-2xl mb-2 navigation-font">{booths[categoryKey].title}</p>
+                            <button className="text-white text-lg py-2 px-5 rounded-2xl transition duration-300 bg-blue-500 hover:bg-blue-700" onClick={(e) => handleDetailClick(e, booths[categoryKey].boothId)}>상세보기</button>
                         </>
                     ) : (
                         <>

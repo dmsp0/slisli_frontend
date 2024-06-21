@@ -104,6 +104,18 @@ const ProfileUpdate = ({ closeEditForm }) => {
         setShowUpdateModal(false);
     };
 
+    useEffect(() => {
+        if (showUpdateModal) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+
+        return () => {
+            document.body.style.overflow = 'unset';
+        };
+    }, [showUpdateModal]);
+
     return (
         <form className="mt-4 p-4 bg-white border rounded-lg shadow-md">
             <div className="mb-4 flex flex-col items-start">
@@ -195,6 +207,8 @@ const ProfileUpdate = ({ closeEditForm }) => {
                         style={{ backgroundColor: "rgb(051, 102, 204)", color: "#ffffff" , borderRadius: "10px"}}
                         />
             </div>
+
+
             {showUpdateModal && (
                 <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-md">
