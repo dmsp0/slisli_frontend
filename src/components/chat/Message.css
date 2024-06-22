@@ -14,14 +14,24 @@
   align-items: flex-start;
 }
 
+.message.received.system {
+  align-items: center;
+}
+
 .profile {
   margin-right: 10px;
+}
+
+.message.received.system .message-text {
+  font-size: small;
+  background-color: #e2e2e21c; /* 받은 메시지 배경색 수정 */
+  color: hsl(0, 0%, 100%); /* 받은 메시지 텍스트 색상 수정 */
 }
 
 .message-text {
   padding: 10px;
   border-radius: 10px;
-  background-color: #3ba9f8; /* 보낸 메시지 배경색 수정 */
+  background-color: hsl(205, 92%, 85%); /* 보낸 메시지 배경색 수정 */
   color: #ffffff; /* 보낸 메시지 텍스트 색상 수정 */
   max-width: 70%; /* 메시지 너비 제한 */
   word-break: break-word; /* 긴 단어나 URL을 줄 바꿈 */

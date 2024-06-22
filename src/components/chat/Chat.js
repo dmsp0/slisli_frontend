@@ -1,23 +1,57 @@
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
+import axios from 'axios';
 import Message from './Message';
 import './Chat.css';
+import { API_URLS } from '../../api/apiConfig'; // API URL을 가져옵니다.
 
-const Chat = ({ boothId }) => {
+const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [nickname] = useState(localStorage.getItem('name') || '');
-  const [name, setName] = useState([]);
   const [accessToken] = useState(localStorage.getItem('accessToken') || '');
-  const [isConnected, setIsConnected] = useState(false);  
+  const [isConnected, setIsConnected] = useState(false);
+  const [boothTitle, setBoothTitle] = useState(''); // 부스 제목 상태 추가
+  const [boothId, setBoothId] = useState(null); // 부스 ID 상태 추가
 
   const socketRef = useRef(null);
+  const chatListRef = useRef(null);
+
+  useEffect(() => {
+    // 세션 스토리지에서 boothId 가져오기
+    const storedBoothId = JSON.parse(sessionStorage.getItem('boothId'));
+    if (storedBoothId && storedBoothId.boothId) {
+      setBoothId(storedBoothId.boothId);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchBoothTitle = async () => {
+      try {
+        if (!boothId) return;
+        const response = await axios.get(
+          API_URLS.BOOTH_GET_BY_ID.replace('{id}', boothId),
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          }
+        );
+        setBoothTitle(response.data.title);
+      } catch (error) {
+        console.error('Error fetching booth title', error);
+      }
+    };
+
+    if (boothId) {
+      fetchBoothTitle();
+    }
+  }, [boothId, accessToken]);
 
   useEffect(() => {
     if (!accessToken || !boothId) return;
 
-    // const socket = io('http://localhost:5000', {
-    const socket = io('https://js3.jsflux.co.kr', {
+    const socket = io('http://localhost:5000', {
       path: '/socket',
       auth: { token: accessToken, userId: nickname }
     });
@@ -26,17 +60,17 @@ const Chat = ({ boothId }) => {
 
     socket.on('connect', () => {
       console.log('Connected to server');
-      socket.emit('joinRoom', boothId); // 채팅방에 참여하는 이벤트 보내기
-      setIsConnected(true);  
+      socket.emit('joinRoom', boothId);
+      setIsConnected(true);
     });
 
     socket.on('chat message', (data) => {
-      setMessages(prevMessages => [...prevMessages, { ...data, time: new Date().toLocaleTimeString() }]);
+      setMessages(prevMessages => [...prevMessages, data]);
     });
 
     socket.on('disconnect', () => {
       console.log('Disconnected from server');
-      setIsConnected(false);  
+      setIsConnected(false);
     });
 
     socket.on('error', (error) => {
@@ -49,6 +83,12 @@ const Chat = ({ boothId }) => {
     };
   }, [accessToken, boothId, nickname]);
 
+  useEffect(() => {
+    if (chatListRef.current) {
+      chatListRef.current.scrollTop = chatListRef.current.scrollHeight;
+    }
+  }, [messages]);
+
   const sendMessage = () => {
     if (!isConnected) {
       console.error('Socket is not connected');
@@ -56,25 +96,27 @@ const Chat = ({ boothId }) => {
     }
 
     if (input.trim()) {
-      socketRef.current.emit('chat message', 
-        { message: input, 
-          userId: socketRef.current.id, 
-          nickname: nickname, 
-          roomId: boothId }); // roomId 전송
+      socketRef.current.emit('chat message', {
+        message: input,
+        nickname: nickname,
+        roomId: boothId,
+      });
       setInput('');
     }
   };
 
   return (
-    <div className="chat-container">
-      <div className="chat-list">
+    <div className="chat-container2">
+      <span className="booth-chat-name">{boothTitle}</span>
+      
+      <div className="chat-list" ref={chatListRef}>
         {messages.map((msg, index) => (
-          <Message 
-            key={index} 
-            message={msg.message} 
-            userId={msg.userId} 
-            time={msg.time} 
-            nickname={msg.nickname} 
+          <Message
+            key={index}
+            message={msg.message}
+            userId={msg.userId}
+            time={msg.time}
+            nickname={msg.nickname}
           />
         ))}
       </div>

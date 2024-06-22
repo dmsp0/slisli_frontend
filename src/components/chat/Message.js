@@ -2,11 +2,12 @@ import './Message.css';
 
 const Message = ({ userId, message, time, nickname }) => {
   const myName = localStorage.getItem('name');
-  const isSentByMe = nickname === myName; // 수정된 부분: userId 대신 nickname으로 비교
+  const isSentByMe = nickname === myName;
+  const isSystemMessage = userId === 'system';
 
   return (
-    <div className={`message ${isSentByMe ? 'sent' : 'received'}`}>
-      {!isSentByMe && (
+    <div className={`message ${isSentByMe ? 'sent' : 'received'} ${isSystemMessage ? 'system' : ''}`}>
+      {!isSentByMe && !isSystemMessage && (
         <span className="profile">
           <span className="user">{nickname}</span>
         </span>
