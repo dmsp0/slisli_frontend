@@ -6,6 +6,7 @@ import BoothLikeButton from "../booth/BoothLikeButton";
 import CategoryFilter from "./CategoryFilter";
 import { motion } from "framer-motion";
 import BoothCategory from "./Boothcategory";
+import TimeUtils from "../common/TimeUtils";
 
 function BoothList({ type }) {
   const [booths, setBooths] = useState([]);
@@ -130,7 +131,7 @@ function BoothList({ type }) {
                   className="w-full h-64 object-cover mb-4 rounded"
                 />
               </Link>
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex justify-between items-start mb-2">
                 <Link to={`/booth/${booth.boothId}`}>
                   <h2 className="text-xl font-bold text-blue-800">
                     {booth.title}
@@ -142,9 +143,9 @@ function BoothList({ type }) {
                 />
               </div>
               <Link to={`/booth/${booth.boothId}`} className="block">
-                <p className="text-gray-700 mb-2">카테고리 : {BoothCategory[booth.category]}</p>
-                <p className="text-gray-700 mb-2">일시 : {booth.date}</p>
-                <p className="text-gray-700 mb-2">시간 : {booth.startTime} ~ {booth.endTime}</p>
+                <p className="text-gray-700">카테고리 : {BoothCategory[booth.category]}</p>
+                <p className="text-gray-700">일시 : {booth.date}</p>
+                <p className="text-gray-700">시간: {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</p>
               </Link>
             </motion.div>
           ))}

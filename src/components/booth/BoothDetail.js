@@ -7,6 +7,7 @@ import "../../style/Videopage.css";
 import { Tooltip } from "react-tooltip";
 import "react-tooltip/dist/react-tooltip.css";
 import BoothCategory from "./Boothcategory";
+import TimeUtils from "../common/TimeUtils";
 
 function BoothDetail() {
   const { videoRoomId } = useParams();
@@ -239,7 +240,7 @@ function BoothDetail() {
           <p className="text-xl sm:text-2xl text-gray-700 mt-2 ">
             <span className="font-semibold">부스 시간 : </span>
             <span>
-              {booth.startTime} ~ {booth.endTime}
+              {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}
             </span>
           </p>
           <p className="text-xl sm:text-2xl text-gray-700 mt-2">

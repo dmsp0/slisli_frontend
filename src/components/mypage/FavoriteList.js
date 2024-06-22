@@ -4,15 +4,17 @@ import { API_URLS } from "../../api/apiConfig";
 import { Link } from "react-router-dom";
 import CategoryFilter from "../booth/CategoryFilter";
 import BoothLikeButton from "../booth/BoothLikeButton";
-import {motion} from "framer-motion";
+import { motion } from "framer-motion";
+import TimeUtils from "../common/TimeUtils"
+import BoothCategory from "../booth/Boothcategory";
 
 function FavoriteList() {
   const member_id = localStorage.getItem('member_id');
   const [likedBooths, setLikedBooths] = useState([]);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(0);
-  const [size] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
+  const [size] = useState(4);
+  const [hasMore, setHasMore] = useState(true); // 다음 버튼 활성화를 위한 상태
 
   useEffect(() => {
     const fetchLikedBooths = async () => {
@@ -31,23 +33,23 @@ function FavoriteList() {
           },
         });
 
-                // API 응답을 콘솔에 출력
-                console.log("API Response:", response.data);
+        // API 응답을 콘솔에 출력
+        console.log("API Response:", response.data);
 
         if (response.data && response.data.content !== undefined) {
           setLikedBooths(response.data.content);
-          setTotalPages(response.data.totalPages);
+          setHasMore(response.data.content.length === size);
         } else if (Array.isArray(response.data)) {
           setLikedBooths(response.data);
-          setTotalPages(1);
+          setHasMore(response.data.length === size);
         } else {
           setLikedBooths([]);
-          setTotalPages(0);
+          setHasMore(false);
         }
       } catch (error) {
         console.error(error);
         setLikedBooths([]);
-        setTotalPages(0);
+        setHasMore(false);
       }
     };
 
@@ -59,29 +61,6 @@ function FavoriteList() {
     setPage(0); // 새로운 카테고리를 선택하면 첫 페이지로 이동
   };
 
-  // 시작&종료시간 초단위 삭제
-function formatTimeWithoutSeconds(timeString) {
-  if (!timeString) return '';
-
-  const timeComponents = timeString.split(':');
-  if (timeComponents.length < 2) return '';
-
-  const hours = parseInt(timeComponents[0], 10);
-  const minutes = parseInt(timeComponents[1], 10);
-
-  if (isNaN(hours) || isNaN(minutes)) return '';
-
-  const time = new Date();
-  time.setHours(hours);
-  time.setMinutes(minutes);
-
-  const formattedHours = time.getHours().toString().padStart(2, '0');
-  const formattedMinutes = time.getMinutes().toString().padStart(2, '0');
-
-  return `${formattedHours}:${formattedMinutes}`;
-}
-
-
   return (
     <div className="container mx-auto p-4">
       <CategoryFilter
@@ -92,30 +71,29 @@ function formatTimeWithoutSeconds(timeString) {
         {likedBooths.length > 0 ? (
           likedBooths.map((booth) => (
             <motion.div 
-            key={booth.boothId} 
-            className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200"
-            whileHover={{ scale: 1.03 }}
-            transition={{ type: "spring", stiffness: 400, damping: 10 }}>
-            <Link to={`/booth/${booth.boothId}`}>
+              key={booth.boothId} 
+              className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200"
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: "spring", stiffness: 400, damping: 10 }}>
+              <Link to={`/booth/${booth.boothId}`}>
                 <img 
-                    src={booth.imgPath} 
-                    alt={booth.title}
-                    className="w-full h-64 object-cover mb-4 rounded"
+                  src={booth.imgPath} 
+                  alt={booth.title}
+                  className="w-full h-64 object-cover mb-4 rounded"
                 />
-            </Link>
-            <div className="flex justify-between items-start mb-4">
+              </Link>
+              <div className="flex justify-between items-start mb-2">
                 <Link to={`/booth/${booth.boothId}`} >
-                    <h2 className="text-xl font-bold text-blue-800">{booth.title}</h2>
+                <h2 className="text-xl font-bold text-blue-800">{booth.title}</h2>
                 </Link>
                 <BoothLikeButton boothId={booth.boothId} member_id={localStorage.getItem('member_id')} />
-            </div>
-            <Link to={`/booth/${booth.boothId}`} className="block">
-                <p className="text-gray-700 mb-2">{booth.info}</p>
-                <p className="text-gray-700 mb-2">카테고리: {booth.category}</p>
-                <p className="text-gray-700 mb-2">일시: {booth.date}, {formatTimeWithoutSeconds(booth.startTime)} ~ {formatTimeWithoutSeconds(booth.endTime)}</p>
-                
-            </Link>
-        </motion.div>
+              </div>
+              <Link to={`/booth/${booth.boothId}`} className="block">
+              <p className="text-gray-700">카테고리 : {BoothCategory[booth.category]}</p>
+              <p className="text-gray-700">일시: {booth.date}</p>
+              <p className="text-gray-700">시간: {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</p>
+              </Link>
+            </motion.div>
           ))
         ) : (
           <div className="col-span-12 text-center">
@@ -133,7 +111,7 @@ function formatTimeWithoutSeconds(timeString) {
         </button>
         <button
           onClick={() => setPage(page + 1)}
-          disabled={page >= totalPages - 1}
+          disabled={!hasMore}
           className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
         >
           다음
