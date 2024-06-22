@@ -1,22 +1,36 @@
-.chat-container {
-  width: 100%;
-  max-width: 600px;
-  margin: 0 auto;
-  max-height: 900px;
+.chat-container2 {
+  width: 400px;
+  max-height: 100%;
   display: flex;
   flex-direction: column;
-}
+  flex: 1;
+  background-color: #2C2F33;
+  padding: 10px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  margin-top: 1rem;
+  margin-right: 1rem;
+} 
 
 .chat-list {
   flex-grow: 1;
-  overflow-y: auto;
+  overflow-y: scroll;
   padding: 10px; /* 채팅 리스트 패딩 추가 */
+  min-height: 810px;
+  max-height: 810px;
+  scrollbar-width: none; /* Firefox용 스크롤바 숨기기 */
+  -ms-overflow-style: none; /* IE와 Edge용 스크롤바 숨기기 */
+}
+
+.chat-list::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Opera용 스크롤바 숨기기 */
 }
 
 .input-container {
   display: flex;
   align-items: center;
   margin-top: 5px; /* 입력창과 버튼 간격 조정 */
+  min-width: 80px;
 }
 
 .input-container input {
@@ -25,8 +39,8 @@
   border: 1px solid #ccc;
   border-radius: 5px;
   margin-right: 20px;
-  background-color: #ffffff; /* 입력창 배경색 수정 */
-  color: #000000; /* 입력 텍스트 색상 수정 */
+  background-color: #ffffff00; /* 입력창 배경색 수정 */
+  color: #ffffff; /* 입력 텍스트 색상 수정 */
 }
 
 .input-container button {
@@ -57,6 +71,10 @@
   align-items: flex-start;
 }
 
+.message.received.system{
+  align-items: center;
+} 
+
 .profile {
   margin-right: 10px;
 }
@@ -64,8 +82,8 @@
 .message-text {
   padding: 10px;
   border-radius: 10px;
-  background-color: #3ba9f8; /* 보낸 메시지 배경색 수정 */
-  color: #ffffff; /* 보낸 메시지 텍스트 색상 수정 */
+  background-color: #c9e9fff2; /* 보낸 메시지 배경색 수정 */
+  color: #000000; /* 보낸 메시지 텍스트 색상 수정 */
   max-width: 70%; /* 메시지 너비 제한 */
   word-break: break-word; /* 긴 단어나 URL을 줄 바꿈 */
 }
@@ -79,4 +97,14 @@
   font-size: 0.7rem;
   color: #777777; /* 시간 텍스트 색상 수정 */
   margin-left: 5px; /* 시간과 메시지 간격 추가 */
+}
+
+
+
+.booth-chat-name{
+  text-align: center;
+  max-height: 10%;
+  background-color: rgb(255, 255, 255);
+  border-radius: 5px;
+  color: #000000;
 }

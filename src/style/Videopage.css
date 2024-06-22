@@ -109,14 +109,6 @@ html, body {
     padding: 10px;
 }
 
-/* 채팅 컨테이너 */
-.chat-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    background-color: #2C2F33;
-    padding: 10px;
-}
 
 /* 사용자 컨테이너 */
 .user-container {
@@ -215,16 +207,16 @@ html, body {
 }
 
 /* 메시지 */
-.message {
+/* .message {
     border-radius: 5px;
     padding: 0.5rem;
     font-size: 12px;
-    /* margin: 0 5px; */
+    /* margin: 0 5px; 
     flex: 7;
     background-color: #40444B;
     color: white;
 }
-
+ */
 .time {
     font-size: 10px;
     margin: 0 5px;
