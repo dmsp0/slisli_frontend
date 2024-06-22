@@ -5,14 +5,16 @@ import { API_URLS } from "../../api/apiConfig";
 import CategoryFilter from "../booth/CategoryFilter";
 import Modal from "../booth/Modal"; // 모달 컴포넌트 임포트
 import {motion} from "framer-motion";
+import TimeUtils from "../common/TimeUtils";
+import BoothCategory from "../booth/Boothcategory";
 
 function MyBoothList() {
   const member_id = localStorage.getItem('member_id');
   const [mybooths, setMyBooths] = useState([]);
   const [category, setCategory] = useState("");
   const [page, setPage] = useState(0);
-  const [size] = useState(10);
-  const [totalPages, setTotalPages] = useState(0);
+  const [size] = useState(4);
+  const [hasMore, setHasMore] = useState(true); // 다음 버튼 활성화를 위한 상태
   const [showModal, setShowModal] = useState(false);
   const [boothToDelete, setBoothToDelete] = useState(null);
   const navigate = useNavigate();
@@ -34,7 +36,7 @@ function MyBoothList() {
           },
         });
         setMyBooths(response.data.content);
-        setTotalPages(response.data.totalPages);
+        setHasMore(response.data.content.length === size);
       } catch (error) {
         console.error(error);
       }
@@ -97,19 +99,20 @@ function MyBoothList() {
                   alt={booth.title}
                   className="w-full h-64 object-cover mb-4 rounded"
               />
-              <h2 className="text-xl font-bold text-blue-800">{booth.title}</h2>
-              <p className="text-gray-700 mb-2">카테고리: {booth.category}</p>
-              <p className="text-gray-700 mb-2">일시: {booth.date}, {booth.startTime} ~ {booth.endTime}</p>
+              <h2 className="text-xl font-bold text-blue-800 mb-2">{booth.title}</h2>
+              <p className="text-gray-700">카테고리 : {BoothCategory[booth.category]}</p>
+              <p className="text-gray-700">일시: {booth.date}</p>
+              <p className="text-gray-700">시간: {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</p>
           </Link>
               <button
                 onClick={() => handleEdit(booth)}
-                className="bg-blue-800 text-white px-2 rounded-md mr-5"
+                className="bg-blue-800 text-white px-2 py-1 rounded-md mr-2 mt-2 "
                 >
                 수정
               </button>
               <button
                 onClick={() => handleDeleteClick(booth.boothId)}
-                className="bg-red-600 text-white px-2 rounded-md"
+                className="bg-red-600 text-white px-2 py-1 rounded-md mr-2 mt-2 "
                 >
                 삭제
               </button>
@@ -126,7 +129,7 @@ function MyBoothList() {
         </button>
         <button
           onClick={() => setPage(page + 1)}
-          disabled={page >= totalPages - 1}
+          disabled={!hasMore}
           className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
         >
           다음

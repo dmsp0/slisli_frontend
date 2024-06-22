@@ -1,0 +1,73 @@
+.responsive-text{
+    font-size: 2.2vw;
+    min-width: 100px;
+  }
+
+  .responsive-number{
+    font-size: 2.2vw;
+  }
+
+  .ptext{
+    font-size: 1.5vw;
+  }
+
+  /* 미디어 쿼리 정리 */
+@media screen and (max-width: 1200px) {
+    .responsive-text {
+        font-size: 25px;
+    }
+    .responsive-number{
+        font-size: 25px;
+    }
+    .ptext {
+        font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 1150px) {
+    .responsive-text {
+        font-size: 23px;
+    }
+    .responsive-number{
+        font-size: 25px;
+    }
+    .ptext {
+        font-size: 15px;
+    }
+  }
+
+  @media (max-width: 1100px) {
+    .responsive-text {
+        font-size: 23px;
+    }
+    .responsive-number{
+        font-size: 25px;
+    }
+    .ptext {
+        font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 1060px) {
+    .responsive-text {
+        font-size: 22px;
+    }
+    .responsive-number{
+        font-size: 23px;
+    }
+    .ptext {
+        font-size: 15px;
+    }
+  }
+  
+  @media (max-width: 1000px) {
+    .responsive-text {
+        font-size: 20px;
+    }
+    .responsive-number{
+        font-size: 22px;
+    }
+    .ptext {
+        font-size: 15px;
+    }
+  }

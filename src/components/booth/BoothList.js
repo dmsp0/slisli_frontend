@@ -5,13 +5,16 @@ import { API_URLS } from "../../api/apiConfig";
 import BoothLikeButton from "../booth/BoothLikeButton";
 import CategoryFilter from "./CategoryFilter";
 import { motion } from "framer-motion";
+import BoothCategory from "./Boothcategory";
+import TimeUtils from "../common/TimeUtils";
 
 function BoothList({ type }) {
   const [booths, setBooths] = useState([]);
   const [category, setCategory] = useState("");
   const [search, setSearch] = useState(""); // 검색어 상태 추가
   const [page, setPage] = useState(0);
-  const [size] = useState(9); // 한 페이지에 9개씩 보여줌
+  const [size] = useState(6); // 한 페이지에 6개씩 보여줌
+  const [hasMore, setHasMore] = useState(true); // 데이터가 더 있는지 여부
 
   // 검색 및 필터링된 데이터를 가져오는 함수
   const fetchBooths = async (page, size, category, search, type) => {
@@ -30,6 +33,7 @@ function BoothList({ type }) {
         },
       });
       setBooths(response.data.content); // 페이지네이션 데이터 구조에 맞게 수정
+      setHasMore(response.data.content.length === size); // 데이터가 6개인 경우에만 다음 페이지가 있다고 설정
     } catch (error) {
       console.error("Error fetching booths", error);
     }
@@ -88,28 +92,28 @@ function BoothList({ type }) {
         />
 
         <div className="flex flex-row justify-center my-10 mr-4 ml-4">
-        <form onSubmit={handleSearchSubmit} className="flex flex-row w-full md:w-3/4">
-  <input
-    type="text"
-    value={search}
-    onChange={handleSearchChange}
-    placeholder="부스 제목 검색"
-    className="px-3 py-2 border rounded-lg h-12 flex-grow"
-  />
-  <button
-    type="submit"
-    className="py-2 px-4 bg-blue-500 text-white rounded-lg ml-2 h-12 flex-shrink-0"
-  >
-    검색
-  </button>
-  <button
-    type="button"
-    onClick={handleSearchReset}
-    className="py-2 px-4 bg-gray-500 text-white rounded-lg ml-2 h-12 flex-shrink-0"
-  >
-    초기화
-  </button>
-</form>
+          <form onSubmit={handleSearchSubmit} className="flex flex-row w-full md:w-3/4">
+            <input
+              type="text"
+              value={search}
+              onChange={handleSearchChange}
+              placeholder="부스 제목 검색"
+              className="px-3 py-2 border rounded-lg h-12 flex-grow"
+            />
+            <button
+              type="submit"
+              className="py-2 px-4 bg-blue-500 text-white rounded-lg ml-2 h-12 flex-shrink-0"
+            >
+              검색
+            </button>
+            <button
+              type="button"
+              onClick={handleSearchReset}
+              className="py-2 px-4 bg-gray-500 text-white rounded-lg ml-2 h-12 flex-shrink-0"
+            >
+              초기화
+            </button>
+          </form>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-10">
@@ -127,7 +131,7 @@ function BoothList({ type }) {
                   className="w-full h-64 object-cover mb-4 rounded"
                 />
               </Link>
-              <div className="flex justify-between items-start mb-4">
+              <div className="flex justify-between items-start mb-2">
                 <Link to={`/booth/${booth.boothId}`}>
                   <h2 className="text-xl font-bold text-blue-800">
                     {booth.title}
@@ -139,17 +143,15 @@ function BoothList({ type }) {
                 />
               </div>
               <Link to={`/booth/${booth.boothId}`} className="block">
-                <p className="text-gray-700 mb-2">{booth.info}</p>
-                <p className="text-gray-700 mb-2">카테고리: {booth.category}</p>
-                <p className="text-gray-700 mb-2">
-                  일시: {booth.date}, {booth.startTime} ~ {booth.endTime}
-                </p>
+                <p className="text-gray-700">카테고리 : {BoothCategory[booth.category]}</p>
+                <p className="text-gray-700">일시 : {booth.date}</p>
+                <p className="text-gray-700">시간: {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</p>
               </Link>
             </motion.div>
           ))}
         </div>
 
-        <div className="mt-4 flex justify-center">
+        <div className="mt-6 mb-6 flex justify-center">
           <button
             onClick={() => setPage(page - 1)}
             disabled={page === 0}
@@ -159,7 +161,8 @@ function BoothList({ type }) {
           </button>
           <button
             onClick={() => setPage(page + 1)}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"
+            disabled={!hasMore}
+            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
           >
             다음
           </button>

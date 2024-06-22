@@ -1,12 +1,12 @@
 import React,{useState} from "react";
 import Section from "./sectionMotion"; // Section 컴포넌트를 가져옴
-import './boothStyle.css';
+import './SectionStyle.css';
 import { AnimatePresence, motion } from "framer-motion";
 import { FaQuestion,FaExclamation } from "react-icons/fa";
-import { QnA } from "../info/QnAdata";
+import {QnA} from "./QnAdata";
 
 
-function Trendbooth(){
+function QnACom(){
     const [visible, setVisible] = useState(0);
     const [back, setBack] = useState(false);
 
@@ -81,4 +81,4 @@ const boxVariants = {
     )
 }
 
-export default Trendbooth;
+export default QnACom;
