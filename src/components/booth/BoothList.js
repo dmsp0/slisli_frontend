@@ -15,6 +15,7 @@ function BoothList({ type }) {
   const [page, setPage] = useState(0);
   const [size] = useState(6); // 한 페이지에 6개씩 보여줌
   const [hasMore, setHasMore] = useState(true); // 데이터가 더 있는지 여부
+  const [sort, setSort] = useState("date,DESC"); // 정렬 기준 추가
 
   // 검색 및 필터링된 데이터를 가져오는 함수
   const fetchBooths = async (page, size, category, search, type) => {
@@ -32,7 +33,8 @@ function BoothList({ type }) {
           Authorization: `Bearer ${token}`, // 요청 헤더에 JWT 토큰을 추가
         },
       });
-      setBooths(response.data.content); // 페이지네이션 데이터 구조에 맞게 수정
+      const sortedData = applySort(response.data.content, sort);
+      setBooths(sortedData); // 페이지네이션 데이터 구조에 맞게 수정
       setHasMore(response.data.content.length === size); // 데이터가 6개인 경우에만 다음 페이지가 있다고 설정
     } catch (error) {
       console.error("Error fetching booths", error);
@@ -41,7 +43,7 @@ function BoothList({ type }) {
 
   useEffect(() => {
     fetchBooths(page, size, category, search, type);
-  }, [page, size, category, type]); // 페이지, 사이즈, 카테고리 또는 타입이 변경될 때만 서버 요청
+  }, [page, size, category, type, sort]); // 페이지, 사이즈, 카테고리, 타입 또는 정렬 기준이 변경될 때만 서버 요청
 
   const handleCategoryChange = (newCategory) => {
     setCategory(newCategory);
@@ -62,6 +64,23 @@ function BoothList({ type }) {
     setSearch(""); // 검색어 상태 초기화
     setPage(0); // 첫 페이지로 이동
     fetchBooths(0, size, category, "", type); // 검색어 없이 전체 데이터를 다시 로드
+  };
+
+  const handleSortChange = (e) => {
+    setSort(e.target.value);
+    setPage(0); // 정렬 기준 변경 시 첫 페이지로 이동
+    fetchBooths(0, size, category, search, type); // 새로운 정렬 기준으로 서버 요청
+  };
+
+  const applySort = (data, sort) => {
+    const [field, direction] = sort.split(",");
+    return data.sort((a, b) => {
+      if (direction === "ASC") {
+        return a[field] > b[field] ? 1 : -1;
+      } else {
+        return a[field] < b[field] ? 1 : -1;
+      }
+    });
   };
 
   const renderTitle = () => {
@@ -116,6 +135,15 @@ function BoothList({ type }) {
           </form>
         </div>
 
+        <div className="flex justify-end mb-4">
+          <select value={sort} onChange={handleSortChange} className="px-3 py-2 border rounded-lg">
+            <option value="date,DESC">최신순</option>
+            <option value="date,ASC">오래된순</option>
+            <option value="title,ASC">제목순 (A-Z)</option>
+            <option value="title,DESC">제목순 (Z-A)</option>
+          </select>
+        </div>
+
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {booths.map((booth) => (
             <motion.div
@@ -136,7 +164,7 @@ function BoothList({ type }) {
               </Link>
               <div className="flex justify-between items-start mb-4">
                 <Link to={`/booth/${booth.boothId}`}>
-                  <h2 className="text-2xl font-bold text-white">
+                  <h2 className="text-2xl font-bold text-white text-shadow-lg">
                     {booth.title}
                   </h2>
                 </Link>
@@ -146,9 +174,9 @@ function BoothList({ type }) {
                 />
               </div>
               <Link to={`/booth/${booth.boothId}`} className="block">
-                <p className="text-gray-200">카테고리 : {BoothCategory[booth.category]}</p>
-                <p className="text-gray-200">일시 : {booth.date}</p>
-                <p className="text-gray-200">시간: {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</p>
+                <p className="text-white text-shadow-md">카테고리 : {BoothCategory[booth.category]}</p>
+                <p className="text-white text-shadow-md">일시 : {booth.date}</p>
+                <p className="text-white text-shadow-md">시간: {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</p>
               </Link>
             </motion.div>
           ))}
@@ -158,18 +186,19 @@ function BoothList({ type }) {
           <button
             onClick={() => setPage(page - 1)}
             disabled={page === 0}
-            className="mr-2 px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+            className="mr-2 px-4 py-2 bg-white rounded hover:bg-gray-400 disabled:opacity-50"
           >
             이전
           </button>
           <button
             onClick={() => setPage(page + 1)}
             disabled={!hasMore}
-            className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400 disabled:opacity-50"
+            className="px-4 py-2 bg-white rounded hover:bg-gray-400 disabled:opacity-50"
           >
             다음
           </button>
         </div>
+          <br/>
       </div>
     </div>
   );

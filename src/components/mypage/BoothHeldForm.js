@@ -115,6 +115,10 @@ function BoothForm() {
 
   return (
     <>
+    <div className="bg-gradient-to-b from-blue-900 to-blue-100">
+    <br/>
+    <br/>
+
       <form
         onSubmit={handleSubmit}
         className="max-w-xl mx-auto p-6 bg-white border rounded-lg shadow-md"
@@ -256,6 +260,11 @@ function BoothForm() {
         message={state && state.booth ? "부스 수정이 완료되었습니다." : "부스 등록이 완료되었습니다."}
         showCancel={false}
       />
+    <br/>
+    <br/>
+    <br/>
+      </div>
+
 </>
   );
 }
