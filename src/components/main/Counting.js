@@ -34,29 +34,10 @@ const useCountUp = (targetNumbers, duration) => {
     return () => {
       counters.forEach(counter => clearInterval(counter));
     };
-  }, [targetNumbers, totalFrame]); // 변경된 부분
+  }, [targetNumbers, totalFrame]);
 
   return counts;
 }
-
-
-//     return () => {
-//       counters.forEach(counter => clearInterval(counter));
-//     };
-//   }, []);
-
-//   return counts;
-// }
-
-
-// // 예시에서 사용할 부스와 개최자 수
-// const numBooths = 500;
-// const numOrganizers = 96;
-// const numMembers = 1000; // 예시에서 추가한 회원 수
-
-// // 컴포넌트에서 사용할 예시
-// const Counting = () => {
-//   const [boothCount, organizerCount, memberCount] = useCountUp([numBooths, numOrganizers, numMembers], 2000);
 
 const Counting = () => {
   const [targetNumbers, setTargetNumbers] = useState([0, 0, 0]);
@@ -80,15 +61,14 @@ const Counting = () => {
 
   const [boothCount, organizerCount, memberCount] = useCountUp(targetNumbers, 2000);
 
-
   return (
     <div>
-      <h1 className='text-white text-3xl navigation-font mb-1'>등록된 부스 수</h1>
-      <p className='text-2xl'>{boothCount}개</p>
-      <h1 className='text-white text-3xl navigation-font mb-1 mt-6'>개최자 수</h1>
-      <p className='text-2xl'>{organizerCount}명</p>
-      <h1 className='text-white text-3xl navigation-font mb-1 mt-6'>회원 수</h1>
-      <p className='text-2xl'>{memberCount}명</p>
+      <h1 className='text-white text-2xl md:text-3xl lg:text-4xl navigation-font mb-1'>등록된 부스 수</h1>
+      <p className='text-xl md:text-2xl lg:text-3xl'>{boothCount}개</p>
+      <h1 className='text-white text-2xl md:text-3xl lg:text-4xl navigation-font mb-1 mt-6'>개최자 수</h1>
+      <p className='text-xl md:text-2xl lg:text-3xl'>{organizerCount}명</p>
+      <h1 className='text-white text-2xl md:text-3xl lg:text-4xl navigation-font mb-1 mt-6'>회원 수</h1>
+      <p className='text-xl md:text-2xl lg:text-3xl'>{memberCount}명</p>
     </div>
   );
 }

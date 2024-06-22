@@ -31,6 +31,9 @@ function FavoriteList() {
           },
         });
 
+                // API 응답을 콘솔에 출력
+                console.log("API Response:", response.data);
+
         if (response.data && response.data.content !== undefined) {
           setLikedBooths(response.data.content);
           setTotalPages(response.data.totalPages);
