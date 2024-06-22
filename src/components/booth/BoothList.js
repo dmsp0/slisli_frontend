@@ -116,24 +116,27 @@ function BoothList({ type }) {
           </form>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-10">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {booths.map((booth) => (
             <motion.div
               key={booth.boothId}
-              className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200"
+              className="p-6 rounded-lg transition-shadow duration-200"
               whileHover={{ scale: 1.03 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
+              style={{ height: "auto", minHeight: "450px" }} // 높이를 더 늘림
             >
               <Link to={`/booth/${booth.boothId}`}>
-                <img
-                  src={booth.imgPath}
-                  alt={booth.title}
-                  className="w-full h-64 object-cover mb-4 rounded"
-                />
+                <div className="w-full h-80 mb-4">
+                  <img
+                    src={booth.imgPath}
+                    alt={booth.title}
+                    className="w-full h-full object-cover"
+                  />
+                </div>
               </Link>
-              <div className="flex justify-between items-start mb-2">
+              <div className="flex justify-between items-start mb-4">
                 <Link to={`/booth/${booth.boothId}`}>
-                  <h2 className="text-xl font-bold text-blue-800">
+                  <h2 className="text-2xl font-bold text-white">
                     {booth.title}
                   </h2>
                 </Link>
@@ -143,9 +146,9 @@ function BoothList({ type }) {
                 />
               </div>
               <Link to={`/booth/${booth.boothId}`} className="block">
-                <p className="text-gray-700">카테고리 : {BoothCategory[booth.category]}</p>
-                <p className="text-gray-700">일시 : {booth.date}</p>
-                <p className="text-gray-700">시간: {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</p>
+                <p className="text-gray-200">카테고리 : {BoothCategory[booth.category]}</p>
+                <p className="text-gray-200">일시 : {booth.date}</p>
+                <p className="text-gray-200">시간: {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</p>
               </Link>
             </motion.div>
           ))}

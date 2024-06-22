@@ -191,7 +191,9 @@ const LoginComponent = () => {
             </p>
             <div className="flex justify-center items-center mt-3">
                 <div className='sign-up-content-sign-in-button-box'>
-                    <a href='/api/auth/kakao'> <img className="w-12" src='/images/kakao-icon.png' alt="Kakao" /> </a>
+                <a href='http://localhost:8080/api/auth/kakao'>
+  <img className="w-12" src='/images/kakao-icon.png' alt="Kakao" />
+</a>
                     <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png' alt="Naver" /> </a>
                     <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png' alt="Google" /> </a>
                 </div>

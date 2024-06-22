@@ -52,7 +52,7 @@ const BoothLikeButton = ({boothId, member_id}) =>{
 
     return (
         <div onClick={ handleLikeToggle} className="hover:cursor-pointer">
-            {liked ? <FaHeart color="red" size={24} /> : <FaRegHeart color="grey" size={24} />}
+            {liked ? <FaHeart color="red" size={24} /> : <FaRegHeart color="white" size={24} />}
         </div>
     );
 

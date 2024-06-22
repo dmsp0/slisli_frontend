@@ -204,99 +204,98 @@ function BoothDetail() {
 
   return (
     <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen flex flex-col items-center">
-      <div className="bg-white rounded-lg flex flex-col sm:flex-row w-11/12 h-auto mt-24 p-12 mb-12">
+    <div className="bg-white rounded-lg flex flex-col sm:flex-row w-4/6 h-auto mt-24 p-12 mb-12">
       <div className="flex justify-center w-full sm:w-3/5 mx-auto items-center">
-  <img
-    src={booth.imgPath}
-    alt={booth.title}
-    className="h-full w-full object-cover object-center max-w-xl"
-  />
-</div>
-        <div className="flex-grow lg:border-l lg:border-gray-200 lg:pl-8">
-          <div className="flex justify-between items-center mb-10">
-            <h1 className="text-3xl sm:text-5xl font-bold pt-4 text-blue-800">
-              {booth.title}
-            </h1>
-            <div className="pt-4">
+        <img
+          src={booth.imgPath}
+          alt={booth.title}
+          className="h-full w-full object-cover object-center max-w-xl"
+        />
+      </div>
+      <div className="flex-grow lg:border-l lg:border-gray-200 lg:pl-8">
+        <div className="flex justify-between items-center mb-10">
+          <h1 className="text-3xl sm:text-5xl font-bold pt-4 text-blue-800">
+            {booth.title}
+          </h1>
+          <div className="pt-4">
             <BoothLikeButton
               boothId={booth.boothId}
               member_id={localStorage.getItem("member_id")}
             />
-            </div>
           </div>
-  
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span className="font-semibold">카테고리 : </span>
-            <span>{BoothCategory[booth.category]}</span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span className="font-semibold">주최자 : </span>
-            <span>{booth.openerName}</span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span className="font-semibold">일시 : </span>
-            <span>{booth.date}</span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2 ">
-            <span className="font-semibold">부스 시간 : </span>
-            <span>
-              {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}
-            </span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span className="font-semibold">참가 인원 : </span>
-            <span>{booth.maxPeople}</span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-10">
-            <span className="font-semibold">부스 소개 </span> <br />
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span>{booth.info}</span>
-          </p>
-          <hr className="my-10" />
-          <div className="text-center flex items-center justify-center gap-4 mt-4 pb-4">
-            {isCreator ? (
-              <button
-                data-tooltip-content="시작 15분 전에 열립니다"
-                data-tooltip-id={`  ${isCreateRoomDisabled() ? "tooltip" : ""}`}
-                className={`text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${
-                  isCreateRoomDisabled()
-                    ? "bg-gray-500"
-                    : "bg-blue-500 hover:bg-blue-700"
-                }`}
-                onClick={handleCreateRoom}
-                disabled={isCreateRoomDisabled()}
-              >
-                방 만들기
-              </button>
-            ) : (
-              <button
-                data-tooltip-content="시작 15분 전에 열립니다"
-                data-tooltip-id={`  ${isJoinRoomDisabled() ? "tooltip" : ""}`}
-                className={`text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${
-                  isJoinRoomDisabled()
-                    ? "bg-gray-500"
-                    : "bg-blue-500 hover:bg-blue-700"
-                }`}
-                onClick={handleJoinRoom}
-                disabled={isJoinRoomDisabled()}
-              >
-                참여하기
-              </button>
-            )}
-            <Tooltip
-              id="tooltip"
-              place="top"
-              style={{
-                backgroundColor: "rgb(051, 102, 204)",
-                color: "#ffffff",
-                borderRadius: "10px",
-              }}
-            />
-          </div>
+        </div>
+        <p className="text-lg sm:text-xl text-gray-700 mt-2">
+          <span className="font-semibold">카테고리 : </span>
+          <span>{BoothCategory[booth.category]}</span>
+        </p>
+        <p className="text-lg sm:text-xl text-gray-700 mt-2">
+          <span className="font-semibold">주최자 : </span>
+          <span>{booth.openerName}</span>
+        </p>
+        <p className="text-lg sm:text-xl text-gray-700 mt-2">
+          <span className="font-semibold">일시 : </span>
+          <span>{booth.date}</span>
+        </p>
+        <p className="text-lg sm:text-xl text-gray-700 mt-2 ">
+          <span className="font-semibold">부스 시간 : </span>
+          <span>
+            {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}
+          </span>
+        </p>
+        <p className="text-lg sm:text-xl text-gray-700 mt-2">
+          <span className="font-semibold">참가 인원 : </span>
+          <span>{booth.maxPeople}</span>
+        </p>
+        <p className="text-lg sm:text-xl text-gray-700 mt-10">
+          <span className="font-semibold">부스 소개 </span> <br />
+        </p>
+        <p className="text-lg sm:text-xl text-gray-700 mt-2">
+          <span>{booth.info}</span>
+        </p>
+        <hr className="my-10" />
+        <div className="text-center flex items-center justify-center gap-4 mt-4 pb-4">
+          {isCreator ? (
+            <button
+              data-tooltip-content="시작 15분 전에 열립니다"
+              data-tooltip-id={`  ${isCreateRoomDisabled() ? "tooltip" : ""}`}
+              className={`text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${
+                isCreateRoomDisabled()
+                  ? "bg-gray-500"
+                  : "bg-blue-500 hover:bg-blue-700"
+              }`}
+              onClick={handleCreateRoom}
+              disabled={isCreateRoomDisabled()}
+            >
+              방 만들기
+            </button>
+          ) : (
+            <button
+              data-tooltip-content="시작 15분 전에 열립니다"
+              data-tooltip-id={`  ${isJoinRoomDisabled() ? "tooltip" : ""}`}
+              className={`text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${
+                isJoinRoomDisabled()
+                  ? "bg-gray-500"
+                  : "bg-blue-500 hover:bg-blue-700"
+              }`}
+              onClick={handleJoinRoom}
+              disabled={isJoinRoomDisabled()}
+            >
+              참여하기
+            </button>
+          )}
+          <Tooltip
+            id="tooltip"
+            place="top"
+            style={{
+              backgroundColor: "rgb(051, 102, 204)",
+              color: "#ffffff",
+              borderRadius: "10px",
+            }}
+          />
         </div>
       </div>
     </div>
+  </div>
   );
 }
 
