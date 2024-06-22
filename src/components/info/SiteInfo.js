@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import infoLottie from '../../lottie/Animation - 1718775184849.json';
 import { AnimatePresence, motion } from "framer-motion";
 import { wrap } from '@popmotion/popcorn';
-import { QnA } from "./QnAdata";
+import { QnA } from "../main/QnAdata";
 import { FaQuestion,FaExclamation } from "react-icons/fa";
 import { section1 } from "./Section1"; // Import section1 data
 import { section2 } from "./Section2"; // Import section2 data
@@ -67,18 +67,34 @@ function Card({ content, index }) {
                 </div>
             </div>
         </div>
-        {/* 섹션 */}
-        <div className="bg-white mx-auto w-full md:w-3/4 text-center justify-center items-center py-28">
+         {/* 섹션 */}
+         <div className="bg-white mx-auto w-full md:w-3/4 text-center justify-center items-center py-28">
       <h1 className="text-5xl mb-1">부스 개최 안내</h1>
-      <p className="text-2xl text-gray-500">누구나 쉽게<br />박람회 개최를 도와드립니다</p>
+      <p className="text-2xl text-gray-500">누구나 쉽게 박람회 개최를 도와드립니다</p>
 
-      <div className="flex flex-row mt-10 gap-5">
+      <div className="flex flex-row mt-20 gap-20 text-left">
         {section1.map((section, index) => (
           <Card key={index} index={index} content={
-            <div className="basis-1/3 rounded-lg shadow-lg p-5">
-              <p className="text-2xl py-5">{section.title}</p>
-              <hr className="px-5" />
-              <p className="py-5 text-xl">{section.description}</p>
+            <div className='basis-1/3 relative group'>
+              <div className='bg-blue-800 w-32 h-32 rounded-full absolute right-0 top-2 transform translate-x-1/2 -translate-y-1/2'>
+                <FaExclamation 
+                className='inline-block transition-transform group-hover:translate-y-[-20%]' 
+                size={50} 
+                color='white'
+                style={{
+                  position: 'relative',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  transition: 'top 0.3s'
+                }} 
+                />
+              </div>
+              <div className="bg-blue-50 rounded-2xl shadow-lg p-5">
+                <p className="text-2xl py-5 pr-8">{section.title}</p>
+                <hr className="px-5" />
+                <p className="py-5 text-xl">{section.description}</p>
+              </div>
             </div>
           } />
         ))}
@@ -88,15 +104,31 @@ function Card({ content, index }) {
         {/* 섹션 */}
         <div className='bg-white mx-auto w-full md:w-3/4 text-center justify-center items-center py-28'>
             <h1 className='text-5xl mb-1'>부스 참가 안내</h1>
-            <p className='text-2xl text-gray-500'>원하는 박람회를<br/>어디에서나 참여할 수 있습니다</p>
+            <p className='text-2xl text-gray-500'>원하는 박람회를 어디에서나 참여할 수 있습니다</p>
             
-            <div className="flex flex-row mt-10 gap-5">
+            <div className="flex flex-row mt-20 gap-20 text-left">
                 {section2.map((section, index) => (
                 <Card key={index} index={index} content={
-                    <div className="basis-1/3 rounded-lg shadow-lg p-5">
+                  <div className='basis-1/3 relative group'>
+                    <div className='bg-blue-800 w-32 h-32 rounded-full absolute right-0 top-2 transform translate-x-1/2 -translate-y-1/2'>
+                    <FaExclamation 
+                className='inline-block transition-transform group-hover:translate-y-[-20%]' 
+                size={50} 
+                color='white'
+                style={{
+                  position: 'relative',
+                  top: '50%',
+                  left: '50%',
+                  transform: 'translate(-50%, -50%)',
+                  transition: 'top 0.3s'
+                }} 
+                />
+                </div>
+                <div className="bg-blue-50 rounded-2xl shadow-lg p-5">
                     <p className="text-2xl py-5">{section.title}</p>
                     <hr className="px-5" />
                     <p className="py-5 text-xl">{section.description}</p>
+                    </div>
                     </div>
                 } />
                 ))}
