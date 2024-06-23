@@ -12,12 +12,23 @@ const LoginComponent = () => {
     const [emailValid, setEmailValid] = useState(false);
     const [passwordValid, setPasswordValid] = useState(false);
 
+    const [rememberMe, setRememberMe] = useState(false);
+
     const [message, setMessage] = useState('');
     const navigate = useNavigate();
 
     const [showModal, setShowModal] = useState(false);
     const [showErrorModal, setShowErrorModal] = useState(false);
     const [onSuccess, setOnSuccess] = useState(false);
+
+    useEffect(() => {
+        const rememberedEmail = localStorage.getItem('rememberedEmail');
+        if (rememberedEmail) {
+            setEmail(rememberedEmail);
+            setRememberMe(true);
+            setEmailValid(true); // 이미 저장된 이메일은 유효한 것으로 간주합니다.
+        }
+    }, []);
 
     const handleEmail = (e) => {
         setEmail(e.target.value);
@@ -28,6 +39,13 @@ const LoginComponent = () => {
     const handlePassword = (e) => {
         setPassword(e.target.value);
         setPasswordValid(e.target.value.length >= 8 && e.target.value.length <= 20);
+    };
+
+    const handleRememberMe = (e) => {
+        setRememberMe(e.target.checked);
+        if (!e.target.checked) {
+            localStorage.removeItem('rememberedEmail');
+        }
     };
 
     const handleSubmit = async (e) => {
@@ -57,6 +75,11 @@ const LoginComponent = () => {
             localStorage.setItem('name', userName);
             localStorage.setItem('member_id', member_id);
             localStorage.setItem('profileImgPath', profileImgPath); // 프로필 이미지 경로 저장
+
+            if (rememberMe) {
+                localStorage.setItem('rememberedEmail', userEmail);
+            }
+
             setOnSuccess(true); // 성공 상태 설정
             setMessage(`${userName}님 환영합니다!`);
             setShowModal(true);
@@ -73,11 +96,7 @@ const LoginComponent = () => {
             console.error('로그인 오류:', error);
         }
     };
-    
-    // const closeModal = () => {
-    //     setShowModal(false);
-    //     navigate('/');
-    // };
+
 
     const closeModal = () => {
         setShowModal(false);
@@ -171,6 +190,20 @@ const LoginComponent = () => {
                             <div>8~20자리의 비밀번호를 입력해주세요.</div>
                         )}
                     </div>
+                </div>
+
+                {/* 아이디 기억하기 체크박스 */}
+                <div className="flex items-center">
+                    <input
+                        id="rememberMe"
+                        type="checkbox"
+                        checked={rememberMe}
+                        onChange={handleRememberMe}
+                        className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
+                    />
+                    <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
+                        아이디 기억하기
+                    </label>
                 </div>
 
                 {/* 로그인 버튼 */}
