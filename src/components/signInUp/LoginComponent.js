@@ -192,7 +192,7 @@ const LoginComponent = () => {
                     </div>
                 </div>
 
-                {/* 아이디 기억하기 체크박스 */}
+                {/* 이메일 기억하기 체크박스 */}
                 <div className="flex items-center">
                     <input
                         id="rememberMe"
@@ -202,7 +202,7 @@ const LoginComponent = () => {
                         className="h-4 w-4 text-indigo-600 border-gray-300 rounded focus:ring-indigo-500"
                     />
                     <label htmlFor="rememberMe" className="ml-2 block text-sm text-gray-900">
-                        아이디 기억하기
+                        이메일 기억하기
                     </label>
                 </div>
 
