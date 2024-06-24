@@ -1,20 +1,18 @@
-// Message.js
-
-import React from 'react';
 import './Message.css';
 
-const Message = ({ name, msg, time }) => {
-  const nickname = "임시닉네임";
+const Message = ({ userId, message, time, nickname }) => {
+  const myName = localStorage.getItem('name');
+  const isSentByMe = nickname === myName;
+  const isSystemMessage = userId === 'system';
 
   return (
-    <div className={`message ${name === nickname ? 'sent' : 'received'}`}>
-      {!name === nickname && (
+    <div className={`message ${isSentByMe ? 'sent' : 'received'} ${isSystemMessage ? 'system' : ''}`}>
+      {!isSentByMe && !isSystemMessage && (
         <span className="profile">
-          <span className="user">{name}</span>
-          <img className="img" src="/images/simson.png" alt="profile" />
+          <span className="user">{nickname}</span>
         </span>
       )}
-      <span className="message-text">{msg}</span>
+      <span className="message-text">{message}</span>
       <span className="time">{time}</span>
     </div>
   );

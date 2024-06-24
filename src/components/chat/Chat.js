@@ -1,92 +1,300 @@
-// Chat.js
+// import React, { useState, useEffect, useRef } from 'react';
+// import io from 'socket.io-client';
+// import axios from 'axios';
+// import Message from './Message';
+// import './Chat.css';
+// import { API_URLS } from '../../api/apiConfig'; // API URL을 가져옵니다.
 
-import React, { useState, useEffect } from 'react';
+// const Chat = () => {
+//   const [messages, setMessages] = useState([]);
+//   const [input, setInput] = useState('');
+//   const [nickname] = useState(localStorage.getItem('name') || '');
+//   const [accessToken] = useState(localStorage.getItem('accessToken') || '');
+//   const [isConnected, setIsConnected] = useState(false);
+//   const [boothTitle, setBoothTitle] = useState(''); // 부스 제목 상태 추가
+//   const [boothId, setBoothId] = useState(null); // 부스 ID 상태 추가
+
+//   const socketRef = useRef(null);
+//   const chatListRef = useRef(null);
+
+//   useEffect(() => {
+//     // 세션 스토리지에서 boothId 가져오기
+//     const storedBoothId = JSON.parse(sessionStorage.getItem('boothId'));
+//     if (storedBoothId && storedBoothId.boothId) {
+//       setBoothId(storedBoothId.boothId);
+//     }
+//   }, []);
+
+//   useEffect(() => {
+//     const fetchBoothTitle = async () => {
+//       try {
+//         if (!boothId) return;
+//         const response = await axios.get(
+//           API_URLS.BOOTH_GET_BY_ID.replace('{id}', boothId),
+//           {
+//             headers: {
+//               Authorization: `Bearer ${accessToken}`
+//             }
+//           }
+//         );
+//         setBoothTitle(response.data.title);
+//       } catch (error) {
+//         console.error('Error fetching booth title', error);
+//       }
+//     };
+
+//     if (boothId) {
+//       fetchBoothTitle();
+//     }
+//   }, [boothId, accessToken]);
+
+//   useEffect(() => {
+//     if (!accessToken || !boothId) return;
+
+//     const socket = io('http://localhost:5000', {
+//       path: '/socket',
+//       auth: { token: accessToken, userId: nickname }
+//     });
+
+//     socketRef.current = socket;
+
+//     socket.on('connect', () => {
+//       console.log('Connected to server');
+//       socket.emit('joinRoom', boothId);
+//       setIsConnected(true);
+//     });
+
+//     socket.on('chat message', (data) => {
+//       setMessages(prevMessages => [...prevMessages, data]);
+//     });
+
+//     socket.on('disconnect', () => {
+//       console.log('Disconnected from server');
+//       setIsConnected(false);
+//     });
+
+//     socket.on('error', (error) => {
+//       console.error('WebSocket error:', error);
+//     });
+
+//     return () => {
+//       socket.disconnect();
+//       socketRef.current = null;
+//     };
+//   }, [accessToken, boothId, nickname]);
+
+//   useEffect(() => {
+//     if (chatListRef.current) {
+//       chatListRef.current.scrollTop = chatListRef.current.scrollHeight;
+//     }
+//   }, [messages]);
+
+//   const sendMessage = () => {
+//     if (!isConnected) {
+//       console.error('Socket is not connected');
+//       return;
+//     }
+
+//     if (input.trim()) {
+//       socketRef.current.emit('chat message', {
+//         message: input,
+//         nickname: nickname,
+//         roomId: boothId,
+//       });
+//       setInput('');
+//     }
+//   };
+
+//   return (
+//     <div className="chat-container2">
+//       <span className="booth-chat-name">{boothTitle}</span>
+      
+//       <div className="chat-list" ref={chatListRef}>
+//         {messages.map((msg, index) => (
+//           <Message
+//             key={index}
+//             message={msg.message}
+//             userId={msg.userId}
+//             time={msg.time}
+//             nickname={msg.nickname}
+//           />
+//         ))}
+//       </div>
+//       <div className="input-container">
+//         <input
+//           type="text"
+//           placeholder="메시지를 입력하세요."
+//           value={input}
+//           onChange={(e) => setInput(e.target.value)}
+//           onKeyPress={(e) => {
+//             if (e.key === 'Enter') {
+//               sendMessage();
+//             }
+//           }}
+//         />
+//         <button onClick={sendMessage}>전송</button>
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default Chat;
+
+
+import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
+import axios from 'axios';
 import Message from './Message';
 import './Chat.css';
-
-const socket = io('http://localhost:5000', {
-  path: '/socket',
-});
+import { API_URLS } from '../../api/apiConfig';
 
 const Chat = () => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
-  const [nickname, setNickname] = useState('');
-  const [roomId, setRoomId] = useState('');
+  const [nickname] = useState(localStorage.getItem('name') || '');
+  const [accessToken] = useState(localStorage.getItem('accessToken') || '');
+  const [isConnected, setIsConnected] = useState(false);
+  const [boothTitle, setBoothTitle] = useState('');
+  const [boothId, setBoothId] = useState(null);
+
+  const socketRef = useRef(null);
+  const chatListRef = useRef(null);
 
   useEffect(() => {
-    const fetchRoomId = async () => {
+    const storedBoothId = JSON.parse(sessionStorage.getItem('boothId'));
+    if (storedBoothId && storedBoothId.boothId) {
+      setBoothId(storedBoothId.boothId);
+    }
+  }, []);
+
+  useEffect(() => {
+    const fetchBoothTitle = async () => {
       try {
-        const response = await fetch('http://localhost:8080/api/getRoomId');
-        const data = await response.json();
-        setRoomId(data.roomId);
-        joinRoom(data.roomId);
+        if (!boothId) return;
+        const response = await axios.get(
+          API_URLS.BOOTH_GET_BY_ID.replace('{id}', boothId),
+          {
+            headers: {
+              Authorization: `Bearer ${accessToken}`
+            }
+          }
+        );
+        setBoothTitle(response.data.title);
       } catch (error) {
-        console.error('Error fetching roomId:', error);
+        console.error('부스 제목 가져오기 에러', error);
       }
     };
 
-    fetchRoomId();
+    if (boothId) {
+      fetchBoothTitle();
+    }
+  }, [boothId, accessToken]);
 
-    socket.on('chatting', (data) => {
-      setMessages((prevMessages) => [...prevMessages, data]);
+  useEffect(() => {
+    if (!accessToken || !boothId) return;
+
+    const socket = io('http://localhost:5000', {
+      path: '/socket',
+      auth: { token: accessToken, userId: nickname }
+    });
+
+    socketRef.current = socket;
+
+    socket.on('connect', () => {
+      console.log('서버에 연결됨');
+      socket.emit('joinRoom', boothId);
+      setIsConnected(true);
+    });
+
+    socket.on('chat message', (data) => {
+      setMessages(prevMessages => [...prevMessages, data]);
+
+      // 백엔드로 메시지 저장 요청
+      axios.post(API_URLS.SAVE_CHAT_MESSAGE, {
+        boothId: boothId,
+        nickname: data.nickname,
+        message: data.message,
+        createdAt: new Date().toISOString() // 혹은 서버에서 생성된 시간 사용
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${accessToken}`
+        }
+      })
+      .then(response => {
+        console.log('메시지 저장 성공:', response.data);
+      })
+      .catch(error => {
+        console.error('메시지 저장 에러:', error);
+      });
+    });
+
+    socket.on('disconnect', () => {
+      console.log('서버와 연결 해제됨');
+      setIsConnected(false);
+    });
+
+    socket.on('error', (error) => {
+      console.error('WebSocket 에러:', error);
     });
 
     return () => {
       socket.disconnect();
+      socketRef.current = null;
     };
-  }, []);
+  }, [accessToken, boothId, nickname]);
 
-  const joinRoom = (room) => {
-    socket.emit('joinRoom', room);
-  };
+  useEffect(() => {
+    if (chatListRef.current) {
+      chatListRef.current.scrollTop = chatListRef.current.scrollHeight;
+    }
+  }, [messages]);
 
   const sendMessage = () => {
-    if (input.trim() && nickname.trim()) {
-      const param = {
-        name: nickname,
-        msg: input,
-        time: new Date().toLocaleTimeString(),
-        isSent: true, // 보낸 메시지 여부 추가
-      };
-      socket.emit('chatting', param);
+    if (!isConnected) {
+      console.error('소켓 연결 안됨');
+      return;
+    }
+
+    if (input.trim()) {
+      socketRef.current.emit('chat message', {
+        message: input,
+        nickname: nickname,
+        roomId: boothId,
+      });
       setInput('');
-      setMessages((prevMessages) => [...prevMessages, param]);
     }
   };
 
   return (
-    <div className="chat-container">
-      <input
-        type="text"
-        placeholder="Enter your nickname"
-        value={nickname}
-        onChange={(e) => setNickname(e.target.value)}
-      />
-      <div className="chat-list">
+    <div className="chat-container2">
+      <span className="booth-chat-name">{boothTitle}</span>
+      
+      <div className="chat-list" ref={chatListRef}>
         {messages.map((msg, index) => (
           <Message
             key={index}
-            name={msg.name}
-            msg={msg.msg}
+            message={msg.message}
+            userId={msg.userId}
             time={msg.time}
-            isSent={msg.isSent} // 메시지 송신 여부 전달
+            nickname={msg.nickname}
           />
         ))}
       </div>
-      <input
-        type="text"
-        placeholder="Enter your message"
-        value={input}
-        onChange={(e) => setInput(e.target.value)}
-        onKeyPress={(e) => {
-          if (e.key === 'Enter') {
-            sendMessage();
-          }
-        }}
-      />
-      <button onClick={sendMessage}>Send</button>
+      <div className="input-container">
+        <input
+          type="text"
+          placeholder="메시지를 입력하세요."
+          value={input}
+          onChange={(e) => setInput(e.target.value)}
+          onKeyPress={(e) => {
+            if (e.key === 'Enter') {
+              sendMessage();
+            }
+          }}
+        />
+        <button onClick={sendMessage}>전송</button>
+      </div>
     </div>
   );
 };

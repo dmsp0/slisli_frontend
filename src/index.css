@@ -23,18 +23,34 @@
   font-weight: 700;
   font-style: normal;
 }
-
-* {
+@font-face {
+  font-family: 'PartialSansKR-Regular';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_2307-1@1.1/PartialSansKR-Regular.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
+@font-face {
+  font-family: 'GyeonggiTitleM';
+  src: url('https://fastly.jsdelivr.net/gh/projectnoonnu/noonfonts_one@1.0/GyeonggiTitleM.woff') format('woff');
+  font-weight: normal;
+  font-style: normal;
+}
+*{
   margin: 0;
-  font-family: 'Godo', sans-serif !important; 
+  font-family: "GyeonggiTitleM";
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+.navigation-font{
+  font-family: 'Godo', sans-serif !important; 
+}
+
 .lotteria-font {
   font-family: 'LOTTERIACHAB', sans-serif !important;
 }
 .Mulgyeol{
-  font-family:'TTHakgyoansimMulgyeolB' !important;
+  font-family:'PartialSansKR-Regular' !important;
 }
 
 code {

@@ -1,0 +1,120 @@
+ 
+  .motion {
+    position: absolute;
+    width: 40%;
+    height: 32%;
+    pointer-events: auto; /* Allow interaction */
+    left: calc(50% - 32%);
+    top: calc(50% - 20%);
+  }
+  
+  .motion2 {
+    position: absolute;
+    left: calc(50% + 10%);
+    top: calc(50% - 19%);
+  }
+  
+  .titleText {
+    position: absolute;
+    transform: translateX(-50%);
+    font-size: 3.5vw;
+    color: white;
+    text-align: center;
+    pointer-events: none; /* Prevent interaction */
+    left: 44%;
+    margin: 1% 0;
+    top: 20%
+  }
+  
+/* 미디어 쿼리 정리 */
+@media (max-width: 1200px) {
+  .motion, .motion2 {
+      top: calc(50% - 21%);
+  }
+  .motion{
+    height: calc(30% - 20px);
+  }
+  .titleText {
+      top: calc(50% - 30%);
+
+  }
+}
+
+@media (max-width: 1100px) {
+  .motion, .motion2 {
+      top: calc(50% - 23%);
+  }
+  .motion{
+    height: calc(30% - 20px);
+  }
+  .titleText {
+      top: calc(50% - 32%);
+  }
+}
+
+@media (max-width: 1000px) {
+  .motion, .motion2 {
+      top: calc(50% - 24%);
+  }
+  .motion{
+    height: calc(30% - 29px);
+  }
+  .titleText {
+      top: calc(50% - 32%);
+      font-size: 35px;
+  }
+}
+/* 
+@media (max-width: 950px) {
+  .motion, .motion2 {
+      top: calc(50% - 26%);
+  }
+  .titleText {
+      top: calc(50% - 33%);
+  }
+}
+
+@media (max-width: 850px) {
+  .motion, .motion2 {
+      top: calc(50% - 27%);
+  }
+  .titleText {
+      top: calc(50% - 34%);
+  }
+}
+
+@media (max-width: 750px) {
+  .motion, .motion2 {
+      top: calc(50% - 28%);
+  }
+  .titleText {
+      top: calc(50% - 34%);
+  }
+}
+
+@media (max-width: 650px) {
+  .motion, .motion2 {
+      top: calc(50% - 30%);
+  }
+  .titleText {
+      top: calc(50% - 35%);
+  }
+}
+
+@media (max-width: 550px) {
+  .motion, .motion2 {
+    top: calc(50% - 30%);
+  }
+  .titleText {
+      top: calc(50% - 33%);
+  }
+}
+
+@media (max-width: 500px) {
+  .motion, .motion2 {
+      top: calc(50% - 30%);
+  }
+  .titleText {
+      top: calc(50% - 35%);
+  }
+} */

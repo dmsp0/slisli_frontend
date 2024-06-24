@@ -1,15 +1,13 @@
 import React from 'react';
 import BasicLayout from "../layouts/BasicLayout";
-import BoothHeldComponent from "../components/BoothHeldComponent";
+import BoothHeldForm from "../components/mypage/BoothHeldForm";
 
 function BoothHeld() {
 
   return (
-    <>
       <BasicLayout>
-        <BoothHeldComponent />
+        <BoothHeldForm />
       </BasicLayout>
-    </>
   );
 }
 

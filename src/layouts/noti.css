@@ -1,0 +1,50 @@
+.notification-container {
+    position: fixed;
+    bottom: 10px;
+    right: 10px;
+    z-index: 1000;
+}
+
+.notification {
+    background-color: #f8d7da;
+    color: #721c24;
+    padding: 10px;
+    margin: 5px;
+    border: 1px solid #f5c6cb;
+    border-radius: 5px;
+}
+
+.notification {
+    animation-duration: 0.5s;
+    animation-fill-mode: both;
+}
+
+@keyframes slideInRight {
+    from {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+    to {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideOutRight {
+    from {
+        transform: translateX(0);
+        opacity: 1;
+    }
+    to {
+        transform: translateX(100%);
+        opacity: 0;
+    }
+}
+
+.slideInRight {
+    animation-name: slideInRight;
+}
+
+.slideOutRight {
+    animation-name: slideOutRight;
+}

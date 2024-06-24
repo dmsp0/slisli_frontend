@@ -1,28 +1,49 @@
 .message {
-    display: flex;
-    align-items: center;
-  }
-  
-  .message.sent {
-    justify-content: flex-end;
-  }
-  
-  .message.received {
-    justify-content: flex-start;
-  }
-  
-  .profile {
-    margin-right: 10px;
-  }
-  
-  .message-text {
-    background-color: #f1f1f1;
-    padding: 10px;
-    border-radius: 10px;
-  }
-  
-  .time {
-    font-size: 0.8rem;
-    color: gray;
-  }
-  
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  margin-bottom: 8px;
+  width: 100%; /* 부모 컨테이너 너비에 맞추기 */
+}
+
+.message.sent {
+  align-items: flex-end;
+}
+
+.message.received {
+  align-items: flex-start;
+}
+
+.message.received.system {
+  align-items: center;
+}
+
+.profile {
+  margin-right: 10px;
+}
+
+.message.received.system .message-text {
+  font-size: small;
+  background-color: #e2e2e21c; /* 받은 메시지 배경색 수정 */
+  color: hsl(0, 0%, 100%); /* 받은 메시지 텍스트 색상 수정 */
+}
+
+.message-text {
+  padding: 10px;
+  border-radius: 10px;
+  background-color: hsl(205, 92%, 85%); /* 보낸 메시지 배경색 수정 */
+  color: #ffffff; /* 보낸 메시지 텍스트 색상 수정 */
+  max-width: 70%; /* 메시지 너비 제한 */
+  word-break: break-word; /* 긴 단어나 URL을 줄 바꿈 */
+}
+
+.message.received .message-text {
+  background-color: #ffffff; /* 받은 메시지 배경색 수정 */
+  color: #000000; /* 받은 메시지 텍스트 색상 수정 */
+}
+
+.time {
+  font-size: 0.7rem;
+  color: #777777; /* 시간 텍스트 색상 수정 */
+  margin-left: 5px; /* 시간과 메시지 간격 추가 */
+}

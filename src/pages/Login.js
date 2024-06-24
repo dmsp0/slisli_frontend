@@ -1,5 +1,5 @@
 import BasicLayout from "../layouts/BasicLayout";
-import SignInUp from "../components/mypageCom/SignInUp";
+import SignInUp from "../components/signInUp/SignInUp";
 function LoginPage() {
   return (
     <BasicLayout>

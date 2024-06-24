@@ -1,12 +1,12 @@
 import React from 'react';
 import BasicLayout from "../layouts/BasicLayout";
-import ViewHistoryComponent from "../components/ViewHistoryComponent";
+import MyBoothList from '../components/mypage/MyBoothList';
 
 function ViewHistory() {
     
     return (
         <BasicLayout>
-            <ViewHistoryComponent />
+            <MyBoothList />
         </BasicLayout>
     );
 }
