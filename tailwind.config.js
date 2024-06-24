@@ -3,7 +3,9 @@ module.exports = {
   content: ["./src/**/*.{js,jsx,ts,tsx}"],
   theme: {
     extend: {
-
+      screens: {
+        'custom-lg': '1300px',
+      },
     },
   },
   plugins: [],

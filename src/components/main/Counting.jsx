@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { API_URLS } from '../../api/apiConfig';
 import axios from 'axios';
+import './Counting.css';
 
 /** 진행률에 따라 count 속도 조절 */
 const easeOutExpo = (t) => {
@@ -83,12 +84,23 @@ const Counting = () => {
 
   return (
     <div>
-      <h1 className='text-white text-3xl navigation-font mb-1'>등록된 부스 수</h1>
-      <p className='text-2xl'>{boothCount}개</p>
-      <h1 className='text-white text-3xl navigation-font mb-1 mt-6'>개최자 수</h1>
-      <p className='text-2xl'>{organizerCount}명</p>
-      <h1 className='text-white text-3xl navigation-font mb-1 mt-6'>회원 수</h1>
-      <p className='text-2xl'>{memberCount}명</p>
+      <h1 className='text-white navigation-font responsive-text'>총 부스 수</h1>
+        <div className='flex items-center gap-1'>
+          <p className=' responsive-number font-bold'>{boothCount}</p>
+          <p className='ptext'>개</p>
+        </div>
+
+      <h1 className='text-white navigation-font mt-5 responsive-text'>개최자 수</h1>
+      <div className='flex items-center gap-1'>
+      <p className='responsive-number font-bold'>{organizerCount}</p>
+      <p className='ptext'>명</p>
+      </div>
+
+      <h1 className='text-white navigation-font mt-5 responsive-text'>회원 수</h1>
+      <div className='flex items-center gap-1'>
+      <p className='responsive-number font-bold'>{memberCount}</p>
+      <p className='ptext'>명</p>
+      </div>
     </div>
   );
 }

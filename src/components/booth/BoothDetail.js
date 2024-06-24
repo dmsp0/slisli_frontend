@@ -204,61 +204,72 @@ function BoothDetail() {
 
   return (
     <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen flex flex-col items-center">
-      <div className="bg-white rounded-lg flex flex-col sm:flex-row w-11/12 h-auto mt-24 p-12 mb-12">
-      <div className="flex justify-center w-full sm:w-3/5 mx-auto items-center">
-  <img
-    src={booth.imgPath}
-    alt={booth.title}
-    className="h-full w-full object-cover object-center max-w-xl"
-  />
-</div>
-        <div className="flex-grow lg:border-l lg:border-gray-200 lg:pl-8">
+
+      <div className="bg-white rounded-lg w-3/4 h-auto mt-24 p-10 mb-12 grid grid-cols-2">
+        <div className="flex justify-center w-full mx-auto items-center">
+          <img
+            src={booth.imgPath}
+            alt={booth.title}
+            className="h-full w-full object-cover object-center max-w-xl"
+          />
+        </div>
+      
+        <div className="border-l-2 border-gray-200 pl-8 lg:ml-5 ">
+
           <div className="flex justify-between items-center mb-10">
-            <h1 className="text-3xl sm:text-5xl font-bold pt-4 text-blue-800">
+            <h1 className="text-3xl sm:text-4xl font-bold pt-4 text-blue-800">
               {booth.title}
             </h1>
             <div className="pt-4">
             <BoothLikeButton
               boothId={booth.boothId}
               member_id={localStorage.getItem("member_id")}
-            />
+              />
             </div>
           </div>
-  
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span className="font-semibold">카테고리 : </span>
-            <span>{BoothCategory[booth.category]}</span>
+
+              <div>
+          <table className="mx-auto text-center table-fixed w-full mb-10">
+            <thead className="text-xl text-gray-700">
+              <tr>
+                <th className="border-r-2 pb-1">카테고리</th>
+                <th className="border-l-2 pb-1">주최자</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border-r-2">{BoothCategory[booth.category]}</td>
+                <td className="border-l-2">{booth.openerName}</td>
+              </tr>
+            </tbody>
+            <thead className="">
+              <tr className="text-xl text-gray-700">
+                <th className="border-r-2 pt-5 pb-1">날짜</th>
+                <th className="border-l-2 pt-5 pb-1">개최 시간</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td className="border-r-2">{booth.date}</td>
+                <td className="border-l-2">{TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}</td>
+              </tr>
+            </tbody>
+          </table>
+        
+          <p className="text-xl text-gray-700 font-semibold mb-1">부스 소개 </p>
+          <p className="text-l text-gray-700">{booth.info}</p>
+          </div>
+
+          <div className="text-center items-center justify-center gap-4 mt-8 border-t-2 border-gray-200 pt-8">
+
+          <p className="text-l sm:text-xl text-gray-700 mb-3">
+            <span className="font-semibold pr-3">참가 인원</span>
+            <span>최대 {booth.maxPeople}명</span>
           </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span className="font-semibold">주최자 : </span>
-            <span>{booth.openerName}</span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span className="font-semibold">일시 : </span>
-            <span>{booth.date}</span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2 ">
-            <span className="font-semibold">부스 시간 : </span>
-            <span>
-              {TimeUtils(booth.startTime)} ~ {TimeUtils(booth.endTime)}
-            </span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span className="font-semibold">참가 인원 : </span>
-            <span>{booth.maxPeople}</span>
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-10">
-            <span className="font-semibold">부스 소개 </span> <br />
-          </p>
-          <p className="text-xl sm:text-2xl text-gray-700 mt-2">
-            <span>{booth.info}</span>
-          </p>
-          <hr className="my-10" />
-          <div className="text-center flex items-center justify-center gap-4 mt-4 pb-4">
             {isCreator ? (
               <button
-                data-tooltip-content="시작 15분 전에 열립니다"
-                data-tooltip-id={`  ${isCreateRoomDisabled() ? "tooltip" : ""}`}
+                data-tooltip-content='시작 15분 전에 열립니다'
+                data-tooltip-id='tooltip'
                 className={`text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${
                   isCreateRoomDisabled()
                     ? "bg-gray-500"
@@ -271,8 +282,8 @@ function BoothDetail() {
               </button>
             ) : (
               <button
-                data-tooltip-content="시작 15분 전에 열립니다"
-                data-tooltip-id={`  ${isJoinRoomDisabled() ? "tooltip" : ""}`}
+                data-tooltip-content='개최 후에 열립니다' 
+                data-tooltip-id='tooltip'
                 className={`text-white font-bold py-3 px-6 rounded-2xl transition duration-300 ${
                   isJoinRoomDisabled()
                     ? "bg-gray-500"
@@ -284,15 +295,14 @@ function BoothDetail() {
                 참여하기
               </button>
             )}
-            <Tooltip
-              id="tooltip"
-              place="top"
-              style={{
-                backgroundColor: "rgb(051, 102, 204)",
-                color: "#ffffff",
-                borderRadius: "10px",
-              }}
-            />
+            {isCreateRoomDisabled() || isJoinRoomDisabled() ? (
+                            <Tooltip
+                                id='tooltip'
+                                content='시작 15분 전에 열립니다'
+                                place="top"
+                                style={{ backgroundColor: "rgb(51, 102, 204)", color: "#ffffff", borderRadius: "10px" }}
+                            />
+                        ) : null}
           </div>
         </div>
       </div>
