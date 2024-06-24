@@ -2,6 +2,7 @@ import React from "react";
 import './position.css';
 import LatestBoothsByCategory from "./LatestBoothsByCategory";
 import Counting from "./Counting";
+import './Counting.css';
 
 function MainView(){
     return(

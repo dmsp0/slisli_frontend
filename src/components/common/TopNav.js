@@ -160,7 +160,7 @@ function TopNav() {
                 <div className="z-50 h-screen fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
                     <div className="bg-white p-6 rounded-lg shadow-md mx-auto">
                         <p>로그아웃 하시겠습니까?</p>
-                        <div className="mt-4 flex justify-end mx-auto">
+                        <div className="mt-4 flex justify-center mx-auto">
                             <button
                                 className="py-2 px-4 bg-gray-300 hover:bg-gray-400 text-black rounded-lg mr-2 mx-auto"
                                 onClick={closeLogoutModal}

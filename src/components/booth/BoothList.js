@@ -82,7 +82,8 @@ function BoothList({ type }) {
   };
 
   return (
-    <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen flex flex-col items-center">
+    <>
+    <div className="bg-gradient-to-b from-blue-900 to-blue-50 w-full h-full flex flex-col items-center pb-10">
       <div className="container mx-auto mt-20">
         {renderTitle()}
 
@@ -115,13 +116,16 @@ function BoothList({ type }) {
             </button>
           </form>
         </div>
+      </div>
+    </div>
 
+    <div className="bg-gradient-to-b from-blue-50 to-white w-full h-full flex flex-col items-center py-14">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-10">
           {booths.map((booth) => (
             <motion.div
               key={booth.boothId}
               className="border p-4 rounded-lg shadow hover:shadow-lg bg-white transition-shadow duration-200"
-              whileHover={{ scale: 1.03 }}
+              whileHover={{ scale: 1.05 }}
               transition={{ type: "spring", stiffness: 400, damping: 10 }}
             >
               <Link to={`/booth/${booth.boothId}`}>
@@ -168,7 +172,8 @@ function BoothList({ type }) {
           </button>
         </div>
       </div>
-    </div>
+
+    </>
   );
 }
 
