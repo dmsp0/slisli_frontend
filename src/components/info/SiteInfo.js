@@ -61,7 +61,7 @@ function Card({ content, index }) {
 
                         <h1 className='text-5xl text-white Mulgyeol mb-1'>방 안에서 펼쳐지는 박람회</h1>
                         <p className='text-4xl text-white mb-5'>누구나 온라인 전시를 쉽고 빠르게</p>
-                        <Link to="/boothheld"><button className='border-white border-2 rounded-lg px-4 py-1 text-white hover:bg-white hover:text-blue-800 text-2xl' onClick={'/boothheld'}>부스 개최하러 가기</button></Link>
+                        
                        
                     </div>
                 </div>
