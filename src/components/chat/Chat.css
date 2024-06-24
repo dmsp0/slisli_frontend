@@ -1,5 +1,5 @@
 .chat-container2 {
-  width: 400px;
+  width: 500px;
   max-height: 100%;
   display: flex;
   flex-direction: column;
@@ -9,7 +9,7 @@
   border-radius: 10px;
   border: 1px solid #ccc;
   margin-top: 1rem;
-  margin-right: 1rem;
+  /* margin-right: 1rem; */
 } 
 
 .chat-list {
@@ -38,7 +38,7 @@
   padding: 8px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  margin-right: 20px;
+  /* margin-right: 20px; */
   background-color: #ffffff00; /* 입력창 배경색 수정 */
   color: #ffffff; /* 입력 텍스트 색상 수정 */
 }

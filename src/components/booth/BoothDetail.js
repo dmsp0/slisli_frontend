@@ -1,3 +1,4 @@
+/* global sfutest*/
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { useNavigate, useParams } from "react-router-dom";
@@ -111,69 +112,19 @@ function BoothDetail() {
   };
 
   const handleCreateRoom = () => {
-    if (!janusInitialized || !window.sfutest) {
-      alert("Janus가 초기화되지 않았습니다. 잠시 후 다시 시도하세요.");
-      return;
-    }
-
     const roomNum = parseInt(roomNumber, 10);
-    checkRoomExists(roomNum, (exists) => {
-      if (exists) {
-        window.joinRoomAsHost(username, roomNum, (success) => {
-          if (success) {
-            window.localStorage.setItem("isHost", "true");
-            navigate(`/booth/videoroom/${roomNum}`, {
-              state: { numParticipants },
-            });
-          } else {
-            console.error("Failed to join existing room as host");
-          }
-        });
-      } else {
-        window.createRoomAndJoinAsHost(
-          username,
-          numParticipants,
-          roomNum,
-          (success, createdRoomNumber) => {
-            if (success) {
-              window.localStorage.setItem("isHost", "true");
-              navigate(`/booth/videoroom/${createdRoomNumber}`, {
-                state: { numParticipants },
-              });
-            } else {
-              console.error("Failed to create room");
-            }
-          }
-        );
-      }
+    navigate(`/booth/videoroom/${roomNum}`, {
+      state: { username, roomNum, roomTitle: booth.title, numParticipants },
     });
   };
-
+  
   const handleJoinRoom = () => {
-    const member_id = localStorage.getItem("member_id");
-    if (!member_id) {
-      console.error("Member ID not found, redirecting to login.");
-      navigate("/login");
-      return;
-    }
-
-    setUsername(member_id);
-
-    if (!janusInitialized || !window.sfutest) {
-      alert("Janus가 초기화되지 않았습니다. 잠시 후 다시 시도하세요.");
-      return;
-    }
-
     const roomNum = parseInt(roomNumber, 10);
-    window.joinRoomAsParticipant(username, roomNum, (success) => {
-      if (success) {
-        window.localStorage.setItem("isHost", "false");
-        navigate(`/booth/videoroom/${roomNum}`, { state: { numParticipants } });
-      } else {
-        console.error("Failed to join room");
-      }
+    navigate(`/booth/videoroom/${roomNum}`, {
+      state: { username, roomNum, roomTitle: booth.title, numParticipants },
     });
   };
+
 
   const isCreateRoomDisabled = () => {
     if (!booth || !booth.startTime || !booth.endTime || !booth.date)
