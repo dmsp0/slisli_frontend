@@ -51,7 +51,8 @@ const Chat = () => {
   useEffect(() => {
     if (!accessToken || !boothId) return;
 
-    const socket = io('http://localhost:5000', {
+    // const socket = io('http://localhost:5000', {
+      const socket = io('https://js3.jsflux.co.kr', {
       path: '/socket',
       auth: { token: accessToken, userId: nickname }
     });

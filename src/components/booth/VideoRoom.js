@@ -2,8 +2,8 @@
 
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
-import SockJS from "sockjs-client";
-import { Stomp } from "@stomp/stompjs";
+// import SockJS from "sockjs-client";
+// import { Stomp } from "@stomp/stompjs";
 import { useLocation } from "react-router-dom";
 import BrowserNotSupportedIcon from "@mui/icons-material/BrowserNotSupported";
 import $ from "jquery"; // jQuery import
@@ -12,7 +12,7 @@ import MicOffIcon from "@mui/icons-material/MicOff";
 import MicIcon from "@mui/icons-material/Mic";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import { renderToString } from "react-dom/server";
-import { useTranslation } from "react-i18next";
+// import { useTranslation } from "react-i18next";
 import io from 'socket.io-client';
 import Chat from "../chat/Chat";
 
@@ -40,42 +40,43 @@ function VideoRoom() {
   const [userId, setUserId] = useState(user_id);
   const [roomName, setRoomName] = useState(roomNum);
   const [roomDescription, setRoomDescription] = useState(roomTitle);
-  const [stompClient, setStompClient] = useState(null);
+  // const [stompClient, setStompClient] = useState(null);
   const [boothId, setBoothId] = useState('');
 
   const [isConnected, setIsConnected] = useState(false);
   const [isRoomCreated, setIsRoomCreated] = useState(false);
-  const { t } = useTranslation();
+  // const { t } = useTranslation();
   const messagesEndRef = useRef(null);
 
   const navigate = useNavigate();
 
 //채팅 연결
-  useEffect(() => {
-    // sessionStorage에서 boothId 가져오기
-    const boothIdFromStorage = sessionStorage.getItem('boothId');
-    setBoothId(boothIdFromStorage);
-  }, []);
+  // useEffect(() => {
+  //   // sessionStorage에서 boothId 가져오기
+  //   const boothIdFromStorage = sessionStorage.getItem('boothId');
+  //   setBoothId(boothIdFromStorage);
+  // }, []);
 
-  useEffect(() => {
-    if (!boothId) return;
+  // useEffect(() => {
+  //   if (!boothId) return;
 
-    // 소켓 연결
-    const socket = io('http://localhost:5000', {
-      path: '/socket',
-      auth: { token: localStorage.getItem('accessToken') }, // 토큰 전달
-    });
+  //   // 소켓 연결
+  //   // const socket = io('http://localhost:5000', {
+  //   const socket = io('https://js3.jsflux.co.kr', {
+  //     path: '/socket',
+  //     auth: { token: localStorage.getItem('accessToken') }, // 토큰 전달
+  //   });
 
-    socket.on('connect', () => {
-      console.log('Connected to server');
-      socket.emit('joinRoom', boothId); // 방 번호 전달
-    });
+  //   socket.on('connect', () => {
+  //     console.log('Connected to server');
+  //     socket.emit('joinRoom', boothId); // 방 번호 전달
+  //   });
 
-    return () => {
-      // 컴포넌트 언마운트 시 소켓 연결 해제
-      socket.disconnect();
-    };
-  }, [boothId]);
+  //   return () => {
+  //     // 컴포넌트 언마운트 시 소켓 연결 해제
+  //     socket.disconnect();
+  //   };
+  // }, [boothId]);
 
 
 
@@ -413,29 +414,29 @@ function VideoRoom() {
     initjanus();
   }, []);
 
-  const connectToChat = (roomId) => {
-    const socket = new SockJS("https://js2.jsflux.co.kr/api/chat");
-    const client = Stomp.over(socket);
+  // const connectToChat = (roomId) => {
+  //   // const socket = new SockJS("https://js2.jsflux.co.kr/api/chat");
+  //   // const client = Stomp.over(socket);
 
-    client.connect({}, () => {
-      client.subscribe(`/topic/rooms/${roomId}`, (message) => {
-        setMessages((prevMessages) => [...prevMessages, message.body]);
-      });
-      setIsConnected(true);
-    });
+  //   client.connect({}, () => {
+  //     client.subscribe(`/topic/rooms/${roomId}`, (message) => {
+  //       setMessages((prevMessages) => [...prevMessages, message.body]);
+  //     });
+  //     setIsConnected(true);
+  //   });
 
-    client.onclose = () => {
-      setIsConnected(false);
-    };
+  //   client.onclose = () => {
+  //     setIsConnected(false);
+  //   };
 
-    setStompClient(client);
+  //   setStompClient(client);
 
-    return () => {
-      if (client) {
-        client.disconnect();
-      }
-    };
-  };
+  //   return () => {
+  //     if (client) {
+  //       client.disconnect();
+  //     }
+  //   };
+  // };
 
   const destroytest = () => {
     janus.destroy();
@@ -455,17 +456,17 @@ function VideoRoom() {
       return;
     }
     setUserId(username);
-    connectToChat(roomName); // 방 이름으로 채팅 연결
+    // connectToChat(roomName); // 방 이름으로 채팅 연결
     setIsRoomCreated(true);
   };
 
-  const sendMessage = () => {
-    if (isConnected && input.trim() !== "" && userId.trim() !== "") {
-      const message = { content: `${userId}: ${input}` };
-      stompClient.send(`/app/rooms/${roomName}/message`, {}, JSON.stringify(message));
-      setInput("");
-    }
-  };
+  // const sendMessage = () => {
+  //   if (isConnected && input.trim() !== "" && userId.trim() !== "") {
+  //     const message = { content: `${userId}: ${input}` };
+  //     stompClient.send(`/app/rooms/${roomName}/message`, {}, JSON.stringify(message));
+  //     setInput("");
+  //   }
+  // };
   const getColorFromString = (str) => {
     let hash = 0;
     for (let i = 0; i < str.length; i++) {
@@ -495,7 +496,7 @@ function VideoRoom() {
                 <div className="space-y-4" id="registernow">
                   <div className="flex flex-col lg:flex-row items-center">
                     <label className="w-24" htmlFor="roomname">
-                      {t("RoomNum")}
+                      방번호
                     </label>
                     <input
                       type="text"
@@ -509,7 +510,7 @@ function VideoRoom() {
                   </div>
                   <div className="flex flex-col lg:flex-row items-center">
                     <label className="w-24" htmlFor="username">
-                      {t("ID")}
+                      유저이름
                     </label>
                     <input
                       type="text"
@@ -523,7 +524,7 @@ function VideoRoom() {
                   </div>
                   <div className="flex flex-col lg:flex-row items-center">
                     <label className="w-24" htmlFor="description">
-                      {t("Title")}
+                      방제목
                     </label>
                     <input
                       type="text"
@@ -540,13 +541,13 @@ function VideoRoom() {
                       onClick={handleRegisterClick}
                       id="register"
                     >
-                      {t("참여하기")}
+                      참여하기
                     </button>
                     <button
                       className="bg-blue-0 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
                       onClick={destroytest}
                     >
-                      {t("나가기")}
+                      나가기
                     </button>
                   </div>
                 </div>
@@ -558,7 +559,7 @@ function VideoRoom() {
                   className="bg-black hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
                   onClick={destroytest}
                 >
-                  {t("나가기")}
+                  나가기
                 </button>
                 <div className="flex flex-wrap -mx-2">
                   <div className="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
