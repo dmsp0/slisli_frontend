@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import './signStyle.css';
 import { API_URLS } from '../../api/apiConfig';
 import Modal from '../common/Modal'; // Modal 컴포넌트를 가져옴
+import { BsChatFill } from "react-icons/bs";
 
 const SignupComponent = () => {
     const [email, setEmail] = useState('');
@@ -314,18 +315,25 @@ const SignupComponent = () => {
                         회원가입하기
                     </button>
                 </div>
+                    </form>
 
-                <p className="mt-4 text-center text-sm text-gray-500">
+            {/* SNS 로그인 옵션 */}
+            <hr className="my-8" />
+                <p className="text-center text-sm text-gray-500">
                     SNS 계정으로 회원가입하기
                 </p>
-                <div className="flex justify-center items-center mt-3">
-                    <div className='sign-up-content-sign-in-button-box'>
-                        <a href='/api/auth/kakao'> <img className="w-12" src='/images/kakao-icon.png' alt="Kakao" /> </a>
-                        <a href='/oauth2/authorization/naver'> <img className="w-12" src='/images/naver-icon.png' alt="Naver" /> </a>
-                        <a href='/oauth2/authorization/google'> <img className="w-12" src='/images/google-icon.png' alt="Google" /> </a>
-                    </div>
-                </div>
-            </form>
+            <div className="justify-centeritems-center mt-2">
+                    <a href='/api/auth/kakao'> 
+                    <button
+                        type="button"
+                        className="relative flex w-full justify-center rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold leading-6 text-gray-700 shadow-sm hover:bg-yellow-300 text-center items-center"
+                    >
+                        <BsChatFill className='absolute left-5' size={20}/>
+                        <span className='text-center'>카카오 회원가입</span>
+                    </button> 
+                    </a>
+            </div>
+
 
             {showModal && (
                 <Modal message={modalMessage} callbackFunction={closeModal} />
