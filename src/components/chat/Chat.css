@@ -1,5 +1,5 @@
 .chat-container2 {
-  width: 500px;
+  max-width: 30rem;
   max-height: 100%;
   display: flex;
   flex-direction: column;

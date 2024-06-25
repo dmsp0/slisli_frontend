@@ -485,8 +485,8 @@ function VideoRoom() {
   return (
     <div className="bg-[#2C2F33]">
       <div className="flex flex-col lg:flex-row h-screen">
-        <div className="flex flex-col lg:w-3/4 w-full">
-          <div className="flex-grow flex justify-center items-center bg-[#2C2F33]">
+        
+          <div className="flex-grow flex justify-center items-center bg-[#000000]">
             {!isRoomCreated && (
               <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-8">
                 <MicIcon />
@@ -552,16 +552,18 @@ function VideoRoom() {
                 </div>
               </div>
             )}
-            {isRoomCreated && (
-              <div className="w-full bg-[#2C2F33] p-4 rounded-lg overflow-y-auto" id="videos">
-                <button
-                  className="bg-black hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
-                  onClick={destroytest}
-                >
-                  {t("나가기")}
-                </button>
-                <div className="flex flex-wrap -mx-2">
-                  <div className="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
+           {isRoomCreated && (
+              <div className="w-full bg-[#2C2F33] p-10 rounded-lg overflow-y-auto" id="videos">
+                <div className="w-full h-full">
+                  <button
+                    className="bg-black hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-5"
+                    onClick={destroytest}
+                  >
+                    {t("나가기")}
+                  </button>
+                </div>
+                <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+                  <div className="col-span-1 lg:col-span-3">
                     <div className="bg-[#2C2F33] p-4 rounded shadow">
                       <h3 className="text-lg font-bold mb-2 text-white">
                         <span
@@ -576,8 +578,8 @@ function VideoRoom() {
                     </div>
                   </div>
                   {[1, 2, 3, 4, 5].map((num) => (
-                    <div key={num} className="w-full md:w-1/2 lg:w-1/3 px-2 mb-4">
-                      <div className="bg-[#2C2F33] p-4 rounded shadow">
+                    <div key={num} className="col-span-1">
+                      <div className="bg-[#708aac] p-4 rounded shadow">
                         <h3 className="text-lg font-bold mb-2 text-white">
                           <span
                             className={`badge badge-info hide`}
@@ -595,10 +597,10 @@ function VideoRoom() {
               </div>
             )}
           </div>
-        </div>
-        <div className="chat-container">
+       
+        
              <Chat boothId={boothId} />
-        </div>
+        
       </div>
     </div>
   );

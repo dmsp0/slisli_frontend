@@ -9,6 +9,8 @@ export const API_URLS = {
     BOOTH_INSERT: `${BASE_URL}/api/booths/insert`,
     BOOTH_GET_LIST: `${BASE_URL}/api/booths/get`,
     BOOTH_GET_BY_ID: `${BASE_URL}/api/booths/get/{id}`,
+    BOOTH_HOSTINSERT:  `${BASE_URL}/api/booths/set`,
+    BOOTH_HOSTSELECT:  `${BASE_URL}/api/booths/gget`,
 
     // 인증
     SEND_AUTHENTICATION_EMAIL: `${BASE_URL}/api/auth/send-code`,
