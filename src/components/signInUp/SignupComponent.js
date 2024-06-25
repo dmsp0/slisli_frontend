@@ -323,7 +323,8 @@ const SignupComponent = () => {
                     SNS 계정으로 회원가입하기
                 </p>
             <div className="justify-centeritems-center mt-2">
-                    <a href='/api/auth/kakao'> 
+                    {/*<a href='/api/auth/kakao'>*/}
+                    <a href='http://localhost:8080/api/auth/kakao'>
                     <button
                         type="button"
                         className="relative flex w-full justify-center rounded-md bg-yellow-400 px-4 py-2 text-sm font-semibold leading-6 text-gray-700 shadow-sm hover:bg-yellow-300 text-center items-center"

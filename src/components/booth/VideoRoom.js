@@ -1,822 +1,537 @@
-/* global mystream, stream, toastr, localVideoElement,remoteVideoElement, remoteVideoRefs, publishOwnFeed, myid, mypvtid, Janus, sfutest, bootbox, feeds,  notifyParticipantsOfRoomClosure */
-
+/* global mystream,unpublishOwnFeed, myusername,sfutest, stream, toastr,opaqueId, localVideoElement,remoteVideoElement, remoteVideoRefs,subscriber_mode, publishOwnFeed, myid, mypvtid,server, janus,Janus,newRemoteFeed,myroom,registerUsername, sfutest, bootbox, feeds,  notifyParticipantsOfRoomClosure */
 import React, { useEffect, useState, useRef } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import axios from 'axios'; // Axios import
-import $ from "jquery"; // jQuery import
-import { ReactComponent as MicIcon } from '../../img/mic.svg'; // 마이크 아이콘
-import { ReactComponent as MicOffIcon } from '../../img/MicOff.svg'; // 줄이 그어진 마이크 아이콘
-import { ReactComponent as CamIcon } from '../../img/cam.svg'; // 캠 아이콘
-import { ReactComponent as CamOffIcon } from '../../img/CamOff.svg'; // 줄이 그어진 캠 아이콘
-import { ReactComponent as LeaveIcon } from '../../img/leave.svg'; // 나가기 아이콘
-import { API_URLS } from '../../api/apiConfig';
-import io from 'socket.io-client';
+import { useNavigate } from "react-router-dom";
+import { useLocation } from "react-router-dom";
+import BrowserNotSupportedIcon from "@mui/icons-material/BrowserNotSupported";
+import $ from "jquery";
+import 'block-ui';
+import MicOffIcon from "@mui/icons-material/MicOff";
+import MicIcon from "@mui/icons-material/Mic";
+import VideoCallIcon from "@mui/icons-material/VideoCall";
+import { renderToString } from "react-dom/server";
 import Chat from "../chat/Chat";
+// import placeholderImage from "../../img/profile.png"; // 이미지 파일을 import
 
-const opaqueId = "videoroomtest-" + Janus.randomString(12);
-let myroom = null; // 방 번호를 실제로 사용할 번호로 변경해야 합니다.
-let bitrateTimer = [];
-let janus;
+function toggleMute() {
+  var muted = sfutest.isAudioMuted();
+  Janus.log((muted ? "Unmuting" : "Muting") + " local stream...");
+  if (muted) sfutest.unmuteAudio();
+  else sfutest.muteAudio();
+  muted = sfutest.isAudioMuted();
 
-const addSimulcastButtons = (index, isPublisher) => {
-    // Simulcast 버튼 추가 로직
-};
+  const micIconHtml = renderToString(muted ? <MicOffIcon className="mr-1" /> : <MicIcon className="mr-1" />);
+  const buttonText = muted ? "마이크켜기" : "마이크끄기";
 
-const updateSimulcastButtons = (index, substream, temporal) => {
-    // Simulcast 버튼 업데이트 로직
-};
-
-
-
-const VideoRoom = () => {
-    const [username, setUsername] = useState("");
-    const [numParticipants, setNumParticipants] = useState(0);
-    const [isMicMuted, setIsMicMuted] = useState(false);
-    const [isCamOff, setIsCamOff] = useState(false);
-    const [isHost, setIsHost] = useState(false);
-    const [hostId, setHostId] = useState(null);
-    const [hostUsername, setHostUsername] = useState("");
-    const [currentIndex, setCurrentIndex] = useState(0); // 슬라이더 인덱스 상태 추가
-    const [boothId, setBoothId] = useState('');
-    const navigate = useNavigate();
-    const storedRoomNumber = sessionStorage.getItem('roomNumber');
-    const roomNumber = storedRoomNumber ? parseInt(storedRoomNumber, 10) : null;
-    const location = useLocation();
-   
-
-    let feeds = []; // 배열로 초기화
-    const myVideoRef = useRef(null);
-    const localVideoRef = useRef(null);
-    const remoteVideoRef = useRef([]);
-    
-    
-
-    useEffect(() => {
-        // sessionStorage에서 boothId 가져오기
-        const boothIdFromStorage = sessionStorage.getItem('boothId');
-        setBoothId(boothIdFromStorage);
-      }, []);
-    
-      useEffect(() => {
-        if (!boothId) return;
-    
-        // 소켓 연결
-        const socket = io('http://localhost:5000', {
-          path: '/socket',
-          auth: { token: localStorage.getItem('accessToken') }, // 토큰 전달
-        });
-    
-        socket.on('connect', () => {
-          console.log('Connected to server');
-          socket.emit('joinRoom', boothId); // 방 번호 전달
-        });
-    
-        return () => {
-          // 컴포넌트 언마운트 시 소켓 연결 해제
-          socket.disconnect();
-        };
-      }, [boothId]);
-
-
-      useEffect(() => {
-        const fetchHostId = async () => {
-            try {
-                const response = await axios.get(API_URLS.BOOTH_HOSTSELECT, {  
-                    headers: {
-                        Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // 요청 헤더에 JWT 토큰을 추가
-                    },
-                });
-                setHostId(response.data);
-            } catch (error) {
-                console.error('Failed to fetch host ID:', error);
-                if (error.response) {
-                    console.error('Error response:', error.response.data);
-                }
-            }
-        };
-    
-        console.log('Access Token:', localStorage.getItem('accessToken'));
-        fetchHostId();
-        console.log("호스트 여부 확인", isHost , "myid 확인", myid);
-    
-        if (isHost) {
-            axios.post(API_URLS.BOOTH_HOSTINSERT, { hostId: myid }, {
-                headers: {
-                    Authorization: `Bearer ${localStorage.getItem('accessToken')}`, // 요청 헤더에 JWT 토큰을 추가
-                },
-            })
-            .then(response => {
-                console.log('Host ID set successfully');
-            })
-            .catch(error => {
-                console.error('Failed to set host ID:', error);
-                if (error.response) {
-                    console.error('Error response:', error.response.data);
-                }
-            });
-        }
-    }, [isHost, myid]);
-    
-    
-    
-    
-
-
-useEffect(() => {
-    const storedIsHost = window.localStorage.getItem('isHost');
-    const storedHostUsername = window.localStorage.getItem('hostUsername');
-    const isHostFlag = storedIsHost === 'true';
-    setIsHost(isHostFlag);
-    window.isHost = isHostFlag; // 상태 설정 후 window.isHost 설정
-    setHostUsername(storedHostUsername || "");
-}, []);
-
-
-// 마지막으로 추가된 피드 ID를 저장하는 변수
-var lastFeedId = null;
-
-// [jsflux] 새로운 유저 들어왔을때
-window.newRemoteFeed = function(id, display, audio, video) {
-    console.log("새 원격 피드 생성 시도, ID: ", id);
-    
-    if(id === lastFeedId){
-        return;
-    }
-
-
-    // 이미 존재하는 피드인지 확인
-    if (feeds.some(feed => feed && feed.rfid === id)) {
-        console.log(`Feed with id ${id} already exists.`);
-        return;
-    }
-
-    lastFeedId = id;
-    var remoteFeed = null;
-    janus.attach({
-        plugin: "janus.plugin.videoroom",
-        opaqueId: opaqueId,
-        success: function(pluginHandle) {
-            remoteFeed = pluginHandle;
-            remoteFeed.simulcastStarted = false;
-            Janus.log("플러그인 부착 완료! (" + remoteFeed.getPlugin() + ", id=" + remoteFeed.getId() + ")");
-            Janus.log("  -- 구독자입니다");
-
-            var subscribe = {
-                request: "join",
-                room: myroom,
-                ptype: "subscriber",
-                feed: id,
-                private_id: mypvtid
-            };
-
-            console.log("구독 요청 데이터:", JSON.stringify(subscribe, null, 2));
-
-            if (Janus.webRTCAdapter.browserDetails.browser === "safari" &&
-                (video === "vp9" || (video === "vp8" && !Janus.safariVp8))) {
-                if (video) {
-                    video = video.toUpperCase();
-                    toastr.warning("퍼블리셔가 " + video + " 코덱을 사용 중입니다. Safari에서 지원하지 않으므로 비디오를 비활성화합니다.");
-                    subscribe.offer_video = false;  // 비디오 비활성화
-                }
-            }
-            remoteFeed.videoCodec = video;
-            remoteFeed.send({ message: subscribe });
-        },
-        error: function(error) {
-            Janus.error("플러그인 부착 중 오류 발생...", error);
-            bootbox.alert("플러그인 부착 중 오류 발생: " + error);
-        },
-        onmessage: function(msg, jsep) {
-            Janus.debug(" ::: 구독자로부터 메시지를 받았습니다 :::", msg);
-            var event = msg["videoroom"];
-            Janus.debug("이벤트: " + event);
-            if (msg["error"]) {
-                bootbox.alert(msg["error"]);
-            } else if (event) {
-                if (event === "attached") {
-                    for (var i = 1; i < 20; i++) {
-                        if (!feeds[i]) {
-                            feeds[i] = remoteFeed;
-                            remoteFeed.rfindex = i;
-                            break;
-                        }
-                    }
-                    remoteFeed.rfid = msg["id"];
-                    remoteFeed.rfdisplay = msg["display"];
-                    Janus.log("피드 " + remoteFeed.rfid + " (" + remoteFeed.rfdisplay + ")에 성공적으로 연결되었습니다. 룸 " + msg["room"] + "에서");
-                    $('#remote' + remoteFeed.rfindex).removeClass('hide').html(remoteFeed.rfdisplay).show();
-                } else if (event === "event") {
-                    var substream = msg["substream"];
-                    var temporal = msg["temporal"];
-                    if ((substream !== null && substream !== undefined) || (temporal !== null && temporal !== undefined)) {
-                        if (!remoteFeed.simulcastStarted) {
-                            remoteFeed.simulcastStarted = true;
-                            addSimulcastButtons(remoteFeed.rfindex, remoteFeed.videoCodec === "vp8" || remoteFeed.videoCodec === "h264");
-                        }
-                        updateSimulcastButtons(remoteFeed.rfindex, substream, temporal);
-                    }
-                }
-            }
-            if (jsep) {
-                Janus.debug("SDP 처리 중...", jsep);
-                remoteFeed.createAnswer({
-                    jsep: jsep,
-                    media: { audioSend: true, videoSend: true },
-                    success: function(jsep) {
-                        Janus.debug("SDP 생성 완료!", jsep);
-                        var body = { request: "start", room: myroom };
-                        remoteFeed.send({ message: body, jsep: jsep });
-                    },
-                    error: function(error) {
-                        Janus.error("WebRTC 오류 발생:", error);
-                        bootbox.alert("WebRTC 오류 발생: " + error.message);
-                    }
-                });
-            }
-        },
-        iceState: function(state) {
-            Janus.log("이 WebRTC PeerConnection의 ICE 상태 (피드 #" + remoteFeed.rfindex + ")가 " + state + "로 변경되었습니다.");
-        },
-        webrtcState: function(on) {
-            Janus.log("Janus가 이 WebRTC PeerConnection (피드 #" + remoteFeed.rfindex + ")이 " + (on ? "업" : "다운") + " 상태라고 알립니다.");
-        },
-        onlocalstream: function(stream) {
-            // 구독자 스트림은 recvonly이므로 여기서는 아무 것도 기대하지 않습니다
-        },
-        onremotestream: function(stream) {
-            Janus.debug("원격 피드 #" + remoteFeed.rfindex + ", 스트림:", stream);
-            var videoElementId = `videoremote${remoteFeed.rfindex}`;
-            var videoElement = document.getElementById(videoElementId);
-        
-            console.log("호스트 아이디 확인", hostId);
-            if (hostId === id) {
-                videoElement = document.getElementById('videolocal');
-            } else {
-                if (!videoElement) {
-                    // 비디오 요소가 존재하지 않으면 동적으로 생성
-                    const videoContainer = document.createElement('div');
-                    videoContainer.className = 'participant-video slider-item';
-                    videoContainer.innerHTML = `<video class="relative videoremote" id="${videoElementId}" autoPlay playsInline></video>`;
-                    document.querySelector('.slider-wrapper').appendChild(videoContainer);
-        
-                    // 새로 생성한 비디오 요소 참조
-                    videoElement = document.getElementById(videoElementId);
-                }
-            }
-        
-            if (videoElement) {
-                Janus.attachMediaStream(videoElement, stream);
-        
-                videoElement.addEventListener("playing", function() {
-                    if (remoteFeed.spinner) {
-                        remoteFeed.spinner.stop();
-                    }
-                    remoteFeed.spinner = null;
-                    var waitingVideo = document.getElementById(`waitingvideo${remoteFeed.rfindex}`);
-                    if (waitingVideo) {
-                        waitingVideo.remove();
-                    }
-                    if (this.videoWidth) {
-                        videoElement.classList.remove('hide');
-                        videoElement.style.display = 'block';
-                    }
-                    var width = this.videoWidth;
-                    var height = this.videoHeight;
-                    var curresElement = document.getElementById(`curres${remoteFeed.rfindex}`);
-                    if (curresElement) {
-                        curresElement.classList.remove('hide');
-                        curresElement.textContent = `${width}x${height}`;
-                    }
-                });
-        
-                videoElement.addEventListener("loadedmetadata", function() {
-                    var width = this.videoWidth;
-                    var height = this.videoHeight;
-                    var curresElement = document.getElementById(`curres${remoteFeed.rfindex}`);
-                    if (curresElement) {
-                        curresElement.classList.remove('hide');
-                        curresElement.textContent = `${width}x${height}`;
-                    }
-                });
-        
-                var videoTracks = stream.getVideoTracks();
-                if (!videoTracks || videoTracks.length === 0) {
-                    videoElement.style.display = 'none';
-                    if (!document.querySelector(`#videoremote${remoteFeed.rfindex} .no-video-container`)) {
-                        const noVideoContainer = document.createElement('div');
-                        noVideoContainer.className = 'no-video-container';
-                        noVideoContainer.innerHTML = '<i class="fa fa-video-camera fa-5 no-video-icon"></i><span class="no-video-text">사용 가능한 원격 비디오가 없습니다</span>';
-                        videoElement.parentNode.appendChild(noVideoContainer);
-                    }
-                } else {
-                    var noVideoContainer = document.querySelector(`#videoremote${remoteFeed.rfindex} .no-video-container`);
-                    if (noVideoContainer) {
-                        noVideoContainer.remove();
-                    }
-                    videoElement.classList.remove('hide');
-                    videoElement.style.display = 'block';
-                }
-        
-                if (Janus.webRTCAdapter.browserDetails.browser === "chrome" || Janus.webRTCAdapter.browserDetails.browser === "firefox" || Janus.webRTCAdapter.browserDetails.browser === "safari") {
-                    var curbitrateElement = document.getElementById(`curbitrate${remoteFeed.rfindex}`);
-                    if (curbitrateElement) {
-                        curbitrateElement.classList.remove('hide');
-                    }
-                    remoteFeed.bitrateTimer = setInterval(function() {
-                        var bitrate = remoteFeed.getBitrate();
-                        var curbitrateElement = document.getElementById(`curbitrate${remoteFeed.rfindex}`);
-                        if (curbitrateElement) {
-                            curbitrateElement.textContent = bitrate;
-                        }
-                        var width = videoElement.videoWidth;
-                        var height = videoElement.videoHeight;
-                        if (width > 0 && height > 0) {
-                            var curresElement = document.getElementById(`curres${remoteFeed.rfindex}`);
-                            if (curresElement) {
-                                curresElement.classList.remove('hide');
-                                curresElement.textContent = `${width}x${height}`;
-                            }
-                        } else {
-                            $('#videoremote'+remoteFeed.rfindex+ ' .no-video-container').remove();
-                            $('#remotevideo'+remoteFeed.rfindex).removeClass('hide').show();
-                        }
-                    }, 1000);
-                }
-            } else {
-                console.error("videoElement를 찾을 수 없습니다.");
-            }
-        },
-        oncleanup: function() {
-            Janus.log(" ::: 원격 피드 " + id + "에 대한 정리 알림을 받았습니다 :::");
-            if (remoteFeed.spinner) {
-                remoteFeed.spinner.stop();
-            }
-            remoteFeed.spinner = null;
-            $('#remotevideo' + remoteFeed.rfindex).remove();
-            $('#waitingvideo' + remoteFeed.rfindex).remove();
-            $('#novideo' + remoteFeed.rfindex).remove();
-            $('#curbitrate' + remoteFeed.rfindex).remove();
-            $('#curres' + remoteFeed.rfindex).remove();
-            if (remoteFeed.bitrateTimer) {
-                clearInterval(remoteFeed.bitrateTimer);
-            }
-            bitrateTimer[remoteFeed.rfindex] = null;
-            remoteFeed.simulcastStarted = false;
-            $('#simulcast' + remoteFeed.rfindex).remove();
-        
-            feeds[remoteFeed.rfindex] = null;
-            
-            // 비디오 요소 제거
-            var videoElementId = `videoremote${remoteFeed.rfindex}`;
-            var videoElement = document.getElementById(videoElementId);
-            if (videoElement) {
-                videoElement.parentElement.remove(); // 비디오 요소의 부모 요소 제거
-                console.log("비디오 요소가 성공적으로 제거되었습니다:", videoElementId);
-            } else {
-                console.error("제거할 비디오 요소를 찾을 수 없습니다:", videoElementId);
-            }
-        }
-        
-        
-        
-    });
+  $("#mute").html(micIconHtml + buttonText);
+  $("#mute").toggleClass("bg-blue-500 bg-red-500");
 }
 
-useEffect(() => {
-    const { state } = location;
-    if (state && state.numParticipants) {
-        setNumParticipants(state.numParticipants);
+function toggleVideo() {
+  var videoEnabled = !sfutest.isVideoMuted();
+  Janus.log((videoEnabled ? "Disabling" : "Enabling") + " local video...");
+  if (videoEnabled) {
+    sfutest.muteVideo();
+    $("#myvideo").hide();
+    $("#placeholder").show();
+    $("#unpublish").hide();
+    $("#publish").show();
+  } else {
+    sfutest.unmuteVideo();
+    $("#myvideo").show();
+    $("#placeholder").hide();
+    $("#unpublish").show();
+    $("#publish").hide();
+  }
+}
+
+function VideoRoom() {
+  const location = useLocation();
+  const { username: user_id, roomNum, roomTitle, numParticipants } = location.state;
+
+  const [messages, setMessages] = useState([]);
+  const [input, setInput] = useState("");
+  const [username, setUsername] = useState(user_id);
+  const [userId, setUserId] = useState(user_id);
+  const [roomName, setRoomName] = useState(roomNum);
+  const [roomDescription, setRoomDescription] = useState(roomTitle);
+  const [boothId, setBoothId] = useState('');
+
+  const [participants, setParticipants] = useState([]);
+
+  const [isConnected, setIsConnected] = useState(false);
+  const [isRoomCreated, setIsRoomCreated] = useState(false);
+  const messagesEndRef = useRef(null);
+  const navigate = useNavigate();
+
+  const initjanus = () => {
+    if (!Janus.isWebrtcSupported()) {
+      bootbox.alert("No WebRTC support... ");
+      return;
     }
-    const loggedInUser = JSON.parse(sessionStorage.getItem('loggedInUser'));
-    if (loggedInUser) {
-        setUsername(loggedInUser.username);
-        const storedRoomNumber = window.localStorage.getItem('roomNumber');
-        const isHostFlag = window.localStorage.getItem('isHost') === 'true';
-        setIsHost(isHostFlag);
-        window.isHost = isHostFlag; // 호스트 여부 전역변수로 설정 
-
-        if (roomNumber || storedRoomNumber) {
-            console.log("Room number found:", roomNumber || storedRoomNumber);
-            myroom = roomNumber || storedRoomNumber; // myroom 설정
-            console.log("myroom 설정:", myroom);
-            window.initjanus(() => {
-                // Janus 초기화
-                janus = new Janus({
-                    server: window.server,
-                    success: () => {
-                        janus.attach({
-                            plugin: "janus.plugin.videoroom",
-                            opaqueId: opaqueId,
-                            success: (pluginHandle) => {
-                                sfutest = pluginHandle;
-                                Janus.log("Plugin attached! (" + sfutest.getPlugin() + ", id=" + sfutest.getId() + ")");
-                                Janus.log("  -- This is a subscriber");
-
-                                // 방 참가
-                                var register = {
-                                    request: "join",
-                                    room: myroom,
-                                    ptype: "publisher",
-                                    display: username,
-                                };
-                                sfutest.send({ message: register });
-                            },
-                            error: (error) => {
-                                Janus.error("  -- Error attaching plugin...", error);
-                                bootbox.alert("Error attaching plugin... " + error);
-                            },
-                            onmessage: (msg, jsep) => {
-                                Janus.debug(" ::: Got a message :::", msg);
-                                var event = msg["videoroom"];
-                                Janus.debug("Event: " + event);
-                                if (event) {
-                                    if (event === "joined") {
-                                        myid = msg["id"];
-                                        mypvtid = msg["private_id"];
-                                        Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
-                                        if (msg["publishers"]) {
-                                            var list = msg["publishers"];
-                                            Janus.debug("Got a list of available publishers/feeds:", list);
-                                            for (var f in list) {
-                                                var id = list[f]["id"];
-                                                var display = list[f]["display"];
-                                                var audio = list[f]["audio_codec"];
-                                                var video = list[f]["video_codec"];
-                                                Janus.debug("  >> [" + id + "] " + display + " (audio: " + audio + ", video: " + video + ")");
-                                                window.newRemoteFeed(id, display, audio, video);
-                                            }
-                                        }
-                                    } else if (event === "destroyed") {
-                                        Janus.warn("The room has been destroyed!");
-                                        bootbox.alert("The room has been destroyed", () => {
-                                            window.location.reload();
-                                        });
-                                    } else if (event === "event") {
-                                        if (msg["publishers"]) {
-                                            var list = msg["publishers"];
-                                            Janus.debug("Got a list of available publishers/feeds:", list);
-                                            for (var f in list) {
-                                                var id = list[f]["id"];
-                                                var display = list[f]["display"];
-                                                var audio = list[f]["audio_codec"];
-                                                var video = list[f]["video_codec"];
-                                                Janus.debug("  >> [" + id + "] " + display + " (audio: " + audio + ", video: " + video + ")");
-                                                window.newRemoteFeed(id, display, audio, video);
-                                            }
-                                        } else if (msg["leaving"]) {
-                                            var leaving = msg["leaving"];
-                                            Janus.log("Publisher left: " + leaving);
-                                            var remoteFeed = null;
-                                            for (var i = 1; i < 20; i++) {
-                                                if (feeds[i] && feeds[i].rfid == leaving) {
-                                                    remoteFeed = feeds[i];
-                                                    break;
-                                                }
-                                            }
-                                            if (remoteFeed != null) {
-                                                Janus.debug("Feed " + remoteFeed.rfid + " (" + remoteFeed.rfdisplay + ") has left the room, detaching");
-                                                $('#remote' + remoteFeed.rfindex).empty().hide();
-                                                feeds[remoteFeed.rfindex] = null;
-                                                remoteFeed.detach();
-                                            }
-                                        } else if (msg["unpublished"]) {
-                                            var unpublished = msg["unpublished"];
-                                            Janus.log("Publisher left: " + unpublished);
-                                            if (unpublished === 'ok') {
-                                                sfutest.hangup();
-                                                return;
-                                            }
-                                            var remoteFeed = null;
-                                            for (var i = 1; i < 20; i++) {
-                                                if (feeds[i] && feeds[i].rfid == unpublished) {
-                                                    remoteFeed = feeds[i];
-                                                    break;
-                                                }
-                                            }
-                                            if (remoteFeed != null) {
-                                                Janus.debug("Feed " + remoteFeed.rfid + " (" + remoteFeed.rfdisplay + ") has left the room, detaching");
-                                                $('#remote' + remoteFeed.rfindex).empty().hide();
-                                                feeds[remoteFeed.rfindex] = null;
-                                                remoteFeed.detach();
-                                            }
-                                        } else if (msg["error"]) {
-                                            bootbox.alert(msg["error"]);
-                                        }
-                                    }
-                                }
-                                if (jsep) {
-                                    Janus.debug("Handling SDP as well...", jsep);
-                                    sfutest.handleRemoteJsep({ jsep: jsep });
-                                }
-                            },
-                            onlocalstream: (stream) => {
-                                Janus.debug(" ::: Got a local stream :::", stream);
-                                mystream = stream;
-                                Janus.attachMediaStream($('#myvideo').get(0), stream);
-                                if (sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
-                                    sfutest.webrtcStuff.pc.iceConnectionState !== "connected") {
-                                    $("#videolocal").parent().parent().block({
-                                        message: '<b>Publishing...</b>',
-                                        css: {
-                                            border: 'none',
-                                            backgroundColor: 'transparent',
-                                            color: 'white'
-                                        }
-                                    });
-                                }
-                                var videoTracks = stream.getVideoTracks();
-                                if (!videoTracks || videoTracks.length === 0) {
-                                    $('#myvideo').hide();
-                                    if ($('#videolocal .no-video-container').length === 0) {
-                                        $('#videolocal').append(
-                                            '<div class="no-video-container">' +
-                                            '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
-                                            '<span class="no-video-text">No webcam available</span>' +
-                                            '</div>');
-                                    }
-                                } else {
-                                    $('#videolocal .no-video-container').remove();
-                                    $('#myvideo').removeClass('hide').show();
-                                }
-                            },
-                            onremotestream: (stream) => {
-                                Janus.debug(" ::: Got a remote stream :::", stream);
-                                const addRemoteFeed = (feedId, stream) => {
-                                    // 원격 피드를 위한 비디오 요소 동적으로 생성
-                                    const videoElement = document.createElement('video');
-                                    videoElement.setAttribute('id', `videoremote${feedId}`);
-                                    videoElement.setAttribute('width', '100%');
-                                    videoElement.setAttribute('height', 'auto');
-                                    videoElement.setAttribute('autoplay', true);
-                                    videoElement.setAttribute('playsinline', true);
-                                    Janus.attachMediaStream(videoElement, stream);
-                                    document.getElementById('remotes').appendChild(videoElement);
-                                };
-
-                                // 기존 피드를 처리
-                                for (var i = 1; i < 20; i++) {
-                                    if (feeds[i] && feeds[i].rfid == stream.id) {
-                                        Janus.debug(`Remote feed ${feeds[i].rfid} is already being processed`);
-                                        return;
-                                    }
-                                }
-                                
-                                // 새로운 피드를 처리
-                                var remoteFeed = null;
-                                for (var i = 1; i < 20; i++) {
-                                    if (!feeds[i]) {
-                                        feeds[i] = {
-                                            rfid: stream.id,
-                                            feed: stream
-                                        };
-                                        addRemoteFeed(stream.id, stream);
-                                        break;
-                                    }
-                                }
-                            },
-                            oncleanup: () => {
-                                Janus.log(" ::: Got a cleanup notification :::");
-                                mystream = null;
-                                $('#myvideo').remove();
-                                $('#videolocal').parent().parent().unblock();
-                            }
-                        });
-                    },
-                    error: (error) => {
-                        Janus.error(error);
-                        bootbox.alert(error, () => {
-                            window.location.reload();
-                        });
-                    },
-                    destroyed: () => {
-                        window.location.reload();
-                    }
-                });
-            });
-        } else {
-            console.error("No room number found.");
-            navigate('/');
-        }
-
-        window.onJanusMessage = (msg) => {
-            if (msg.text === "호스트가 방송을 종료했습니다." || msg.videoroom === 'destroyed') {
-                alert("호스트가 방송을 종료했습니다. 홈 페이지로 이동합니다.");
-                navigate('/');
-                window.location.reload();
+    janus = new Janus({
+      server: server,
+      success: function () {
+        janus.attach({
+          plugin: "janus.plugin.videoroom",
+          opaqueId: opaqueId,
+          success: function (pluginHandle) {
+            sfutest = pluginHandle;
+            $("#details").remove();
+            $("#videojoin").removeClass("hide").show();
+            $("#registernow").removeClass("hide").show();
+            $("#register").click(registerUsername);
+            $("#roomname").focus();
+            $("#start")
+              .removeAttr("disabled")
+              .html("Stop")
+              .click(function () {
+                $(this).attr("disabled", true);
+                janus.destroy();
+              });
+          },
+          error: function (error) {
+            Janus.error("  -- Error attaching plugin...", error);
+            bootbox.alert("Error attaching plugin... " + error);
+          },
+          consentDialog: function (on) {
+            if (on) {
+              $.blockUI({
+                message: '<div><img src="up_arrow.png"/></div>',
+                css: {
+                  border: "none",
+                  padding: "15px",
+                  backgroundColor: "transparent",
+                  color: "#aaa",
+                  top: "10px",
+                  left: navigator.mozGetUserMedia ? "-100px" : "300px",
+                },
+              });
+            } else {
+              $.unblockUI();
             }
-        };
-    } else {
-        navigate('/login');
-    }
-}, [navigate, roomNumber, location.state]);
-
-useEffect(() => {
-    if (mystream) {
-        const attachStreamToElement = (elementRef, stream, elementName) => {
-            if (elementRef && elementRef.current) {
-                if (elementRef.current.srcObject !== stream) {
-                    elementRef.current.srcObject = null; // 기존 스트림 해제
-                    Janus.attachMediaStream(elementRef.current, stream);
+          },
+          iceState: function (state) {
+            Janus.log("ICE state changed to " + state);
+          },
+          mediaState: function (medium, on) {
+            Janus.log("Janus " + (on ? "started" : "stopped") + " receiving our " + medium);
+          },
+          webrtcState: function (on) {
+            Janus.log("Janus says our WebRTC PeerConnection is " + (on ? "up" : "down") + " now");
+            $("#videolocal").parent().parent().unblock();
+            if (!on) return;
+            $("#publish").remove();
+            $("#bitrate").parent().parent().removeClass("hide").show();
+            $("#bitrate a").click(function () {
+              var id = $(this).attr("id");
+              var bitrate = parseInt(id) * 1000;
+              if (bitrate === 0) {
+                Janus.log("Not limiting bandwidth via REMB");
+              } else {
+                Janus.log("Capping bandwidth to " + bitrate + " via REMB");
+              }
+              $("#bitrateset")
+                .html($(this).html() + '<span class="caret"></span>')
+                .parent()
+                .removeClass("open");
+              sfutest.send({ message: { request: "configure", bitrate: bitrate } });
+              return false;
+            });
+          },
+          onmessage: function (msg, jsep) {
+            Janus.debug(" ::: Got a message (publisher) :::", msg);
+            var event = msg["videoroom"];
+            Janus.debug("Event: " + event);
+            if (event) {
+              if (event === "joined") {
+                myid = msg["id"];
+                mypvtid = msg["private_id"];
+                Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
+                setParticipants((prev) => [...prev, { id: myid, display: username, isLocal: true }]);
+                if (subscriber_mode) {
+                  $("#videojoin").hide();
+                  $("#videos").removeClass("hide").show();
                 } else {
-                    console.warn(`${elementName} element already has the stream.`);
+                  publishOwnFeed(true);
                 }
-            } else {
-                console.warn(`${elementName} element not found. Retrying...`);
-            }
-        };
-
-        // 초기 체크
-        if (isHost) {
-            attachStreamToElement(localVideoRef, mystream, "videolocal");
-        } else {
-            attachStreamToElement(remoteVideoRef.current[0], mystream, "videoremote0");
-        }
-
-        const observerCallback = (mutationsList, observer) => {
-            for (let mutation of mutationsList) {
-                if (mutation.type === 'childList') {
-                    if (isHost && localVideoRef.current) {
-                        attachStreamToElement(localVideoRef, mystream, "videolocal");
-                        observer.disconnect();
-                    } else if (!isHost && remoteVideoRef.current[0]) {
-                        attachStreamToElement(remoteVideoRef.current[0], mystream, "videoremote0");
-                        observer.disconnect();
-                    }
+                if (msg["publishers"]) {
+                  var list = msg["publishers"];
+                  for (var f in list) {
+                    var id = list[f]["id"];
+                    var display = list[f]["display"];
+                    var audio = list[f]["audio_codec"];
+                    var video = list[f]["video_codec"];
+                    newRemoteFeed(id, display, audio, video);
+                    setParticipants((prev) => [...prev, { id, display, isLocal: false }]);
+                  }
                 }
-            }
-        };
-
-        const observer = new MutationObserver(observerCallback);
-        observer.observe(document.body, { childList: true, subtree: true });
-
-        return () => {
-            observer.disconnect();
-        };
-    }
-}, [mystream, isHost]);
-
-    const toggleMute = () => {
-        if (mystream && mystream.getAudioTracks().length > 0) {
-            var audioTrack = mystream.getAudioTracks()[0];
-            audioTrack.enabled = !audioTrack.enabled;
-            setIsMicMuted(!audioTrack.enabled);
-            console.log("현재 오디오 트랙 상태: " + (!audioTrack.enabled ? "꺼짐" : "켜짐"));
-            sfutest.send({ 
-                message: {
-                    request: "configure",
-                    audio: audioTrack.enabled
-                }
-            });
-        } else {
-            console.warn("No audio track available to toggle.");
-        }
-    };
-
-    const toggleMic = () => {
-        toggleMute();
-    };
-
-    const toggleCam = () => {
-        if (mystream && mystream.getVideoTracks().length > 0) {
-            var videoTrack = mystream.getVideoTracks()[0];
-            videoTrack.enabled = !videoTrack.enabled;
-            setIsCamOff(!videoTrack.enabled);
-            console.log("현재 비디오 트랙 상태: " + (!videoTrack.enabled ? "꺼짐" : "켜짐"));
-
-             // 비디오 트랙 상태를 업데이트합니다.
-             const videoElement = isHost ? localVideoRef.current : remoteVideoRef.current[0];
-             if (videoElement) {
-                videoElement.srcObject = mystream;
-            } else {;
-            }
-            if (sfutest && sfutest.webrtcStuff && sfutest.webrtcStuff.pc) {
-                sfutest.send({
-                    message: {
-                        request: "configure",
-                        video: videoTrack.enabled
-                    }
+              } else if (event === "destroyed") {
+                Janus.warn("The room has been destroyed!");
+                bootbox.alert("The room has been destroyed", function () {
+                  window.location.reload();
                 });
-            } else {
-                console.warn("Janus participant is not configured yet.");
-            }
-            
-        } else {
-            console.warn("No video track available to toggle.");
-        }
-    };
-
-
-    // useEffect에서 비디오 엘리먼트에 스트림 연결
-    useEffect(() => {
-        const attachStreamToVideoElements = () => {
-            if (remoteVideoRef.current && feeds) {
-                feeds.forEach((feed, index) => {
-                    if (feed && remoteVideoRef.current[index] && feed.stream !== remoteVideoRef.current[index].srcObject) {
-                        console.log(`Attaching stream to video element for feed ${index}`);
-                        Janus.attachMediaStream(remoteVideoRef.current[index], feed.stream);
+              } else if (event === "event") {
+                if (msg["publishers"]) {
+                  var list = msg["publishers"];
+                  for (var f in list) {
+                    var id = list[f]["id"];
+                    var display = list[f]["display"];
+                    var audio = list[f]["audio_codec"];
+                    var video = list[f]["video_codec"];
+                    newRemoteFeed(id, display, audio, video);
+                    setParticipants((prev) => [...prev, { id, display, isLocal: false }]);
+                  }
+                } else if (msg["leaving"]) {
+                  var leaving = msg["leaving"];
+                  var remoteFeed = null;
+                  for (var i = 1; i < 6; i++) {
+                    if (feeds[i] && feeds[i].rfid == leaving) {
+                      remoteFeed = feeds[i];
+                      break;
                     }
-                });
-            }
-        };
-
-        attachStreamToVideoElements();
-    }, [feeds]);
-        
-
-
-    const closeRoomHandler = () => {
-        if (isHost) {
-            const room = parseInt(roomNumber || window.localStorage.getItem('roomNumber'), 10);
-            window.closeRoom(room, (success) => {
-                if (success) {
-                    notifyParticipantsOfRoomClosure();
+                  }
+                  if (remoteFeed != null) {
+                    $("#remote" + remoteFeed.rfindex).empty().hide();
+                    $("#videoremote" + remoteFeed.rfindex).empty();
+                    feeds[remoteFeed.rfindex] = null;
+                    remoteFeed.detach();
+                    setParticipants((prev) => prev.filter((p) => p.id !== leaving));
+                  }
+                } else if (msg["unpublished"]) {
+                  var unpublished = msg["unpublished"];
+                  if (unpublished === "ok") {
+                    sfutest.hangup();
+                    return;
+                  }
+                  var remoteFeed = null;
+                  for (var i = 1; i < 6; i++) {
+                    if (feeds[i] && feeds[i].rfid == unpublished) {
+                      remoteFeed = feeds[i];
+                      break;
+                    }
+                  }
+                  if (remoteFeed != null) {
+                    $("#remote" + remoteFeed.rfindex)
+                      .empty()
+                      .hide();
+                    $("#videoremote" + remoteFeed.rfindex).empty();
+                    feeds[remoteFeed.rfindex] = null;
+                    remoteFeed.detach();
+                    setParticipants((prev) => prev.filter((p) => p.id !== unpublished));
+                  }
+                } else if (msg["error"]) {
+                  if (msg["error_code"] === 426) {
+                    bootbox.alert(
+                      "<p>Apparently room <code>" +
+                      myroom +
+                      "</code> (the one this demo uses as a test room) " +
+                      "does not exist...</p><p>Do you have an updated <code>janus.plugin.videoroom.jcfg</code> " +
+                      "configuration file? If not, make sure you copy the details of room <code>" +
+                      myroom +
+                      "</code> " +
+                      "from that sample in your current configuration file, then restart Janus and try again."
+                    );
+                  } else {
+                    bootbox.alert(msg["error"]);
+                  }
                 }
-            });
-        } else {
-            navigate('/');
-        }
-    };
-
-
-    const renderVideoPanels = () => {
-        const panels = [];
-        const isHost = localStorage.getItem('isHost') === 'true';
-
-        // 조건에 따라 패널 추가
-        // if (!isHost) {
-        //     panels.push(
-        //         <div className="participant-video slider-item" key="initial-video">
-        //             <video className="relative videoremote" id="videoremote0" autoPlay playsInline muted ref={(el) => remoteVideoRef.current[0] = el}></video>
-        //         </div>
-        //     );
-        // }
-        // 모든 구독된 피드에 대해 패널을 추가합니다
-        feeds.forEach((feed, index) => {
-            if (feed && feed.rfid !== myid && feed.rfdisplay) { // display가 존재하는 경우에만 렌더링
-                panels.push(
-                    <div className="participant-video slider-item" key={feed.rfid}>
-                        <video className="relative videoremote" id={`videoremote${feed.rfindex}`} autoPlay playsInline ref={(el) => remoteVideoRef.current[feed.rfindex] = el}></video>
-                    </div>
+              }
+            }
+            if (jsep) {
+              sfutest.handleRemoteJsep({ jsep: jsep });
+              var audio = msg["audio_codec"];
+              if (mystream && mystream.getAudioTracks() && mystream.getAudioTracks().length > 0 && !audio) {
+                toastr.warning("Our audio stream has been rejected, viewers won't hear us");
+              }
+              var video = msg["video_codec"];
+              if (mystream && mystream.getVideoTracks() && mystream.getVideoTracks().length > 0 && !video) {
+                toastr.warning("Our video stream has been rejected, viewers won't see us");
+                $("#myvideo").hide();
+                $("#videolocal").append(
+                  '<div class="no-video-container">' +
+                  '<i class="fa fa-video-camera fa-5 no-video-icon" style="height: 100%;"></i>' +
+                  '<span class="no-video-text" style="font-size: 16px;">Video rejected, no webcam</span>' +
+                  "</div>"
                 );
+              }
             }
+          },
+          onlocalstream: function (stream) {
+            mystream = stream;
+            $("#videojoin").hide();
+            $("#videos").removeClass("hide").show();
+            if ($("#myvideo").length === 0) {
+              $("#videolocal").append(
+                '<video class="rounded centered" id="myvideo" width="100%" height="100%" autoplay playsinline muted="muted"/>'
+              );
+              $("#videolocal").append(
+                `<button id="mute" class="bg-blue-500 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2">
+                  ${renderToString(<MicIcon className="mr-1" />)}
+                  마이크끄기
+                </button>`
+              );
+
+              $("#mute").click(toggleMute);
+              $("#videolocal").append(
+                `<button id="unpublish" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center ml-4 mb-2">
+                  ${renderToString(<VideoCallIcon className="mr-1" />)}
+                  화면끄기
+                </button>`
+              );
+
+              $("#videolocal").append(
+                `<button id="publish" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center ml-4 mb-2 hidden">
+                  ${renderToString(<BrowserNotSupportedIcon className="mr-1" />)}
+                  화면송출
+                </button>`
+              );
+
+              $("#unpublish").click(toggleVideo);
+              $("#publish").click(toggleVideo);
+            }
+            $("#publisher").removeClass("hide").html(myusername).show();
+            $("#publisher").css("color", getColorFromString(myusername));
+            Janus.attachMediaStream($("#myvideo").get(0), stream);
+            $("#myvideo").get(0).muted = "muted";
+            if (
+              sfutest.webrtcStuff.pc.iceConnectionState !== "completed" &&
+              sfutest.webrtcStuff.pc.iceConnectionState !== "connected"
+            ) {
+              $("#videolocal")
+                .parent()
+                .parent()
+                .block({
+                  message: "<b>Publishing...</b>",
+                  css: {
+                    border: "none",
+                    backgroundColor: "transparent",
+                    color: "white",
+                  },
+                });
+            }
+            var videoTracks = stream.getVideoTracks();
+            if (!videoTracks || videoTracks.length === 0) {
+              $("#myvideo").hide();
+              $("#placeholder").show();
+            } else {
+              $("#placeholder").hide();
+              $("#myvideo").removeClass("hide").show();
+            }
+          },
+          onremotestream: function (stream) {
+            Janus.debug(" ::: Got a remote stream :::", stream);
+            const remoteFeedId = stream.id;
+            const remoteFeed = feeds.find(feed => feed.stream.id === remoteFeedId);
+            if (remoteFeed) {
+              Janus.attachMediaStream($(`#videoremote${remoteFeed.rfindex}`).get(0), stream);
+            }
+          },
+          oncleanup: function () {
+            mystream = null;
+            $("#videolocal").html(
+                `<button id="publish" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline ml-4 inline-flex items-center">
+                  ${renderToString(<BrowserNotSupportedIcon className="mr-1" />)}
+                  화면송출
+                </button>`
+              );
+            $("#publish").click(function () {
+              publishOwnFeed(true);
+            });
+            $("#videolocal").parent().parent().unblock();
+            $("#bitrate").parent().parent().addClass("hide");
+            $("#bitrate a").unbind("click");
+          },
         });
-        return panels;
-    };
+      },
+      error: function (error) {
+        Janus.error(error);
+        bootbox.alert(error, function () {
+          window.location.reload();
+        });
+      },
+      destroyed: function () {
+        window.location.reload();
+      },
+    });
+  };
 
-    const handlePrev = () => {
-        if (currentIndex > 0) {
-            setCurrentIndex(currentIndex - 1);
-        }
-    };
-    
-    const handleNext = () => {
-        if (currentIndex < Math.ceil((numParticipants - 1) / 5) - 1) {
-            setCurrentIndex(currentIndex + 1);
-        }
-    };
-    
-    useEffect(() => {
-        const slideWidth = document.querySelector('.slider-item')?.offsetWidth + 10 || 0; // margin 포함
-        const sliderWrapper = document.querySelector('.slider-wrapper');
-        if (sliderWrapper) {
-            sliderWrapper.style.transform = `translateX(-${currentIndex * slideWidth * 5}px)`;
-        }
-    }, [currentIndex, numParticipants]);
+  useEffect(() => {
+    initjanus();
+  }, []);
 
+  const destroytest = () => {
+    janus.destroy();
+    navigate("/");
+  };
 
-   
-    return (
-        <div className="video-chat-container">
-            <div className="video-container">
-                <div className="slider-container">
-                    <div className="slider-wrapper">
-                        {renderVideoPanels()}
-                    </div>
+  const handleRegisterClick = () => {
+    if (username === "") {
+      alert("채팅방에서 사용할 닉네임을 입력해주세요.");
+      return;
+    }
+    if (/[^a-zA-Z0-9]/.test(username)) {
+      alert("닉네임은 영문만 가능합니다.");
+      return;
+    }
+    setUserId(username);
+    setIsRoomCreated(true);
+  };
+
+  const getColorFromString = (str) => {
+    let hash = 0;
+    for (let i = 0; i < str.length; i++) {
+      hash = str.charCodeAt(i) + ((hash << 5) - hash);
+    }
+    const color = `hsl(${hash % 360}, 50%, 50%)`;
+    return color;
+  };
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
+    }
+  }, [messages]);
+
+  return (
+    <div className="bg-[#2C2F33] h-screen">
+      <div className="flex h-full">
+        <div className="flex flex-col w-3/4 h-full p-2">
+          {!isRoomCreated && (
+            <div className="w-full max-w-3xl bg-white shadow-lg rounded-lg p-8 m-auto">
+              <MicIcon />
+              <MicOffIcon />
+              <h1 className="text-2xl lg:text-4xl font-bold text-center mb-8">방 참여 하기</h1>
+              <div className="space-y-4" id="registernow">
+                <div className="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-4">
+                  <label className="w-24" htmlFor="roomname">
+                    방번호
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="방번호를 입력하세요"
+                    value={roomName}
+                    onChange={(e) => setRoomName(e.target.value)}
+                    className="flex-grow p-2 border rounded bg-gray-200 text-gray-700"
+                    id="roomname"
+                    readOnly
+                  />
                 </div>
-                <div className="slider-controls">
-                    <button className="prev" onClick={handlePrev}>이전</button>
-                    <button className="next" onClick={handleNext}>다음</button>
+                <div className="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-4">
+                  <label className="w-24" htmlFor="username">
+                    유저이름
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="내 대화명"
+                    value={username}
+                    onChange={(e) => setUsername(e.target.value)}
+                    className="flex-grow p-2 border rounded bg-gray-200 text-gray-700"
+                    id="username"
+                    readOnly
+                  />
                 </div>
-                <div className="host-video-container">
-                <video className="host-video" id="videolocal" autoPlay playsInline muted ref={localVideoRef}></video>
-                <div className="video-controls">
-                    <button onClick={toggleMic}>
-                        {isMicMuted ? <MicOffIcon /> : <MicIcon />}
-                    </button>
-                    <button onClick={toggleCam}>
-                        {isCamOff ? <CamOffIcon /> : <CamIcon />}
-                    </button>
-                    <button onClick={closeRoomHandler} className="leave">
-                        <LeaveIcon />
-                    </button>
+                <div className="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-4">
+                  <label className="w-24" htmlFor="description">
+                    방제목
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="방제목"
+                    className="flex-grow p-2 border rounded bg-gray-200 text-gray-700"
+                    id="description"
+                    value={roomDescription}
+                    readOnly
+                  />
                 </div>
-             </div>
-             </div>
-            <div className="chat-container">
-             <Chat boothId={boothId} />
+                <div className="flex justify-between mt-4">
+                  <button
+                    className="bg-blue-600 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
+                    onClick={handleRegisterClick}
+                    id="register"
+                  >
+                    참여하기
+                  </button>
+                  <button
+                    className="bg-blue-0 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
+                    onClick={destroytest}
+                  >
+                    나가기
+                  </button>
+                </div>
+              </div>
             </div>
+          )}
+          {isRoomCreated && (
+            <div className="w-full bg-[#2C2F33] p-2 rounded-lg h-full flex flex-col" id="videos">
+              <div className="flex justify-end mb-2">
+                <button
+                  className="bg-black hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center"
+                  onClick={destroytest}
+                >
+                  나가기
+                </button>
+              </div>
+              <div className="flex-grow flex h-3/5">
+                <div className="flex-grow bg-[#2C2F33] p-4 rounded shadow-lg mr-4">
+                  <h3 className="text-lg font-bold mb-2 text-white">
+                    <span
+                      className="badge badge-primary"
+                      id="publisher"
+                      style={{ color: getColorFromString(userId) }}
+                    >
+                      {userId}
+                    </span>
+                  </h3>
+                  <div className="panel-body h-full" id="videolocal"></div>
+                </div>
+                <div className="w-1/4 h-full overflow-y-auto">
+                  {participants
+                    .filter(participant => !participant.isLocal)
+                    .slice(0, 1)
+                    .map((participant, index) => (
+                      <div key={participant.id} className="bg-[#2C2F33] h-1/3 p-4 rounded shadow mb-4">
+                        <h3 className="text-lg font-bold mb-2 text-white">
+                          <span
+                            className={`badge badge-info`}
+                            id={`remote${index + 1}`}
+                            style={{ color: getColorFromString(participant.display) }}
+                          >
+                            {participant.display}
+                          </span>
+                        </h3>
+                        <div className="panel-body h-32" id={`videoremote${index + 1}`}></div>
+                      </div>
+                    ))}
+                  {participants
+                    .filter(participant => !participant.isLocal)
+                    .slice(1)
+                    .map((participant, index) => (
+                      <div key={participant.id} className="bg-[#2C2F33] h-1/3 p-4 rounded shadow mb-4">
+                        <h3 className="text-lg font-bold mb-2 text-white">
+                          <span
+                            className={`badge badge-info`}
+                            id={`remote${index + 2}`}
+                            style={{ color: getColorFromString(participant.display) }}
+                          >
+                            {participant.display}
+                          </span>
+                        </h3>
+                        <div className="panel-body h-32" id={`videoremote${index + 2}`}></div>
+                      </div>
+                    ))}
+                </div>
+              </div>
+            </div>
+          )}
         </div>
-    );
-};
+        <div className="w-1/4 h-full p-2">
+          <div className="bg-[#2C2F33] p-4 rounded-lg shadow-lg h-full">
+            <Chat boothId={boothId} />
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default VideoRoom;
