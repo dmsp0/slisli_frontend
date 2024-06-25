@@ -1,16 +1,16 @@
 /* global mystream,unpublishOwnFeed, myusername,sfutest, stream, toastr,opaqueId, localVideoElement,remoteVideoElement, remoteVideoRefs,subscriber_mode, publishOwnFeed, myid, mypvtid,server, janus,Janus,newRemoteFeed,myroom,registerUsername, sfutest, bootbox, feeds,  notifyParticipantsOfRoomClosure */
+
 import React, { useEffect, useState, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { useLocation } from "react-router-dom";
 import BrowserNotSupportedIcon from "@mui/icons-material/BrowserNotSupported";
-import $ from "jquery";
+import $ from "jquery"; // jQuery import
 import 'block-ui';
 import MicOffIcon from "@mui/icons-material/MicOff";
 import MicIcon from "@mui/icons-material/Mic";
 import VideoCallIcon from "@mui/icons-material/VideoCall";
 import { renderToString } from "react-dom/server";
 import Chat from "../chat/Chat";
-// import placeholderImage from "../../img/profile.png"; // 이미지 파일을 import
 
 function toggleMute() {
   var muted = sfutest.isAudioMuted();
@@ -26,27 +26,9 @@ function toggleMute() {
   $("#mute").toggleClass("bg-blue-500 bg-red-500");
 }
 
-function toggleVideo() {
-  var videoEnabled = !sfutest.isVideoMuted();
-  Janus.log((videoEnabled ? "Disabling" : "Enabling") + " local video...");
-  if (videoEnabled) {
-    sfutest.muteVideo();
-    $("#myvideo").hide();
-    $("#placeholder").show();
-    $("#unpublish").hide();
-    $("#publish").show();
-  } else {
-    sfutest.unmuteVideo();
-    $("#myvideo").show();
-    $("#placeholder").hide();
-    $("#unpublish").show();
-    $("#publish").hide();
-  }
-}
-
 function VideoRoom() {
-  const location = useLocation();
-  const { username: user_id, roomNum, roomTitle, numParticipants } = location.state;
+  const location = useLocation(); // Initialize useLocation
+  const { username: user_id, roomNum, roomTitle, numParticipants } = location.state; // 상태에서 값 가져오기
 
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState("");
@@ -54,29 +36,37 @@ function VideoRoom() {
   const [userId, setUserId] = useState(user_id);
   const [roomName, setRoomName] = useState(roomNum);
   const [roomDescription, setRoomDescription] = useState(roomTitle);
+  const [stompClient, setStompClient] = useState(null);
   const [boothId, setBoothId] = useState('');
-
-  const [participants, setParticipants] = useState([]);
 
   const [isConnected, setIsConnected] = useState(false);
   const [isRoomCreated, setIsRoomCreated] = useState(false);
+  const [participants, setParticipants] = useState([]);
   const messagesEndRef = useRef(null);
+
   const navigate = useNavigate();
+  let isHost = localStorage.getItem('isHost');
 
   const initjanus = () => {
     if (!Janus.isWebrtcSupported()) {
       bootbox.alert("No WebRTC support... ");
       return;
     }
+    console.log('호스트', isHost);
+
     janus = new Janus({
       server: server,
       success: function () {
+        console.log("Janus initialized successfully");
+
         janus.attach({
           plugin: "janus.plugin.videoroom",
           opaqueId: opaqueId,
           success: function (pluginHandle) {
-            sfutest = pluginHandle;
             $("#details").remove();
+            sfutest = pluginHandle;
+            Janus.log("Plugin attached! (" + sfutest.getPlugin() + ", id=" + sfutest.getId() + ")");
+            Janus.log("  -- This is a publisher/manager");
             $("#videojoin").removeClass("hide").show();
             $("#registernow").removeClass("hide").show();
             $("#register").click(registerUsername);
@@ -88,12 +78,15 @@ function VideoRoom() {
                 $(this).attr("disabled", true);
                 janus.destroy();
               });
+
+            Janus.log("Room List > ");
           },
           error: function (error) {
             Janus.error("  -- Error attaching plugin...", error);
             bootbox.alert("Error attaching plugin... " + error);
           },
           consentDialog: function (on) {
+            Janus.debug("Consent dialog should be " + (on ? "on" : "off") + " now");
             if (on) {
               $.blockUI({
                 message: '<div><img src="up_arrow.png"/></div>',
@@ -147,7 +140,6 @@ function VideoRoom() {
                 myid = msg["id"];
                 mypvtid = msg["private_id"];
                 Janus.log("Successfully joined room " + msg["room"] + " with ID " + myid);
-                setParticipants((prev) => [...prev, { id: myid, display: username, isLocal: true }]);
                 if (subscriber_mode) {
                   $("#videojoin").hide();
                   $("#videos").removeClass("hide").show();
@@ -162,14 +154,11 @@ function VideoRoom() {
                     var audio = list[f]["audio_codec"];
                     var video = list[f]["video_codec"];
                     newRemoteFeed(id, display, audio, video);
-                    setParticipants((prev) => [...prev, { id, display, isLocal: false }]);
+                    setParticipants((prev) => [...prev, { id, display }]);
                   }
                 }
               } else if (event === "destroyed") {
-                Janus.warn("The room has been destroyed!");
-                bootbox.alert("The room has been destroyed", function () {
-                  window.location.reload();
-                });
+                window.onJanusMessage({ text: "호스트가 방송을 종료했습니다.", videoroom: 'destroyed' });
               } else if (event === "event") {
                 if (msg["publishers"]) {
                   var list = msg["publishers"];
@@ -179,7 +168,7 @@ function VideoRoom() {
                     var audio = list[f]["audio_codec"];
                     var video = list[f]["video_codec"];
                     newRemoteFeed(id, display, audio, video);
-                    setParticipants((prev) => [...prev, { id, display, isLocal: false }]);
+                    setParticipants((prev) => [...prev, { id, display }]);
                   }
                 } else if (msg["leaving"]) {
                   var leaving = msg["leaving"];
@@ -279,15 +268,7 @@ function VideoRoom() {
                 </button>`
               );
 
-              $("#videolocal").append(
-                `<button id="publish" class="bg-gray-500 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center ml-4 mb-2 hidden">
-                  ${renderToString(<BrowserNotSupportedIcon className="mr-1" />)}
-                  화면송출
-                </button>`
-              );
-
-              $("#unpublish").click(toggleVideo);
-              $("#publish").click(toggleVideo);
+              $("#unpublish").click(unpublishOwnFeed);
             }
             $("#publisher").removeClass("hide").html(myusername).show();
             $("#publisher").css("color", getColorFromString(myusername));
@@ -312,9 +293,16 @@ function VideoRoom() {
             var videoTracks = stream.getVideoTracks();
             if (!videoTracks || videoTracks.length === 0) {
               $("#myvideo").hide();
-              $("#placeholder").show();
+              if ($("#videolocal .no-video-container").length === 0) {
+                $("#videolocal").append(
+                  '<div class="no-video-container">' +
+                  '<i class="fa fa-video-camera fa-5 no-video-icon"></i>' +
+                  '<span class="no-video-text">No webcam available</span>' +
+                  "</div>"
+                );
+              }
             } else {
-              $("#placeholder").hide();
+              $("#videolocal .no-video-container").remove();
               $("#myvideo").removeClass("hide").show();
             }
           },
@@ -323,7 +311,15 @@ function VideoRoom() {
             const remoteFeedId = stream.id;
             const remoteFeed = feeds.find(feed => feed.stream.id === remoteFeedId);
             if (remoteFeed) {
-              Janus.attachMediaStream($(`#videoremote${remoteFeed.rfindex}`).get(0), stream);
+              const remoteVideoContainer = $(`#videoremote${remoteFeed.rfindex}`);
+              if (remoteVideoContainer.length === 0) {
+                $("#videos").append(
+                  `<div id="videoremote${remoteFeed.rfindex}" class="remote-video-container">
+                    <video class="rounded centered" id="remotevideo${remoteFeed.rfindex}" width="100%" height="100%" autoplay playsinline/>
+                  </div>`
+                );
+              }
+              Janus.attachMediaStream($(`#remotevideo${remoteFeed.rfindex}`).get(0), stream);
             }
           },
           oncleanup: function () {
@@ -357,11 +353,36 @@ function VideoRoom() {
 
   useEffect(() => {
     initjanus();
+
+    return () => {
+      if (janus) {
+        janus.destroy();
+      }
+    };
   }, []);
 
   const destroytest = () => {
-    janus.destroy();
-    navigate("/");
+    handleVideoCleanup();
+    if (isHost === "true") {
+      const room = parseInt(roomNum || window.localStorage.getItem('roomNumber'), 10);
+      console.log("Closing room:", room);
+      window.closeRoom(room, (success) => {
+        if (success) {
+          console.log("Room closed, notifying participants");
+          notifyParticipantsOfRoomClosure();
+        }
+      });
+    } else {
+      navigate('/');
+    }
+  };
+
+  const handleVideoCleanup = () => {
+    const videoElement = document.getElementById('myvideo');
+    if (videoElement) {
+      videoElement.srcObject = null;
+      videoElement.remove();
+    }
   };
 
   const handleRegisterClick = () => {
@@ -375,6 +396,14 @@ function VideoRoom() {
     }
     setUserId(username);
     setIsRoomCreated(true);
+  };
+
+  const sendMessage = () => {
+    if (isConnected && input.trim() !== "" && userId.trim() !== "") {
+      const message = { content: `${userId}: ${input}` };
+      stompClient.send(`/app/rooms/${roomName}/message`, {}, JSON.stringify(message));
+      setInput("");
+    }
   };
 
   const getColorFromString = (str) => {
@@ -418,7 +447,7 @@ function VideoRoom() {
                 </div>
                 <div className="flex flex-col lg:flex-row items-center space-y-4 lg:space-y-0 lg:space-x-4">
                   <label className="w-24" htmlFor="username">
-                    유저이름
+                    유저번호
                   </label>
                   <input
                     type="text"
@@ -443,16 +472,16 @@ function VideoRoom() {
                     readOnly
                   />
                 </div>
-                <div className="flex justify-between mt-4">
+                <div className="flex justify-end mt-4">
                   <button
-                    className="bg-blue-600 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
+                    className="bg-blue-600 hover:bg-gray-600 text-white font-bold py-1 px-2 mr-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
                     onClick={handleRegisterClick}
                     id="register"
                   >
                     참여하기
                   </button>
                   <button
-                    className="bg-blue-0 hover:bg-gray-600 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
+                    className="bg-gray-600 hover:bg-gray-900 text-white font-bold py-1 px-2 rounded focus:outline-none focus:shadow-outline inline-flex items-center mb-2"
                     onClick={destroytest}
                   >
                     나가기
@@ -484,41 +513,21 @@ function VideoRoom() {
                   </h3>
                   <div className="panel-body h-full" id="videolocal"></div>
                 </div>
-                <div className="w-1/4 h-full overflow-y-auto">
-                  {participants
-                    .filter(participant => !participant.isLocal)
-                    .slice(0, 1)
-                    .map((participant, index) => (
-                      <div key={participant.id} className="bg-[#2C2F33] h-1/3 p-4 rounded shadow mb-4">
-                        <h3 className="text-lg font-bold mb-2 text-white">
-                          <span
-                            className={`badge badge-info`}
-                            id={`remote${index + 1}`}
-                            style={{ color: getColorFromString(participant.display) }}
-                          >
-                            {participant.display}
-                          </span>
-                        </h3>
-                        <div className="panel-body h-32" id={`videoremote${index + 1}`}></div>
-                      </div>
-                    ))}
-                  {participants
-                    .filter(participant => !participant.isLocal)
-                    .slice(1)
-                    .map((participant, index) => (
-                      <div key={participant.id} className="bg-[#2C2F33] h-1/3 p-4 rounded shadow mb-4">
-                        <h3 className="text-lg font-bold mb-2 text-white">
-                          <span
-                            className={`badge badge-info`}
-                            id={`remote${index + 2}`}
-                            style={{ color: getColorFromString(participant.display) }}
-                          >
-                            {participant.display}
-                          </span>
-                        </h3>
-                        <div className="panel-body h-32" id={`videoremote${index + 2}`}></div>
-                      </div>
-                    ))}
+                <div className="w-1/4 h-full overflow-y-auto space-y-4">
+                  {participants.map((participant, index) => (
+                    <div key={participant.id} className="bg-[#2C2F33] p-4 rounded shadow mb-4">
+                      <h3 className="text-lg font-bold mb-2 text-white">
+                        <span
+                          className={`badge badge-info`}
+                          id={`remote${index + 1}`}
+                          style={{ color: getColorFromString(participant.display) }}
+                        >
+                          {participant.display}
+                        </span>
+                      </h3>
+                      <div className="panel-body h-3/5" id={`videoremote${index + 1}`}></div>
+                    </div>
+                  ))}
                 </div>
               </div>
             </div>
