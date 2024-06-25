@@ -148,11 +148,10 @@ $(document).ready(function () {
                       }
                     }
                   } else if (event === "destroyed") {
-                    // The room has been destroyed
-                    Janus.warn("The room has been destroyed!");
-                    bootbox.alert("The room has been destroyed", function () {
+                    if (typeof window.onJanusMessage === "function") {
+                      window.onJanusMessage({ text: "호스트가 방송을 종료했습니다.", videoroom: 'destroyed' });
+                    }
                       window.location.reload();
-                    });
                   } else if (event === "event") {
                     // Any new feed to attach to?
                     if (msg["publishers"]) {
@@ -415,7 +414,7 @@ function registerUsername() {
       room: myroom,
       permanent: false,
       record: false,
-      publishers: 6,
+      publishers: 30,
       bitrate: 128000,
       fir_freq: 10,
       ptype: "publisher",
@@ -535,7 +534,7 @@ function unpublishOwnFeed() {
 
 // [jsflux] 새로운 유저 들어왔을때
 function newRemoteFeed(id, display, audio, video) {
-  // A new feed has been published, create a new plugin handle and attach to it as a subscriber
+
   var remoteFeed = null;
   janus.attach({
     plugin: "janus.plugin.videoroom",
@@ -545,7 +544,6 @@ function newRemoteFeed(id, display, audio, video) {
       remoteFeed.simulcastStarted = false;
       Janus.log("Plugin attached! (" + remoteFeed.getPlugin() + ", id=" + remoteFeed.getId() + ")");
       Janus.log("  -- This is a subscriber");
-      // We wait for the plugin to send us an offer
       var subscribe = {
         request: "join",
         room: myroom,
@@ -553,11 +551,6 @@ function newRemoteFeed(id, display, audio, video) {
         feed: id,
         private_id: mypvtid,
       };
-      // In case you don't want to receive audio, video or data, even if the
-      // publisher is sending them, set the 'offer_audio', 'offer_video' or
-      // 'offer_data' properties to false (they're true by default), e.g.:
-      //       subscribe["offer_video"] = false;
-      // For example, if the publisher is VP8 and this is Safari, let's avoid video
       if (
         Janus.webRTCAdapter.browserDetails.browser === "safari" &&
         (video === "vp9" || (video === "vp8" && !Janus.safariVp8))
@@ -581,8 +574,7 @@ function newRemoteFeed(id, display, audio, video) {
         bootbox.alert(msg["error"]);
       } else if (event) {
         if (event === "attached") {
-          // Subscriber created and attached
-          for (var i = 1; i < 6; i++) {
+          for (var i = 1; i < 30; i++) {
             if (!feeds[i]) {
               feeds[i] = remoteFeed;
               remoteFeed.rfindex = i;
@@ -610,32 +602,25 @@ function newRemoteFeed(id, display, audio, video) {
             .html(remoteFeed.rfdisplay)
             .show();
         } else if (event === "event") {
-          // Check if we got a simulcast-related event from this publisher
           var substream = msg["substream"];
           var temporal = msg["temporal"];
           if ((substream !== null && substream !== undefined) || (temporal !== null && temporal !== undefined)) {
             if (!remoteFeed.simulcastStarted) {
               remoteFeed.simulcastStarted = true;
-              // Add some new buttons
               addSimulcastButtons(
                 remoteFeed.rfindex,
                 remoteFeed.videoCodec === "vp8" || remoteFeed.videoCodec === "h264"
               );
             }
-            // We just received notice that there's been a switch, update the buttons
             updateSimulcastButtons(remoteFeed.rfindex, substream, temporal);
           }
         } else {
-          // What has just happened?
         }
       }
       if (jsep) {
         Janus.debug("Handling SDP as well...", jsep);
-        // Answer and attach
         remoteFeed.createAnswer({
           jsep: jsep,
-          // Add data:true here if you want to subscribe to datachannels as well
-          // (obviously only works if the publisher offered them in the first place)
           media: { audioSend: false, videoSend: false }, // We want recvonly audio/video
           success: function (jsep) {
             Janus.debug("Got SDP!", jsep);
@@ -676,14 +661,7 @@ function newRemoteFeed(id, display, audio, video) {
         );
         $("#videoremote" + remoteFeed.rfindex)
           .append
-          // '<span class="label label-primary hide" id="curres' +
-          //   remoteFeed.rfindex +
-          //   '" style="position: absolute; bottom: 0px; left: 0px; margin: 15px;"></span>' +
-          //   '<span class="label label-info hide" id="curbitrate' +
-          //   remoteFeed.rfindex +
-          //   '" style="position: absolute; bottom: 0px; right: 0px; margin: 15px;"></span>'
           ();
-        // Show the video, hide the spinner and show the resolution when we get a playing event
         $("#remotevideo" + remoteFeed.rfindex).bind("playing", function () {
           if (remoteFeed.spinner) remoteFeed.spinner.stop();
           remoteFeed.spinner = null;
@@ -699,7 +677,6 @@ function newRemoteFeed(id, display, audio, video) {
             .text(width + "x" + height)
             .show();
           if (Janus.webRTCAdapter.browserDetails.browser === "firefox") {
-            // Firefox Stable has a bug: width and height are not immediately available after a playing
             setTimeout(function () {
               var width = $("#remotevideo" + remoteFeed.rfindex).get(0).videoWidth;
               var height = $("#remotevideo" + remoteFeed.rfindex).get(0).videoHeight;
@@ -1012,3 +989,58 @@ function updateSimulcastButtons(feed, substream, temporal) {
       .addClass("btn-primary");
   }
 }
+
+
+// 참가자에게 방 파괴 메시지 전송
+function notifyParticipantsOfRoomClosure() {
+  var message = {
+      request: "message",
+      text: "호스트가 방송을 종료했습니다.",
+      videoroom: 'destroyed'
+  };
+  sfutest.send({
+      message: message,
+      success: function() {
+          alert("방이 닫혔습니다. 홈 페이지로 이동합니다.");
+          window.location.href = '/';
+      },
+      error: function(error) {
+          console.error("Failed to send notification", error);
+          alert("방을 닫는 중 오류가 발생했습니다.");
+      }
+  });
+}
+
+// 메시지 처리 함수
+window.onJanusMessage = function(msg) {
+  console.log("Received message:", msg);
+  if (msg.text === "호스트가 방송을 종료했습니다." || msg.videoroom === 'destroyed') {
+    alert("호스트가 방송을 종료했습니다. 홈 페이지로 이동합니다.");
+    window.location.href = '/';
+  }
+};
+
+
+// 방을 닫는 함수
+function closeRoom(room, callback) {
+  var body = { request: "destroy", room: room };
+  sfutest.send({
+      message: body,
+      success: function(result) {
+          if(result.videoroom === 'destroyed') {
+              console.log("Room closed: " + room);
+              window.localStorage.removeItem('window.isHost');
+              window.localStorage.removeItem('hostUsername');
+              window.localStorage.removeItem('roomNumber');
+              if(callback) callback(true);
+          }
+      },
+      error: function(error) {
+          console.error("Error closing room:", error);
+          if(callback) callback(false);
+      }
+  });
+}
+
+
+window.closeRoom = closeRoom;

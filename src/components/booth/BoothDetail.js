@@ -95,6 +95,30 @@ function BoothDetail() {
     }
   }, [id, navigate]);
 
+  useEffect(() => {
+    if (!booth || !booth.startTime || !booth.date) return;
+  
+    const eventStartDateTime = new Date(`${booth.date}T${booth.startTime}`);
+    const now = new Date();
+  
+    let redirectTime;
+  
+    if (isCreator) {
+      redirectTime = new Date(eventStartDateTime.getTime() - 15 * 60 * 1000); // 호스트는 15분 전
+    } else {
+      redirectTime = eventStartDateTime; // 참가자는 정확히 시작 시간
+    }
+  
+    if (now < redirectTime) {
+      const timeToRedirect = redirectTime - now;
+      const timer = setTimeout(() => {
+        window.location.reload(); // 페이지 새로고침
+      }, timeToRedirect);
+  
+      return () => clearTimeout(timer); // cleanup timer on component unmount
+    }
+  }, [booth, isCreator]);
+
   const checkRoomExists = (roomNumber, callback) => {
     window.sfutest.send({
       message: {
@@ -113,6 +137,8 @@ function BoothDetail() {
 
   const handleCreateRoom = () => {
     const roomNum = parseInt(roomNumber, 10);
+    window.localStorage.setItem('isHost', 'true');
+
     navigate(`/booth/videoroom/${roomNum}`, {
       state: { username, roomNum, roomTitle: booth.title, numParticipants },
     });
@@ -120,6 +146,8 @@ function BoothDetail() {
   
   const handleJoinRoom = () => {
     const roomNum = parseInt(roomNumber, 10);
+    window.localStorage.setItem('isHost', 'false');
+
     navigate(`/booth/videoroom/${roomNum}`, {
       state: { username, roomNum, roomTitle: booth.title, numParticipants },
     });
@@ -152,6 +180,9 @@ function BoothDetail() {
   }
 
   console.log("Rendering component, isCreator:", isCreator);
+
+
+
 
   return (
     <div className="bg-gradient-to-b from-blue-900 to-blue-100 w-full min-h-screen flex flex-col items-center">

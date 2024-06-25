@@ -32,14 +32,14 @@
   padding: 10px;
   border-radius: 10px;
   background-color: hsl(205, 92%, 85%); /* 보낸 메시지 배경색 수정 */
-  color: #ffffff; /* 보낸 메시지 텍스트 색상 수정 */
+  color: #2C2F33; /* 보낸 메시지 텍스트 색상 수정 */
   max-width: 70%; /* 메시지 너비 제한 */
   word-break: break-word; /* 긴 단어나 URL을 줄 바꿈 */
 }
 
 .message.received .message-text {
   background-color: #ffffff; /* 받은 메시지 배경색 수정 */
-  color: #000000; /* 받은 메시지 텍스트 색상 수정 */
+  color: #2C2F33; /* 받은 메시지 텍스트 색상 수정 */
 }
 
 .time {
