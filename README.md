@@ -71,12 +71,31 @@
 ## 프로그램 구현
 
 
-## 코드 리뷰
-
-
 ## 주요 기능 시연
 
 ## 추후 개선 사항
+&nbsp; <strong>1. 녹화 기능
+
+&ensp; 녹화 기능 API (Agora Recording API, Zoom API ,,) 를 이용해 회의에 참가하지 못한 이용자에게 회의 녹화본을 제공 
+  
+&nbsp; <strong>2. 자막 기능
+
+&ensp; 실시간 자막 기능을 도입하여, 회의 참여자에게 외국어 자막 제공 
+
+&ensp; (Socket.IO를 사용하여 실시간 통신을 유지하고, Google Cloud Translation API 또는 
+
+&ensp; Microsoft  Azure Translator 를 활용하여 텍스트를 다른 언어로 번역하여 자막으로 제공)
+
+&nbsp; <strong>3. 신고 기능
+
+&ensp; 사용자 편의를 위해 채팅창에 신고기능을 도입
+
+&nbsp; <strong>4. 향후 계획
+
+&ensp; 외국어 자막을 제공하여, 외국인들에게 시간과 장소에 구애받지 않고 화상 설명회 및 박람회에 참여할 수 있는 
+
+&ensp; 환경을 제공하고 한국 이용자에 국한되지 않고 글로벌 사용자들을 대상으로 확장하고자 합니다.
+
 
 ## 개인별 후기
 
