@@ -1,9 +1,7 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import io from 'socket.io-client';
 import axios from 'axios';
 import Message from './Message';
-import './Chat.css';
 import { API_URLS } from '../../api/apiConfig';
 
 const Chat = () => {
@@ -50,8 +48,8 @@ const Chat = () => {
 
   useEffect(() => {
     if (!accessToken || !boothId) return;
-
-    const socket = io('http://localhost:5000', {
+    // const socket = io("http://localhost:5000", {
+    const socket = io('https://js3.jsflux.co.kr', {
       path: '/socket',
       auth: { token: accessToken, userId: nickname }
     });
@@ -67,12 +65,11 @@ const Chat = () => {
     socket.on('chat message', (data) => {
       setMessages(prevMessages => [...prevMessages, data]);
 
-      // 백엔드로 메시지 저장 요청
       axios.post(API_URLS.SAVE_CHAT_MESSAGE, {
         boothId: boothId,
         nickname: data.nickname,
         message: data.message,
-        createdAt: new Date().toISOString() // 혹은 서버에서 생성된 시간 사용
+        createdAt: new Date().toISOString()
       },
       {
         headers: {
@@ -125,10 +122,9 @@ const Chat = () => {
   };
 
   return (
-    <div className="chat-container2">
-      <span className="booth-chat-name">{boothTitle}</span>
-      
-      <div className="chat-list" ref={chatListRef}>
+    <div className="flex flex-col h-full bg-gray-800 rounded-lg p-4">
+      <span className="text-center text-white font-bold mb-4 bg-gray-700 rounded p-2">{boothTitle}</span>
+      <div className="flex-grow overflow-y-auto mb-4 p-2 bg-gray-700 rounded" ref={chatListRef}>
         {messages.map((msg, index) => (
           <Message
             key={index}
@@ -139,9 +135,10 @@ const Chat = () => {
           />
         ))}
       </div>
-      <div className="input-container">
+      <div className="flex">
         <input
           type="text"
+          className="flex-grow p-2 bg-gray-600 text-white rounded-l"
           placeholder="메시지를 입력하세요."
           value={input}
           onChange={(e) => setInput(e.target.value)}
@@ -151,7 +148,12 @@ const Chat = () => {
             }
           }}
         />
-        <button onClick={sendMessage}>전송</button>
+        <button
+          className="bg-blue-500 text-white p-2 rounded-r"
+          onClick={sendMessage}
+        >
+          전송
+        </button>
       </div>
     </div>
   );
