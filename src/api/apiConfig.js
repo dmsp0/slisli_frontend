@@ -30,7 +30,7 @@ export const API_URLS = {
     BOOTH_LIKED_LIST:`${BASE_URL}/api/booths/likedList`,
 
     //알림
-    NOTIFICATION : `${BASE_URL}/api/sse/subscribe`,
+    NOTIFICATION : `${BASE_URL}/sse/subscribe`,
     
     //마이페이지 마이부스
     BOOTH_GET_BY_USERID: `${BASE_URL}/api/booths/get_my`,
