@@ -1,6 +1,7 @@
 ### [중앙정보기술인재개발원] 클라우드 데브옵스 프론트엔드&백엔드 자바(JAVA) 풀스택 개발자 취업캠프
 # SpringBoot & React Project
-![slisli](https://github.com/dmsp0/slisli_frontend/assets/156063957/bec63d81-fbfd-47e8-94c1-81a116cd3a64)
+![slisli](![image](https://github.com/dmsp0/slisli_frontend/assets/93534308/4e00d5a2-da33-49b6-8159-e8844fcaa856)
+)
 
 
 <strong>[SLISLI] Web RTC를 활용한 화상 설명회가 가능한 박람회 및 설명회 웹사이트   
