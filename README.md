@@ -50,7 +50,7 @@
 <details>
 <summary>접기/펼치기</summary>
   
-![10](https://github.com/dmsp0/slisli_frontend/assets/156063957/34a3d46e-0e5b-44bd-911b-43065cc89164)   
+![image](https://github.com/dmsp0/slisli_frontend/assets/156063957/f36d31c9-7e53-4225-96bc-3baf8edd1976)
 </details>
 
 
@@ -58,7 +58,7 @@
 <details>
 <summary>접기/펼치기</summary>
   
-![11](https://github.com/dmsp0/slisli_frontend/assets/156063957/b3758061-6f7c-4d4b-adae-e8ee9e0d2772)   
+![image](https://github.com/dmsp0/slisli_frontend/assets/156063957/00ffcf07-4045-4db2-bb65-af018f4d3f68)
 </details>
 
 
@@ -153,11 +153,16 @@ YouTube 시연 영상
 <details>
 <summary>접기/펼치기</summary>
   
-백엔드 : [바로가기](https://github.com/dmsp0/slisli_backend)  
+백엔드 : [바로가기](https://github.com/dmsp0/slisli_backend)
+
 프론트 : [바로가기](https://github.com/dmsp0/slisli_frontend)  
+
 채팅서버 : [바로가기](https://github.com/dmsp0/slisli_chatserver)  
+
 노션 : [바로가기](https://www.notion.so/joongang-slisli/1e80165e962448cba58782823cbcbbdd)  
+
 피그마 : [바로가기](https://www.figma.com/proto/kEE6MULmHvQalmF4K49FpD/Untitled?node-id=0-1&t=sQGXDKfcBaiHP85Q-1)  
+
 구글 드라이브 : [바로가기](https://drive.google.com/drive/u/0/folders/1yi1ZDd0qQ-GlMoYSYhMs02jTzSB34Ptz)
 </details>
 
