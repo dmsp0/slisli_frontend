@@ -79,6 +79,9 @@
 </details>
 
 ## ▶️ ERD
+<details>
+<summary>접기/펼치기</summary>
+  
 ![KakaoTalk_20240625_161550396](https://github.com/dmsp0/slisli_frontend/assets/156063957/45e4ee4f-48fd-4dc3-8fb7-e28aa869ea59)   
 </details>
 
